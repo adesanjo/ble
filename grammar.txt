@@ -1,0 +1,47 @@
+program			: block (SEMICOLON block)* SEMICOLON?
+
+block           : LBRACKET program? RBRACKET
+                : expr
+
+expr            : KEYWORD:VAR IDENTIFIER EQ block
+                : comp-expr ((KEYWORD:AND|KEYWORD:OR) comp-expr)*
+
+comp-expr       : NOT comp-expr
+                : arith-expr ((EE|LT|GT|LTE|GTE) arith-expr)*
+
+arith-expr      : term ((PLUS|MINUS) term)*
+
+term            : factor ((MUL|DIV|MOD) factor)*
+
+factor			: (PLUS|MINUS) factor
+				: power
+
+power		    : call (POW factor)*
+
+call			: atom (LPAREN (block (COMMA block)*)? RPAREN)?
+
+atom 			: INT|FLOAT|IDENTIFIER
+			    : LPAREN block RPAREN
+				: if-expr
+				: for-expr
+				: while-expr
+				: func-def
+                : disp-expr
+				: input-expr
+
+if-expr			: KEYWORD:IF block KEYWORD:THEN block
+				  (KEYWORD:ELIF block KEYWORD:THEN block)*
+				  (KEYWORD:ELSE block)?
+
+for-expr		: KEYWORD:FOR IDENTIFIER EQ block KEYWORD:TO block 
+				  (KEYWORD:STEP block)? KEYWORD:THEN block
+
+while-expr	    : KEYWORD:WHILE block KEYWORD:THEN block
+
+func-def		: KEYWORD:FUN IDENTIFIER?
+				  LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN
+                  ARROW block
+
+disp-expr       : KEYWORD:DISP block
+
+input-expr		: KEYWORD:INPUT
