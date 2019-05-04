@@ -327,11 +327,12 @@ class SymbolTable:
 
     def remove(self, name):
         del self.symbols[name]
-    
+
     def __repr__(self):
         res = repr(self.symbols)
         if self.parent:
             res += "\n" + repr(self.parent)
+        return res
 
 
 ################
