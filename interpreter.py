@@ -118,6 +118,10 @@ class Number(Value):
             return Number(
                 self.value + other.value
             ).setContext(self.context), None
+        if isinstance(other, String):
+            return Number(
+                self.value + len(other.value)
+            ).setContext(self.context), None
         return None, self.illegalOperation(other)
 
     def subbedBy(self, other):
@@ -282,6 +286,10 @@ class String(Value):
             return String(
                 self.value + other.value
             ).setContext(self.context), None
+        if isinstance(other, Number):
+            return Number(
+                len(self.value) + other.value
+            ).setContext(self.context), None
         return None, self.illegalOperation(other)
 
     def subbedBy(self, other):
@@ -295,6 +303,19 @@ class String(Value):
         if isinstance(other, Number) and isinstance(other.value, int):
             return String(
                 self.value * other.value
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def moddedBy(self, other):
+        if isinstance(other, Number) and isinstance(other.value, int):
+            if other.value >= len(self.value) or other.value < -len(self.value):
+                return None, RTError(
+                    other.startPos, other.endPos,
+                    "Index out of range",
+                    self.context
+                )
+            return String(
+                self.value[other.value]
             ).setContext(self.context), None
         return None, self.illegalOperation(other)
 
