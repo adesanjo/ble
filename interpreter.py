@@ -592,6 +592,7 @@ class Interpreter:
         if res.err:
             return res
 
+        result = val
         err = None
         if node.opTkn.type == tok.TT_MINUS:
             result, err = Number(0).setContext(context).setPos(
