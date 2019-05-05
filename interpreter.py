@@ -92,8 +92,8 @@ class Value:
     def boolNot(self):
         return None, self.illegalOperation()
 
-    def execute(self, args):
-        return None, self.illegalOperation()
+    def execute(self, args, context):
+        return RTResult().failure(self.illegalOperation())
 
     def illegalOperation(self, other=None):
         if other is None:
