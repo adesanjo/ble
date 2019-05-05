@@ -16,7 +16,9 @@ limit = input + 1;
 if limit > 2 and from <= 2 then{
     disp 2;
 };
-if from % 2 == 0 then{
+if from < 3 then{
+    from = 3;
+}elif from % 2 == 0 then{
     from = from + 1;
 };
 for i = from to limit step 2 then{
