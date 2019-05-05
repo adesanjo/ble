@@ -182,6 +182,8 @@ class Lexer:
             string += self.char
             if self.char == "\\":
                 self.advance()
+                if self.char == "\"":
+                    string = string[:-1]
                 string += self.char
             self.advance()
         self.advance()

@@ -8,12 +8,18 @@ fun prime(n)->{
     p;
 };
 
+disp "From:";
+from = input;
+disp "To:";
 limit = input + 1;
 
-if limit > 2 then{
+if limit > 2 and from <= 2 then{
     disp 2;
 };
-for i = 3 to limit step 2 then{
+if from % 2 == 0 then{
+    from = from + 1;
+};
+for i = from to limit step 2 then{
     if prime(i) then{
         disp i;
     };

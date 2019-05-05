@@ -706,13 +706,9 @@ class Interpreter:
     
     def visitInputNode(self, node, context):
         res = RTResult()
-        num = input("> ")
-        if not num.replace(".","",1).isdigit():
-            return res.failure(RTError(
-                node.startPos, node.endPos,
-                "Input was not a valid number",
-                context          
-            ))
-        if "." in num:
-            return res.success(Number(float(num)))
-        return res.success(Number(int(num)))
+        val = input("> ")
+        if not val.replace(".", "", 1).isdigit():
+            return res.success(String(val))
+        if "." in val:
+            return res.success(Number(float(val)))
+        return res.success(Number(int(val)))
