@@ -295,7 +295,7 @@ class String(Value):
     def subbedBy(self, other):
         if isinstance(other, Number) and isinstance(other.value, int):
             return String(
-                self.value[:-other.value]
+                self.value[:-other.value] if other.value > 0 else self.value
             ).setContext(self.context), None
         return None, self.illegalOperation(other)
 
