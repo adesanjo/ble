@@ -85,6 +85,11 @@ class Lexer:
                 tokens.append(self.makeNumber())
             elif self.char in LETTERS:
                 tokens.append(self.makeIdentifier())
+            elif self.char == "\"":
+                tokens.append(self.makeString())
+            elif self.char == "#":
+                while self.char is not None and self.char != "\n":
+                    self.advance()
             elif self.char == "+":
                 tokens.append(Token(TT_PLUS, startPos=self.pos))
                 self.advance()
@@ -167,6 +172,21 @@ class Lexer:
 
         tknType = TT_KEYWORD if idStr in KEYWORDS else TT_IDENTIFIER
         return Token(tknType, idStr, startPos, self.pos)
+    
+    def makeString(self):
+        string = ""
+        startPos = self.pos.copy()
+        
+        self.advance()
+        while self.char is not None and self.char != "\"":
+            string += self.char
+            if self.char == "\\":
+                self.advance()
+                string += self.char
+            self.advance()
+        self.advance()
+        
+        return Token(TT_STRING, string, startPos, self.pos)
 
     def makeMinusOrArrow(self):
         tknType = TT_MINUS

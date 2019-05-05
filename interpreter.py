@@ -132,6 +132,10 @@ class Number(Value):
             return Number(
                 self.value * other.value
             ).setContext(self.context), None
+        if isinstance(other, String) and isinstance(self.value, int):
+            return String(
+                other.value * self.value
+            ).setContext(self.context), None
         return None, self.illegalOperation(other)
 
     def divedBy(self, other):
@@ -172,12 +176,20 @@ class Number(Value):
             return Number(
                 1 if self.value == other.value else 0
             ).setContext(self.context), None
+        if isinstance(other, String) and isinstance(self.value, int):
+            return Number(
+                1 if self.value == len(other.value) else 0
+            ).setContext(self.context), None
         return None, self.illegalOperation(other)
 
     def isNotEqual(self, other):
         if isinstance(other, Number):
             return Number(
                 1 if self.value != other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, String) and isinstance(self.value, int):
+            return Number(
+                1 if self.value != len(other.value) else 0
             ).setContext(self.context), None
         return None, self.illegalOperation(other)
 
@@ -186,12 +198,20 @@ class Number(Value):
             return Number(
                 1 if self.value < other.value else 0
             ).setContext(self.context), None
+        if isinstance(other, String) and isinstance(self.value, int):
+            return Number(
+                1 if self.value < len(other.value) else 0
+            ).setContext(self.context), None
         return None, self.illegalOperation(other)
 
     def isGreaterThan(self, other):
         if isinstance(other, Number):
             return Number(
                 1 if self.value > other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, String) and isinstance(self.value, int):
+            return Number(
+                1 if self.value > len(other.value) else 0
             ).setContext(self.context), None
         return None, self.illegalOperation(other)
 
@@ -200,12 +220,20 @@ class Number(Value):
             return Number(
                 1 if self.value <= other.value else 0
             ).setContext(self.context), None
+        if isinstance(other, String) and isinstance(self.value, int):
+            return Number(
+                1 if self.value <= len(other.value) else 0
+            ).setContext(self.context), None
         return None, self.illegalOperation(other)
 
     def isGreaterThanOrEqual(self, other):
         if isinstance(other, Number):
             return Number(
                 1 if self.value >= other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, String) and isinstance(self.value, int):
+            return Number(
+                1 if self.value >= len(other.value) else 0
             ).setContext(self.context), None
         return None, self.illegalOperation(other)
 
@@ -242,6 +270,108 @@ class Number(Value):
 
     def __repr__(self):
         return str(self.value)
+
+
+class String(Value):
+    def __init__(self, value):
+        super().__init__()
+        self.value = value
+
+    def addedTo(self, other):
+        if isinstance(other, String):
+            return String(
+                self.value + other.value
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def subbedBy(self, other):
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return String(
+                self.value[:-other.value]
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def multedBy(self, other):
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return String(
+                self.value * other.value
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def isEqual(self, other):
+        if isinstance(other, String):
+            return Number(
+                1 if self.value == other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return Number(
+                1 if len(self.value) == other.value else 0
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def isNotEqual(self, other):
+        if isinstance(other, String):
+            return Number(
+                1 if self.value != other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return Number(
+                1 if len(self.value) != other.value else 0
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def isLessThan(self, other):
+        if isinstance(other, String):
+            return Number(
+                1 if self.value < other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return Number(
+                1 if len(self.value) < other.value else 0
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def isGreaterThan(self, other):
+        if isinstance(other, String):
+            return Number(
+                1 if self.value > other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return Number(
+                1 if len(self.value) > other.value else 0
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def isLessThanOrEqual(self, other):
+        if isinstance(other, String):
+            return Number(
+                1 if self.value <= other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return Number(
+                1 if len(self.value) <= other.value else 0
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def isGreaterThanOrEqual(self, other):
+        if isinstance(other, String):
+            return Number(
+                1 if self.value >= other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return Number(
+                1 if len(self.value) >= other.value else 0
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def copy(self):
+        copy = String(self.value)
+        copy.setPos(self.startPos, self.endPos)
+        copy.setContext(self.context)
+        return copy
+    
+    def __repr__(self):
+        return self.value
 
 
 class Function(Value):
@@ -355,6 +485,13 @@ class Interpreter:
     def visitNumberNode(self, node, context):
         return RTResult().success(
             Number(node.tkn.value).setContext(context).setPos(
+                node.startPos, node.endPos
+            )
+        )
+
+    def visitStringNode(self, node, context):
+        return RTResult().success(
+            String(node.tkn.value).setContext(context).setPos(
                 node.startPos, node.endPos
             )
         )
@@ -565,7 +702,7 @@ class Interpreter:
             return res
 
         print(exprValue)
-        return res.success(None)
+        return res.success(exprValue)
     
     def visitInputNode(self, node, context):
         res = RTResult()

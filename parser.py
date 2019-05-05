@@ -17,6 +17,16 @@ class NumberNode:
         return f"{self.tkn}"
 
 
+class StringNode:
+    def __init__(self, tkn):
+        self.tkn = tkn
+        self.startPos = tkn.startPos
+        self.endPos = tkn.endPos
+    
+    def __repr__(self):
+        return self.tkn
+
+
 class VarAccessNode:
     def __init__(self, varNameTkn):
         self.varNameTkn = varNameTkn
@@ -408,6 +418,10 @@ class Parser:
             res.registerAdvancement()
             self.advance()
             return res.success(NumberNode(tkn))
+        elif tkn.type == TT_STRING:
+            res.registerAdvancement()
+            self.advance()
+            return res.success(StringNode(tkn))
         elif tkn.type == TT_IDENTIFIER:
             res.registerAdvancement()
             self.advance()
