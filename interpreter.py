@@ -597,6 +597,9 @@ class Interpreter:
         if node.opTkn.type == tok.TT_MINUS:
             result, err = Number(0).setContext(context).setPos(
                 node.opTkn.startPos, node.opTkn.endPos).subbedBy(val)
+        elif node.opTkn.type == tok.TT_MINUS:
+            result, err = Number(0).setContext(context).setPos(
+                node.opTkn.startPos, node.opTkn.endPos).addedTo(val)
         elif node.opTkn.matches(tok.TT_KEYWORD, "not"):
             result, err = val.boolNot()
 
