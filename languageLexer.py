@@ -124,6 +124,12 @@ class Lexer:
                 tokens.append(self.makeLessThan())
             elif self.char == ">":
                 tokens.append(self.makeGreaterThan())
+            elif self.char == "[":
+                tokens.append(Token(TT_LSQBRACKET, startPos=self.pos))
+                self.advance()
+            elif self.char == "]":
+                tokens.append(Token(TT_RSQBRACKET, startPos=self.pos))
+                self.advance()
             elif self.char == ",":
                 tokens.append(Token(TT_COMMA, startPos=self.pos))
                 self.advance()

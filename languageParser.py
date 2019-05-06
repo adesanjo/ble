@@ -27,6 +27,18 @@ class StringNode:
         return self.tkn
 
 
+class ListNode:
+    def __init__(self, exprNodes):
+        self.exprNodes = exprNodes
+
+        if len(exprNodes) > 0:
+            self.startPos = exprNodes[0].startPos
+            self.endPos = exprNodes[-1].endPos
+        else:
+            self.startPos = None
+            self.endPos = None
+
+
 class VarAccessNode:
     def __init__(self, varNameTkn):
         self.varNameTkn = varNameTkn
@@ -409,6 +421,43 @@ class Parser:
                 return res
 
         return res.success(IfNode(cases, elseCase))
+    
+    def listExpr(self):
+        res = ParseResult()
+        
+        if self.tkn.type != TT_LSQBRACKET:
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected '['"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        if self.tkn.type == TT_RSQBRACKET:
+            res.registerAdvancement()
+            self.advance()
+            return res.success(ListNode([]))
+        
+        exprs = [res.register(self.expr())]
+        if res.err:
+            return res
+        
+        while self.tkn.type == TT_COMMA:
+            res.registerAdvancement()
+            self.advance()
+            exprs.append(res.register(self.expr()))
+            if res.err:
+                return res
+        
+        if self.tkn.type != TT_RSQBRACKET:
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected ']'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        return res.success(ListNode(exprs))
 
     def atom(self):
         res = ParseResult()
@@ -440,7 +489,7 @@ class Parser:
                 self.tkn.startPos, self.tkn.endPos,
                 "Expected ')'"
             ))
-        elif self.tkn.type == TT_LBRACKET:
+        elif tkn.type == TT_LBRACKET:
             res.registerAdvancement()
             self.advance()
 
@@ -463,6 +512,11 @@ class Parser:
             self.advance()
             
             return res.success(exprs)
+        elif tkn.type == TT_LSQBRACKET:
+            lst = res.register(self.listExpr())
+            if res.err:
+                return res
+            return res.success(lst)
         elif tkn.matches(TT_KEYWORD, "if"):
             ifExpr = res.register(self.ifExpr())
             if res.err:

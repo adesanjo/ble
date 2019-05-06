@@ -20,12 +20,15 @@ call			: atom (LPAREN (expr (COMMA expr)*)? RPAREN)*
 atom 			: INT|FLOAT|STRING|IDENTIFIER
 			    : LPAREN expr RPAREN
 				: LBRACKET program? RBRACKET
+				: listExpr
 				: if-expr
 				: for-expr
 				: while-expr
 				: func-def
                 : disp-expr
 				: input-expr
+
+listExpr        : LSQBRACKET (expr (COMMA expr)*)? RSQBRACKET
 
 if-expr			: KEYWORD:IF expr KEYWORD:THEN expr
 				  (KEYWORD:ELIF expr KEYWORD:THEN expr)*
