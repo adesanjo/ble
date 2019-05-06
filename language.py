@@ -1,6 +1,6 @@
 from interpreter import SymbolTable, Number, Interpreter, Context
-from lexer import Lexer
-from parser import Parser
+from languageLexer import Lexer
+from languageParser import Parser
 
 ################
 # RUN
