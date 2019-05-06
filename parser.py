@@ -226,7 +226,7 @@ class Parser:
         res.registerAdvancement()
         self.advance()
 
-        body = res.register(self.block())
+        body = res.register(self.expr())
         if res.err:
             return res
         
@@ -274,7 +274,7 @@ class Parser:
         res.registerAdvancement()
         self.advance()
 
-        startValue = res.register(self.block())
+        startValue = res.register(self.expr())
         if res.err:
             return res
 
@@ -286,7 +286,7 @@ class Parser:
         res.registerAdvancement()
         self.advance()
 
-        endValue = res.register(self.block())
+        endValue = res.register(self.expr())
         if res.err:
             return res
 
@@ -294,7 +294,7 @@ class Parser:
             res.registerAdvancement()
             self.advance()
 
-            stepValue = res.register(self.block())
+            stepValue = res.register(self.expr())
             if res.err:
                 return res
             if not self.tkn.matches(TT_KEYWORD, "then"):
@@ -313,7 +313,7 @@ class Parser:
         res.registerAdvancement()
         self.advance()
 
-        body = res.register(self.block())
+        body = res.register(self.expr())
         if res.err:
             return res
 
@@ -332,7 +332,7 @@ class Parser:
         res.registerAdvancement()
         self.advance()
 
-        cond = res.register(self.block())
+        cond = res.register(self.expr())
         if res.err:
             return res
 
@@ -344,7 +344,7 @@ class Parser:
         res.registerAdvancement()
         self.advance()
 
-        body = res.register(self.block())
+        body = res.register(self.expr())
         if res.err:
             return res
 
@@ -362,7 +362,7 @@ class Parser:
             ))
         res.registerAdvancement()
         self.advance()
-        cond = res.register(self.block())
+        cond = res.register(self.expr())
         if res.err:
             return res
 
@@ -374,7 +374,7 @@ class Parser:
         res.registerAdvancement()
         self.advance()
 
-        expr = res.register(self.block())
+        expr = res.register(self.expr())
         if res.err:
             return res
         cases.append((cond, expr))
@@ -383,7 +383,7 @@ class Parser:
             res.registerAdvancement()
             self.advance()
 
-            cond = res.register(self.block())
+            cond = res.register(self.expr())
             if res.err:
                 return res
 
@@ -395,7 +395,7 @@ class Parser:
             res.registerAdvancement()
             self.advance()
 
-            expr = res.register(self.block())
+            expr = res.register(self.expr())
             if res.err:
                 return res
             cases.append((cond, expr))
@@ -404,7 +404,7 @@ class Parser:
             res.registerAdvancement()
             self.advance()
 
-            elseCase = res.register(self.block())
+            elseCase = res.register(self.expr())
             if res.err:
                 return res
 
@@ -429,7 +429,7 @@ class Parser:
         elif tkn.type == TT_LPAREN:
             res.registerAdvancement()
             self.advance()
-            expr = res.register(self.block())
+            expr = res.register(self.expr())
             if res.err:
                 return res
             if self.tkn.type == TT_RPAREN:
@@ -440,6 +440,29 @@ class Parser:
                 self.tkn.startPos, self.tkn.endPos,
                 "Expected ')'"
             ))
+        elif self.tkn.type == TT_LBRACKET:
+            res.registerAdvancement()
+            self.advance()
+
+            if self.tkn.type == TT_RBRACKET:
+                res.registerAdvancement()
+                self.advance()
+
+                return res.success(BlockNode([]))
+
+            exprs = res.register(self.program())
+            if res.err:
+                return res
+            
+            if self.tkn.type != TT_RBRACKET:
+                return res.failure(InvalidSyntaxError(
+                    self.tkn.startPos, self.tkn.endPos,
+                    "Expected '}'"
+                ))
+            res.registerAdvancement()
+            self.advance()
+            
+            return res.success(exprs)
         elif tkn.matches(TT_KEYWORD, "if"):
             ifExpr = res.register(self.ifExpr())
             if res.err:
@@ -491,7 +514,7 @@ class Parser:
                 res.registerAdvancement()
                 self.advance()
             else:
-                argNodes.append(res.register(self.block()))
+                argNodes.append(res.register(self.expr()))
                 if res.err:
                     return res
 
@@ -499,7 +522,7 @@ class Parser:
                     res.registerAdvancement()
                     self.advance()
 
-                    argNodes.append(res.register(self.block()))
+                    argNodes.append(res.register(self.expr()))
                     if res.err:
                         return res
 
@@ -566,7 +589,7 @@ class Parser:
             self.advance()
             res.registerAdvancement()
             self.advance()
-            expr = res.register(self.block())
+            expr = res.register(self.expr())
             if res.err:
                 return res
             return res.success(VarAssignNode(varName, expr))
@@ -670,49 +693,16 @@ class Parser:
         res.registerAdvancement()
         self.advance()
 
-        nodeToReturn = res.register(self.block())
+        nodeToReturn = res.register(self.expr())
         if res.err:
             return res
 
         return res.success(FuncDefNode(varNameTkn, argNameTkns, nodeToReturn))
     
-    def block(self):
-        res = ParseResult()
-
-        if self.tkn.type == TT_LBRACKET:
-            res.registerAdvancement()
-            self.advance()
-
-            if self.tkn.type == TT_RBRACKET:
-                res.registerAdvancement()
-                self.advance()
-
-                return res.success(BlockNode([]))
-
-            exprs = res.register(self.program())
-            if res.err:
-                return res
-            
-            if self.tkn.type != TT_RBRACKET:
-                return res.failure(InvalidSyntaxError(
-                    self.tkn.startPos, self.tkn.endPos,
-                    "Expected '}'"
-                ))
-            res.registerAdvancement()
-            self.advance()
-            
-            return res.success(exprs)
-        
-        expr = res.register(self.expr())
-        if res.err:
-            return res
-        
-        return res.success(expr)
-    
     def program(self):
         res = ParseResult()
         
-        exprs = [res.register(self.block())]
+        exprs = [res.register(self.expr())]
         if res.err:
             return res
         
@@ -723,7 +713,7 @@ class Parser:
             if self.tkn.type in (TT_RBRACKET, TT_EOF):
                 break
 
-            exprs.append(res.register(self.block()))
+            exprs.append(res.register(self.expr()))
             if res.err:
                 return res
         
