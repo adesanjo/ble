@@ -1,6 +1,6 @@
 from error import InvalidSyntaxError
 from tokens import *
-from lexer import Token
+from languageLexer import Token
 
 ################
 # NODES
