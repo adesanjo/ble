@@ -505,7 +505,7 @@ class Parser:
         if res.err:
             return res
 
-        if self.tkn.type == TT_LPAREN:
+        while self.tkn.type == TT_LPAREN:
             res.registerAdvancement()
             self.advance()
             argNodes = []
@@ -534,7 +534,7 @@ class Parser:
                 res.registerAdvancement()
                 self.advance()
 
-            return res.success(CallNode(atom, argNodes))
+            atom = CallNode(atom, argNodes)  # return res.success(CallNode(atom, argNodes))
         return res.success(atom)
 
     def power(self):
