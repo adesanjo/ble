@@ -13,8 +13,6 @@ def stringWithArrows(text, pos_start, pos_end):
         idx_end = len(text)
 
     # Generate each line
-    print(pos_start)
-    print(pos_end)
     line_count = pos_end.ln - pos_start.ln + 1
     for i in range(line_count):
         # Calculate line columns
