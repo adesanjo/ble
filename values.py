@@ -89,6 +89,7 @@ class Value:
 class NoneValue(Value):
     def __init__(self):
         super().__init__()
+        self.value = None
     
     def isEqual(self, other):
         if isinstance(other, NoneValue):
@@ -101,7 +102,7 @@ class NoneValue(Value):
         return Number(1).setContext(self.context), None
     
     def __repr__(self):
-        return "None"
+        return str(self.value)
 
 
 class Number(Value):
