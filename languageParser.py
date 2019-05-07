@@ -629,7 +629,7 @@ class Parser:
 
         return res.failure(InvalidSyntaxError(
             tkn.startPos, tkn.endPos,
-            "Expected keyword, int, float, identifier, '+', '-' or '('"
+            "Expected keyword, value, identifier, operator or '('"
         ))
 
     def call(self):

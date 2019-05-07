@@ -1,4 +1,4 @@
-fn prime(n):{
+fn prime(n)->{
     p = true;
     for j = 3 to n step 2 do{
         if i % j == 0 then{
