@@ -58,7 +58,7 @@ class ListModifNode:
     def __init__(self, listNode, exprNode):
         self.listNode = listNode
         self.exprNode = exprNode
-        self.startPos = callNode.startPos
+        self.startPos = listNode.startPos
         self.endPos = exprNode.endPos
 
 
@@ -540,7 +540,7 @@ class Parser:
             if res.err:
                 return res
             return res.success(whileExpr)
-        elif tkn.matches(TT_KEYWORD, "fun"):
+        elif tkn.matches(TT_KEYWORD, "fn"):
             funcDef = res.register(self.funcDef())
             if res.err:
                 return res
@@ -687,10 +687,10 @@ class Parser:
     def funcDef(self):
         res = ParseResult()
 
-        if not self.tkn.matches(TT_KEYWORD, "fun"):
+        if not self.tkn.matches(TT_KEYWORD, "fn"):
             return res.failure(InvalidSyntaxError(
                 self.tkn.startPos, self.tkn.endPos,
-                "Expected 'fun'"
+                "Expected 'fn'"
             ))
         res.registerAdvancement()
         self.advance()
@@ -700,7 +700,6 @@ class Parser:
             res.registerAdvancement()
             self.advance()
             if self.tkn.type != TT_LPAREN:
-                print("YOLO")
                 return res.failure(InvalidSyntaxError(
                     self.tkn.startPos, self.tkn.endPos,
                     "Expected '('"
@@ -747,10 +746,10 @@ class Parser:
         res.registerAdvancement()
         self.advance()
 
-        if self.tkn.type != TT_ARROW:
+        if self.tkn.type != TT_COLON:
             return res.failure(InvalidSyntaxError(
                 self.tkn.startPos, self.tkn.endPos,
-                "Expected '->'"
+                "Expected ':'"
             ))
         res.registerAdvancement()
         self.advance()

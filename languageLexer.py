@@ -27,7 +27,7 @@ KEYWORDS = [
     "to",
     "step",
     "while",
-    "fun",
+    "fn",
     "disp",
     "input"
 ]
@@ -94,7 +94,7 @@ class Lexer:
                 tokens.append(Token(TT_PLUS, startPos=self.pos))
                 self.advance()
             elif self.char == "-":
-                tokens.append(self.makeMinusOrArrow())
+                tokens.append(Token(TT_MINUS, startPos=self.pos))
             elif self.char == "*":
                 tokens.append(Token(TT_MUL, startPos=self.pos))
                 self.advance()
@@ -112,6 +112,9 @@ class Lexer:
                 self.advance()
             elif self.char == ")":
                 tokens.append(Token(TT_RPAREN, startPos=self.pos))
+                self.advance()
+            elif self.char == ":":
+                tokens.append(Token(TT_COLON, startPos=self.pos))
                 self.advance()
             elif self.char == "!":
                 tkn, err = self.makeNotEquals()
@@ -195,15 +198,6 @@ class Lexer:
         self.advance()
         
         return Token(TT_STRING, string, startPos, self.pos)
-
-    def makeMinusOrArrow(self):
-        tknType = TT_MINUS
-        startPos = self.pos.copy()
-        self.advance()
-        if self.char == ">":
-            self.advance()
-            tknType = TT_ARROW
-        return Token(tknType, startPos=startPos, endPos=self.pos)
 
     def makeNotEquals(self):
         startPos = self.pos.copy()
