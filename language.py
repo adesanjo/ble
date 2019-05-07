@@ -2,6 +2,11 @@ from languageInterpreter import SymbolTable, Number, Interpreter, Context
 from languageLexer import Lexer
 from languageParser import Parser
 
+"""
+Best Language Ever
+extension: .ble
+"""
+
 ################
 # RUN
 ################

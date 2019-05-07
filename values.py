@@ -368,18 +368,6 @@ class String(Value):
             idxFrom = args[0]
             idxTo = args[1]
             if isinstance(idxFrom, Number) and isinstance(idxFrom.value, int) and isinstance(idxTo, Number) and isinstance(idxTo.value, int):
-                if idxFrom.value >= len(self.value) or idxFrom.value < -len(self.value):
-                    return res.failure(RTError(
-                        idxFrom.startPos, idxFrom.endPos,
-                        "Index out of range",
-                        self.context
-                    ))
-                if idxTo.value >= len(self.value) or idxTo.value < -len(self.value):
-                    return res.failure(RTError(
-                        idxTo.startPos, idxTo.endPos,
-                        "Index out of range",
-                        self.context
-                    ))
                 return res.success(String(
                     self.value[idxFrom.value:idxTo.value]
                 ).setContext(self.context))
@@ -388,22 +376,10 @@ class String(Value):
             idxTo = args[1]
             idxStep = args[2]
             if isinstance(idxFrom, Number) and isinstance(idxFrom.value, int) and isinstance(idxTo, Number) and isinstance(idxTo.value, int) and isinstance(idxStep, Number) and isinstance(idxStep.value, int):
-                if idxFrom.value >= len(self.value) or idxFrom.value < -len(self.value):
-                    return res.failure(RTError(
-                        idxFrom.startPos, idxFrom.endPos,
-                        "Index out of range",
-                        self.context
-                    ))
-                if idxTo.value >= len(self.value) or idxTo.value < -len(self.value):
-                    return res.failure(RTError(
-                        idxTo.startPos, idxTo.endPos,
-                        "Index out of range",
-                        self.context
-                    ))
-                if idxStep.value >= len(self.value) or idxStep.value < -len(self.value):
+                if idxStep.value == 0:
                     return res.failure(RTError(
                         idxStep.startPos, idxStep.endPos,
-                        "Index out of range",
+                        "Slice step cannot be zero",
                         self.context
                     ))
                 return res.success(String(
@@ -456,18 +432,6 @@ class List(Value):
             idxFrom = args[0]
             idxTo = args[1]
             if isinstance(idxFrom, Number) and isinstance(idxFrom.value, int) and isinstance(idxTo, Number) and isinstance(idxTo.value, int):
-                if idxFrom.value >= len(self.value) or idxFrom.value < -len(self.value):
-                    return res.failure(RTError(
-                        idxFrom.startPos, idxFrom.endPos,
-                        "Index out of range",
-                        self.context
-                    ))
-                if idxTo.value < -len(self.value):
-                    return res.failure(RTError(
-                        idxTo.startPos, idxTo.endPos,
-                        "Index out of range",
-                        self.context
-                    ))
                 return res.success(List(
                     self.value[idxFrom.value:idxTo.value]
                 ).setContext(self.context))
@@ -476,18 +440,6 @@ class List(Value):
             idxTo = args[1]
             idxStep = args[2]
             if isinstance(idxFrom, Number) and isinstance(idxFrom.value, int) and isinstance(idxTo, Number) and isinstance(idxTo.value, int) and isinstance(idxStep, Number) and isinstance(idxStep.value, int):
-                if idxFrom.value >= len(self.value) or idxFrom.value < -len(self.value):
-                    return res.failure(RTError(
-                        idxFrom.startPos, idxFrom.endPos,
-                        "Index out of range",
-                        self.context
-                    ))
-                if idxTo.value < -len(self.value):
-                    return res.failure(RTError(
-                        idxTo.startPos, idxTo.endPos,
-                        "Index out of range",
-                        self.context
-                    ))
                 if idxStep.value == 0:
                     return res.failure(RTError(
                         idxStep.startPos, idxStep.endPos,
@@ -497,26 +449,6 @@ class List(Value):
                 return res.success(List(
                     self.value[idxFrom.value:idxTo.value:idxStep.value]
                 ).setContext(self.context))
-        elif len(args) == 4:
-            idxFrom = args[0]
-            idxTo = args[1]
-            idxStep = args[2]
-            val = args[3]
-            if isinstance(idxFrom, Number) and isinstance(idxFrom.value, int) and isinstance(idxTo, Number) and isinstance(idxTo.value, int) and isinstance(idxStep, Number) and isinstance(idxStep.value, int):
-                if idxFrom.value >= len(self.value) or idxFrom.value < -len(self.value):
-                    return res.failure(RTError(
-                        idxFrom.startPos, idxFrom.endPos,
-                        "Index out of range",
-                        self.context
-                    ))
-                if idxTo.value < -len(self.value):
-                    return res.failure(RTError(
-                        idxTo.startPos, idxTo.endPos,
-                        "Index out of range",
-                        self.context
-                    ))
-                self.value[idxFrom.value:idxTo.value] = [val]
-                return res.success(self)
         return res.failure(self.illegalOperation(args[-1] if len(args) > 0 else None))
     
     def copy(self):

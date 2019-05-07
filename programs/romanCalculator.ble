@@ -1,0 +1,73 @@
+fn romanToArabic(roman):{
+    res = 0;
+    while roman > 0 do{
+        if roman(0, 2) == "CM" then{
+            res = res + 900;
+            roman = roman(2, +roman);
+        }elif roman(0, 2) == "CD" then{
+            res = res + 400;
+            roman = roman(2, +roman);
+        }elif roman(0, 2) == "XC" then{
+            res = res + 90;
+            roman = roman(2, +roman);
+        }elif roman(0, 2) == "XL" then{
+            res = res + 40;
+            roman = roman(2, +roman);
+        }elif roman(0, 2) == "IX" then{
+            res = res + 9;
+            roman = roman(2, +roman);
+        }elif roman(0, 2) == "IV" then{
+            res = res + 4;
+            roman = roman(2, +roman);
+        }elif roman(0) == "M" then{
+            res = res + 1000;
+            roman = roman(1, +roman);
+        }elif roman(0) == "D" then{
+            res = res + 500;
+            roman = roman(1, +roman);
+        }elif roman(0) == "C" then{
+            res = res + 100;
+            roman = roman(1, +roman);
+        }elif roman(0) == "L" then{
+            res = res + 50;
+            roman = roman(1, +roman);
+        }elif roman(0) == "X" then{
+            res = res + 10;
+            roman = roman(1, +roman);
+        }elif roman(0) == "V" then{
+            res = res + 5;
+            roman = roman(1, +roman);
+        }elif roman(0) == "I" then{
+            res = res + 1;
+            roman = roman(1, +roman);
+        }else{
+            disp "Illegal roman numeral";
+            roman = roman(1, +roman);
+        };
+    };
+    res;
+};
+fn arabicToRoman(arabic):{
+    arabic;
+};
+
+disp "Num 1 (in roman form)";
+num1 = romanToArabic(input);
+disp "Operation ('+', '-', '*' or '/')";
+op = input;
+disp "Num 2 (in roman form)";
+num2 = romanToArabic(input);
+
+if op == "+" then{
+    res = arabicToRoman(num1 + num2)
+}elif op == "-" then{
+    res = arabicToRoman(num1 - num2)
+}elif op == "*" then{
+    res = arabicToRoman(num1 * num2)
+}elif op == "/" then{
+    res = arabicToRoman(num1 / num2)
+}else{
+    res = "Operation not recognised"
+};
+
+disp res;
