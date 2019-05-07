@@ -444,6 +444,9 @@ class String(Value):
     
     def __repr__(self):
         return self.value
+    
+    def __str__(self):
+        return self.value.replace("\\n", "\n")
 
 
 class List(Value):

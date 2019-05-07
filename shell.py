@@ -19,4 +19,4 @@ while True:
     if err:
         print(err)
     elif res:
-        print(res)
+        print(repr(res))
