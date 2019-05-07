@@ -704,7 +704,15 @@ class Interpreter:
 
         context.symbolTable.set(varName, value)
         return res.success(value)
-
+    
+    def visitListModifNode(self, node, context):
+        res = RTResult()
+        return res.failure(RTError(
+            node.startPos, node.endPos,
+            "Operation not yet supported",
+            context
+        ))
+    
     def visitBinOpNode(self, node, context):
         res = RTResult()
 

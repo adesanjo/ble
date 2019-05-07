@@ -54,6 +54,14 @@ class VarAssignNode:
         self.endPos = valueNode.endPos
 
 
+class ListModifNode:
+    def __init__(self, listNode, exprNode):
+        self.listNode = listNode
+        self.exprNode = exprNode
+        self.startPos = callNode.startPos
+        self.endPos = exprNode.endPos
+
+
 class BinOpNode:
     def __init__(self, lNode, opTkn, rNode):
         self.lNode = lNode
@@ -588,7 +596,7 @@ class Parser:
                 res.registerAdvancement()
                 self.advance()
 
-            atom = CallNode(atom, argNodes)  # return res.success(CallNode(atom, argNodes))
+            atom = CallNode(atom, argNodes)
         return res.success(atom)
 
     def power(self):
