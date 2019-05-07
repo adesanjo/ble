@@ -483,7 +483,7 @@ class List(Value):
                         "Index out of range",
                         self.context
                     ))
-                if idxTo.value > len(self.value) or idxTo.value < -len(self.value):
+                if idxTo.value < -len(self.value):
                     return res.failure(RTError(
                         idxTo.startPos, idxTo.endPos,
                         "Index out of range",
