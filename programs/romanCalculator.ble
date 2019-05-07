@@ -108,7 +108,7 @@ if op == "+" then{
 }elif op == "*" then{
     res = arabicToRoman(num1 * num2)
 }elif op == "/" then{
-    res = arabicToRoman(num1 / num2)
+    res = arabicToRoman(int num1 / num2)
 }else{
     res = "Operation not recognised"
 };
