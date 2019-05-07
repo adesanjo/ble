@@ -98,6 +98,7 @@ class Lexer:
                 self.advance()
             elif self.char == "-":
                 tokens.append(Token(TT_MINUS, startPos=self.pos))
+                self.advance()
             elif self.char == "*":
                 tokens.append(Token(TT_MUL, startPos=self.pos))
                 self.advance()
