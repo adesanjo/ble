@@ -1,6 +1,6 @@
 fn prime(n)->{
     p = true;
-    for j = 3 to n step 2 then{
+    for j = 3 to n step 2 do{
         if i % j == 0 then{
             p = false;
         };
@@ -21,7 +21,7 @@ if from < 3 then{
 }elif from % 2 == 0 then{
     from = from + 1;
 };
-for i = from to limit step 2 then{
+for i = from to limit step 2 do{
     if prime(i) then{
         disp i;
     };

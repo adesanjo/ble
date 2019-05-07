@@ -106,6 +106,15 @@ class ForNode:
         self.startPos = varNameTkn.startPos
         self.endPos = bodyNode.endPos
 
+class ForEachNode:
+    def __init__(self, varNameTkn, listNode, bodyNode):
+        self.varNameTkn = varNameTkn
+        self.listNode = listNode
+        self.bodyNode = bodyNode
+        
+        self.startPos = varNameTkn.startPos
+        self.endPos = bodyNode.endPos
+
 
 class WhileNode:
     def __init__(self, condNode, bodyNode):
@@ -317,17 +326,17 @@ class Parser:
             stepValue = res.register(self.expr())
             if res.err:
                 return res
-            if not self.tkn.matches(TT_KEYWORD, "then"):
+            if not self.tkn.matches(TT_KEYWORD, "do"):
                 return res.failure(InvalidSyntaxError(
                     self.tkn.startPos, self.tkn.endPos,
-                    "Expected 'then'"
+                    "Expected 'do'"
                 ))
         else:
             stepValue = None
-            if not self.tkn.matches(TT_KEYWORD, "then"):
+            if not self.tkn.matches(TT_KEYWORD, "do"):
                 return res.failure(InvalidSyntaxError(
                     self.tkn.startPos, self.tkn.endPos,
-                    "Expected 'step' or then'"
+                    "Expected 'step' or 'do'"
                 ))
 
         res.registerAdvancement()
@@ -339,6 +348,63 @@ class Parser:
 
         return res.success(ForNode(
             varName, startValue, endValue, stepValue, body
+        ))
+    
+    def forEachExpr(self):
+        res = ParseResult()
+
+        if not self.tkn.matches(TT_KEYWORD, "for"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'for'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+
+        if not self.tkn.matches(TT_KEYWORD, "each"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'each'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+
+        if self.tkn.type != TT_IDENTIFIER:
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected identifier"
+            ))
+        varName = self.tkn
+        res.registerAdvancement()
+        self.advance()
+
+        if not self.tkn.matches(TT_KEYWORD, "in"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'in'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+
+        listExpr = res.register(self.expr())
+        if res.err:
+            return res
+
+        if not self.tkn.matches(TT_KEYWORD, "do"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'do'"
+            ))
+
+        res.registerAdvancement()
+        self.advance()
+
+        body = res.register(self.expr())
+        if res.err:
+            return res
+
+        return res.success(ForEachNode(
+            varName, listExpr, body
         ))
 
     def whileExpr(self):
@@ -356,10 +422,10 @@ class Parser:
         if res.err:
             return res
 
-        if not self.tkn.matches(TT_KEYWORD, "then"):
+        if not self.tkn.matches(TT_KEYWORD, "do"):
             return res.failure(InvalidSyntaxError(
                 self.tkn.startPos, self.tkn.endPos,
-                "Expected 'then'"
+                "Expected 'do'"
             ))
         res.registerAdvancement()
         self.advance()
@@ -531,6 +597,11 @@ class Parser:
                 return res
             return res.success(ifExpr)
         elif tkn.matches(TT_KEYWORD, "for"):
+            if self.nextTkn.matches(TT_KEYWORD, "each"):
+                forEachExpr = res.register(self.forEachExpr())
+                if res.err:
+                    return res
+                return res.success(forEachExpr)
             forExpr = res.register(self.forExpr())
             if res.err:
                 return res

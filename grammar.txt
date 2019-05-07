@@ -23,6 +23,7 @@ atom 			: INT|FLOAT|STRING|IDENTIFIER
 				: listExpr
 				: if-expr
 				: for-expr
+				: for-each-expr
 				: while-expr
 				: func-def
                 : disp-expr
@@ -35,9 +36,11 @@ if-expr			: KEYWORD:IF expr KEYWORD:THEN expr
 				  (KEYWORD:ELSE expr)?
 
 for-expr		: KEYWORD:FOR IDENTIFIER EQ expr KEYWORD:TO expr 
-				  (KEYWORD:STEP expr)? KEYWORD:THEN expr
+				  (KEYWORD:STEP expr)? KEYWORD:DO expr
 
-while-expr	    : KEYWORD:WHILE expr KEYWORD:THEN expr
+for-each-expr	: KEYWORD:FOR KEYWORD:EACH IDENTIFIER KEYWORD:IN expr KEYWORD:DO expr
+
+while-expr	    : KEYWORD:WHILE expr KEYWORD:DO expr
 
 func-def		: KEYWORD:FN IDENTIFIER?
 				  LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN

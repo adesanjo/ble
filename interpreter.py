@@ -827,6 +827,28 @@ class Interpreter:
                 return res
 
         return res.success(None)
+    
+    def visitForEachNode(self, node, context):
+        res = RTResult()
+
+        listExpr = res.register(self.visit(node.listNode, context))
+        if res.err:
+            return res
+        if not isinstance(listExpr, List) and not isinstance(listExpr, String):
+            return res.failure(RTError(
+                node.startPos, node.endPos,
+                "Expected list or string in for each",
+                context
+            ))
+
+        for elem in listExpr.value:
+            context.symbolTable.set(node.varNameTkn.value, elem)
+
+            res.register(self.visit(node.bodyNode, context))
+            if res.err:
+                return res
+
+        return res.success(None)
 
     def visitWhileNode(self, node, context):
         res = RTResult()

@@ -26,7 +26,10 @@ KEYWORDS = [
     "for",
     "to",
     "step",
+    "each",
+    "in",
     "while",
+    "do",
     "fn",
     "disp",
     "input"
