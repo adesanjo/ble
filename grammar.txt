@@ -28,6 +28,9 @@ atom 			: INT|FLOAT|STRING|IDENTIFIER
 				: func-def
                 : disp-expr
 				: input-expr
+				: rand-expr
+				: int-cast
+				: str-cast
 
 listExpr        : LSQBRACKET (expr (COMMA expr)*)? RSQBRACKET
 
@@ -49,3 +52,9 @@ func-def		: KEYWORD:FN IDENTIFIER?
 disp-expr       : KEYWORD:DISP expr
 
 input-expr		: KEYWORD:INPUT
+
+rand-expr		: KEYWORD:RAND
+
+int-cast		: KEYWORD:INT expr
+
+str-cast		: KEYWORD:STR expr

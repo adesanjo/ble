@@ -32,7 +32,10 @@ KEYWORDS = [
     "do",
     "fn",
     "disp",
-    "input"
+    "input",
+    "rand",
+    "int",
+    "str"
 ]
 
 

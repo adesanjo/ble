@@ -180,6 +180,28 @@ class InputNode:
         self.endPos = inputTkn.endPos
 
 
+class RandNode:
+    def __init__(self, randTkn):
+        self.startPos = randTkn.startPos
+        self.endPos = randTkn.endPos
+
+
+class IntCastNode:
+    def __init__(self, value):
+        self.value = value
+
+        self.startPos = value.startPos
+        self.endPos = value.endPos
+
+
+class StrCastNode:
+    def __init__(self, value):
+        self.value = value
+
+        self.startPos = value.startPos
+        self.endPos = value.endPos
+
+
 ################
 # PARSE RESULT
 ################
@@ -243,6 +265,46 @@ class Parser:
                 "Expected ';'"
             ))
         return res
+    
+    def randExpr(self):
+        res = ParseResult()
+        if not self.tkn.matches(TT_KEYWORD, "rand"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'rand'"
+            ))
+        tkn = self.tkn
+        res.registerAdvancement()
+        self.advance()
+        return res.success(RandNode(tkn))
+    
+    def intCast(self):
+        res = ParseResult()
+        if not self.tkn.matches(TT_KEYWORD, "int"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'int'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        valueExpr = res.register(self.expr())
+        if res.err:
+            return res
+        return res.success(IntCastNode(valueExpr))
+    
+    def strCast(self):
+        res = ParseResult()
+        if not self.tkn.matches(TT_KEYWORD, "str"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'str'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        valueExpr = res.register(self.expr())
+        if res.err:
+            return res
+        return res.success(StrCastNode(valueExpr))
     
     def dispExpr(self):
         res = ParseResult()
@@ -623,6 +685,21 @@ class Parser:
             return res.success(dispExpr)
         elif tkn.matches(TT_KEYWORD, "input"):
             inputExpr = res.register(self.inputExpr())
+            if res.err:
+                return res
+            return res.success(inputExpr)
+        elif tkn.matches(TT_KEYWORD, "rand"):
+            inputExpr = res.register(self.randExpr())
+            if res.err:
+                return res
+            return res.success(inputExpr)
+        elif tkn.matches(TT_KEYWORD, "int"):
+            inputExpr = res.register(self.intCast())
+            if res.err:
+                return res
+            return res.success(inputExpr)
+        elif tkn.matches(TT_KEYWORD, "str"):
+            inputExpr = res.register(self.strCast())
             if res.err:
                 return res
             return res.success(inputExpr)

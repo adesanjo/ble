@@ -1,4 +1,5 @@
 from copy import deepcopy
+from random import random
 
 from error import RTError
 import tokens as tok
@@ -934,3 +935,28 @@ class Interpreter:
         if "." in val:
             return res.success(Number(float(val)))
         return res.success(Number(int(val)))
+    
+    def visitRandNode(self, node, context):
+        res = RTResult()
+        return res.success(Number(random()))
+    
+    def visitIntCastNode(self, node, context):
+        res = RTResult()
+        expr = res.register(self.visit(node.exprValue, context))
+        canCast = True
+        if not isinstance(expr, Number):
+            canCast = False
+        if isinstance(expr, String) and expr.value.isdigit():
+            canCast = True
+        if not canCast:
+            return res.failure(RTError(
+                node.startPos, node.endPos,
+                "Cannot cast to integer",
+                context
+            ))
+        return res.success(Number(int(expr.value)))
+    
+    def visitStrCastNode(self, node, context):
+        res = RTResult()
+        expr = res.register(self.visit(node.exprValue, context))
+        return res.success(String(str(expr.value)))
