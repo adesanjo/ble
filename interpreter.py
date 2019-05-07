@@ -970,7 +970,7 @@ class Interpreter:
                 "Cannot cast to float",
                 context
             ))
-        return res.success(Number(int(expr.value)))
+        return res.success(Number(float(expr.value)))
     
     def visitStrCastNode(self, node, context):
         res = RTResult()
