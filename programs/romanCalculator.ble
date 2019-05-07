@@ -48,7 +48,50 @@ fn romanToArabic(roman):{
     res;
 };
 fn arabicToRoman(arabic):{
-    arabic;
+    res = "";
+    while arabic > 0 do {
+        if arabic >= 1000{
+            res = res + "M";
+            arabic = arabic - 1000;
+        }elif arabic >= 900{
+            res = res + "CM";
+            arabic = arabic - 900;
+        }elif arabic >= 500{
+            res = res + "D";
+            arabic = arabic - 500;
+        }elif arabic >= 400{
+            res = res + "CD";
+            arabic = arabic - 400;
+        }elif arabic >= 100{
+            res = res + "C";
+            arabic = arabic - 100;
+        }elif arabic >= 90{
+            res = res + "XC";
+            arabic = arabic - 90;
+        }elif arabic >= 50{
+            res = res + "L";
+            arabic = arabic - 50;
+        }elif arabic >= 40{
+            res = res + "XL";
+            arabic = arabic - 40;
+        }elif arabic >= 10{
+            res = res + "X";
+            arabic = arabic - 10;
+        }elif arabic >= 9{
+            res = res + "IX";
+            arabic = arabic - 9;
+        }elif arabic >= 5{
+            res = res + "V";
+            arabic = arabic - 5;
+        }elif arabic >= 4{
+            res = res + "IV";
+            arabic = arabic - 4;
+        }else{
+            res = res + "I";
+            arabic = arabic - 1;
+        };
+    };
+    res;
 };
 
 disp "Num 1 (in roman form)";
