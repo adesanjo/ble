@@ -1,7 +1,6 @@
 from copy import deepcopy
 
 from error import RTError
-from interpreter import RTResult, Interpreter, Context, SymbolTable
 
 ################
 # VALUES

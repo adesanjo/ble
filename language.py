@@ -1,4 +1,4 @@
-from interpreter import SymbolTable, Number, Interpreter, Context
+from languageInterpreter import SymbolTable, Number, Interpreter, Context
 from languageLexer import Lexer
 from languageParser import Parser
 
