@@ -412,7 +412,7 @@ class String(Value):
         return copy
     
     def __repr__(self):
-        return self.value
+        return f"\"{self.value}\""
     
     def __str__(self):
         return self.value.replace("\\n", "\n")
