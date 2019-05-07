@@ -187,19 +187,27 @@ class RandNode:
 
 
 class IntCastNode:
-    def __init__(self, value):
-        self.value = value
+    def __init__(self, exprNode):
+        self.exprNode = exprNode
 
-        self.startPos = value.startPos
-        self.endPos = value.endPos
+        self.startPos = exprNode.startPos
+        self.endPos = exprNode.endPos
+
+
+class FloatCastNode:
+    def __init__(self, exprNode):
+        self.exprNode = exprNode
+
+        self.startPos = exprNode.startPos
+        self.endPos = exprNode.endPos
 
 
 class StrCastNode:
-    def __init__(self, value):
-        self.value = value
+    def __init__(self, exprNode):
+        self.exprNode = exprNode
 
-        self.startPos = value.startPos
-        self.endPos = value.endPos
+        self.startPos = exprNode.startPos
+        self.endPos = exprNode.endPos
 
 
 ################
@@ -291,6 +299,20 @@ class Parser:
         if res.err:
             return res
         return res.success(IntCastNode(valueExpr))
+    
+    def floatCast(self):
+        res = ParseResult()
+        if not self.tkn.matches(TT_KEYWORD, "float"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'float'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        valueExpr = res.register(self.expr())
+        if res.err:
+            return res
+        return res.success(FloatCastNode(valueExpr))
     
     def strCast(self):
         res = ParseResult()
@@ -689,20 +711,25 @@ class Parser:
                 return res
             return res.success(inputExpr)
         elif tkn.matches(TT_KEYWORD, "rand"):
-            inputExpr = res.register(self.randExpr())
+            randExpr = res.register(self.randExpr())
             if res.err:
                 return res
-            return res.success(inputExpr)
+            return res.success(randExpr)
         elif tkn.matches(TT_KEYWORD, "int"):
-            inputExpr = res.register(self.intCast())
+            intExpr = res.register(self.intCast())
             if res.err:
                 return res
-            return res.success(inputExpr)
+            return res.success(intExpr)
+        elif tkn.matches(TT_KEYWORD, "float"):
+            floatExpr = res.register(self.floatCast())
+            if res.err:
+                return res
+            return res.success(floatExpr)
         elif tkn.matches(TT_KEYWORD, "str"):
-            inputExpr = res.register(self.strCast())
+            strExpr = res.register(self.strCast())
             if res.err:
                 return res
-            return res.success(inputExpr)
+            return res.success(strExpr)
 
         return res.failure(InvalidSyntaxError(
             tkn.startPos, tkn.endPos,

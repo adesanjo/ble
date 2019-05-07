@@ -942,7 +942,7 @@ class Interpreter:
     
     def visitIntCastNode(self, node, context):
         res = RTResult()
-        expr = res.register(self.visit(node.exprValue, context))
+        expr = res.register(self.visit(node.exprNode, context))
         canCast = True
         if not isinstance(expr, Number):
             canCast = False
@@ -956,7 +956,23 @@ class Interpreter:
             ))
         return res.success(Number(int(expr.value)))
     
+    def visitFloatCastNode(self, node, context):
+        res = RTResult()
+        expr = res.register(self.visit(node.exprNode, context))
+        canCast = True
+        if not isinstance(expr, Number):
+            canCast = False
+        if isinstance(expr, String) and expr.value.replace(".", "", 1).isdigit():
+            canCast = True
+        if not canCast:
+            return res.failure(RTError(
+                node.startPos, node.endPos,
+                "Cannot cast to float",
+                context
+            ))
+        return res.success(Number(int(expr.value)))
+    
     def visitStrCastNode(self, node, context):
         res = RTResult()
-        expr = res.register(self.visit(node.exprValue, context))
+        expr = res.register(self.visit(node.exprNode, context))
         return res.success(String(str(expr.value)))
