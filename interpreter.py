@@ -691,7 +691,7 @@ class Interpreter:
                 f"{varName} is not defined",
                 context
             ))
-        value = value.copy().setPos(node.startPos, node.endPos)
+        value.setPos(node.startPos, node.endPos)
 
         return res.success(value)
 
@@ -842,6 +842,8 @@ class Interpreter:
             ))
 
         for elem in listExpr.value:
+            if isinstance(elem, str):
+                elem = String(elem)
             context.symbolTable.set(node.varNameTkn.value, elem)
 
             res.register(self.visit(node.bodyNode, context))
