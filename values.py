@@ -86,6 +86,24 @@ class Value:
         raise Exception("No copy method defined")
 
 
+class NoneValue(Value):
+    def __init__(self):
+        super().__init__()
+    
+    def isEqual(self, other):
+        if isinstance(other, NoneValue):
+            return Number(1).setContext(self.context), None
+        return Number(0).setContext(self.context), None
+    
+    def isNotEqual(self, other):
+        if isinstance(other, NoneValue):
+            return Number(0).setContext(self.context), None
+        return Number(1).setContext(self.context), None
+    
+    def __repr__(self):
+        return "None"
+
+
 class Number(Value):
     def __init__(self, value):
         super().__init__()
@@ -162,7 +180,7 @@ class Number(Value):
             return Number(
                 1 if self.value == len(other.value) else 0
             ).setContext(self.context), None
-        return None, self.illegalOperation(other)
+        return Number(0).setContext(self.context), None
 
     def isNotEqual(self, other):
         if isinstance(other, Number):
@@ -173,7 +191,7 @@ class Number(Value):
             return Number(
                 1 if self.value != len(other.value) else 0
             ).setContext(self.context), None
-        return None, self.illegalOperation(other)
+        return Number(1).setContext(self.context), None
 
     def isLessThan(self, other):
         if isinstance(other, Number):
@@ -293,7 +311,7 @@ class String(Value):
             return Number(
                 1 if len(self.value) == other.value else 0
             ).setContext(self.context), None
-        return None, self.illegalOperation(other)
+        return Number(0).setContext(self.context), None
 
     def isNotEqual(self, other):
         if isinstance(other, String):
@@ -304,7 +322,7 @@ class String(Value):
             return Number(
                 1 if len(self.value) != other.value else 0
             ).setContext(self.context), None
-        return None, self.illegalOperation(other)
+        return Number(1).setContext(self.context), None
 
     def isLessThan(self, other):
         if isinstance(other, String):

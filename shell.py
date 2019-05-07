@@ -3,6 +3,7 @@
 import os
 
 import language
+from values import NoneValue
 
 while True:
     cmd = input(">>> ")
@@ -18,5 +19,5 @@ while True:
     res, err = language.run("<stdin>", cmd)
     if err:
         print(err)
-    elif res:
+    elif not isinstance(res, NoneValue):
         print(repr(res))

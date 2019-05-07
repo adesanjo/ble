@@ -155,15 +155,15 @@ class CallNode:
 
 
 class BlockNode:
-    def __init__(self, exprNodes):
+    def __init__(self, exprNodes, bracketPos=None):
         self.exprNodes = exprNodes
 
         if len(exprNodes) > 0:
             self.startPos = exprNodes[0].startPos
             self.endPos = exprNodes[-1].endPos
         else:
-            self.startPos = None
-            self.endPos = None
+            self.startPos = bracketPos
+            self.endPos = bracketPos
 
 
 class DispNode:
@@ -655,7 +655,7 @@ class Parser:
                 res.registerAdvancement()
                 self.advance()
 
-                return res.success(BlockNode([]))
+                return res.success(BlockNode([], tkn.startPos))
 
             exprs = res.register(self.program())
             if res.err:

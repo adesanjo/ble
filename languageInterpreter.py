@@ -2,7 +2,7 @@ from random import random
 
 from error import RTError
 import tokens as tok
-from values import Number, String, Function, List
+from values import NoneValue, Number, String, Function, List
 
 ################
 # RUNTIME RESULT
@@ -84,9 +84,6 @@ class Interpreter:
     def noVisitMethod(self, node, context):
         raise Exception(f"No visit{type(node).__name__} method defined")
     
-    def visitNoneType(self, node, context):
-        return RTResult().success(None)
-
     def visitNumberNode(self, node, context):
         return RTResult().success(
             Number(node.tkn.value).setContext(context).setPos(
@@ -228,7 +225,7 @@ class Interpreter:
                 return res
             return res.success(elseValue)
 
-        return res.success(None)
+        return res.success(NoneValue().setContext(context).setPos(node.startPos, node.endPos))
 
     def visitForNode(self, node, context):
         res = RTResult()
@@ -255,7 +252,7 @@ class Interpreter:
             if res.err:
                 return res
 
-        return res.success(None)
+        return res.success(NoneValue().setContext(context).setPos(node.startPos, node.endPos))
     
     def visitForEachNode(self, node, context):
         res = RTResult()
@@ -279,7 +276,7 @@ class Interpreter:
             if res.err:
                 return res
 
-        return res.success(None)
+        return res.success(NoneValue().setContext(context).setPos(node.startPos, node.endPos))
 
     def visitWhileNode(self, node, context):
         res = RTResult()
@@ -296,7 +293,7 @@ class Interpreter:
             if res.err:
                 return res
 
-        return res.success(None)
+        return res.success(NoneValue().setContext(context).setPos(node.startPos, node.endPos))
 
     def visitFuncDefNode(self, node, context):
         res = RTResult()
@@ -337,7 +334,7 @@ class Interpreter:
     def visitBlockNode(self, node, context):
         res = RTResult()
 
-        exprValue = None
+        exprValue = NoneValue().setContext(context).setPos(node.startPos, node.endPos)
         for exprNode in node.exprNodes:
             exprValue = res.register(self.visit(exprNode, context))
             if res.err:
