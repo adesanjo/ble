@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 from error import RTError
+import languageInterpreter as li
 
 ################
 # VALUES
@@ -70,7 +71,7 @@ class Value:
         return None, self.illegalOperation()
 
     def execute(self, args, context):
-        return RTResult().failure(self.illegalOperation())
+        return li.RTResult().failure(self.illegalOperation())
 
     def illegalOperation(self, other=None):
         if other is None:
@@ -350,7 +351,7 @@ class String(Value):
         return None, self.illegalOperation(other)
     
     def execute(self, args, context):
-        res = RTResult()
+        res = li.RTResult()
         if len(args) == 1:
             idx = args[0]
             if isinstance(idx, Number) and isinstance(idx.value, int):
@@ -440,7 +441,7 @@ class List(Value):
         return None, self.illegalOperation(other)
     
     def execute(self, args, context):
-        res = RTResult()
+        res = li.RTResult()
         if len(args) == 1:
             idx = args[0]
             if isinstance(idx, Number) and isinstance(idx.value, int):
@@ -536,10 +537,10 @@ class Function(Value):
         self.argNames = argNames
 
     def execute(self, args, context):
-        res = RTResult()
-        interpreter = Interpreter()
-        newContext = Context(self.name, context, self.startPos)
-        newContext.symbolTable = SymbolTable(context.symbolTable)
+        res = li.RTResult()
+        interpreter = li.Interpreter()
+        newContext = li.Context(self.name, context, self.startPos)
+        newContext.symbolTable = li.SymbolTable(context.symbolTable)
 
         if len(args) > len(self.argNames):
             dif = len(args) - len(self.argNames)
