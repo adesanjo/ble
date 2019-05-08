@@ -65,11 +65,12 @@ class VarAssignNode:
 
 
 class ListModifNode:
-    def __init__(self, listNode, exprNode):
-        self.listNode = listNode
-        self.exprNode = exprNode
-        self.startPos = listNode.startPos
-        self.endPos = exprNode.endPos
+    def __init__(self, varNameTkn, idxNode, valueNode):
+        self.varNameTkn = varNameTkn
+        self.idxNode = idxNode
+        self.valueNode = valueNode
+        self.startPos = varNameTkn.startPos
+        self.endPos = valueNode.endPos
 
 
 class BinOpNode:
@@ -590,6 +591,52 @@ class Parser:
 
         return res.success(IfNode(cases, elseCase))
     
+    def listModifExpr(self):
+        res = ParseResult()
+        
+        if not self.tkn.matches(TT_KEYWORD, "mut"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'mut'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        varNameTkn = self.tkn
+        if self.tkn.type != TT_IDENTIFIER:
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected identifier"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        if not self.tkn.matches(TT_KEYWORD, "at"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'at'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        idxExpr = res.register(self.expr())
+        if res.err:
+            return res
+        
+        if self.tkn.type != TT_EQ:
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected '='"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        valueExpr = res.register(self.expr())
+        if res.err:
+            return res
+        
+        return res.success(ListModifNode(varNameTkn, idxExpr, valueExpr))
+    
     def listExpr(self):
         res = ParseResult()
         
@@ -685,6 +732,11 @@ class Parser:
             if res.err:
                 return res
             return res.success(lst)
+        elif tkn.matches(TT_KEYWORD, "mut"):
+            listModifExpr = res.register(self.listModifExpr())
+            if res.err:
+                return res
+            return res.success(listModifExpr)
         elif tkn.matches(TT_KEYWORD, "if"):
             ifExpr = res.register(self.ifExpr())
             if res.err:

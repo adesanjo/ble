@@ -36,7 +36,9 @@ KEYWORDS = [
     "rand",
     "int",
     "float",
-    "str"
+    "str",
+    "mut",
+    "at"
 ]
 
 

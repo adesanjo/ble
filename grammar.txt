@@ -20,7 +20,8 @@ call			: atom (LPAREN (expr (COMMA expr)*)? RPAREN)*
 atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 			    : LPAREN expr RPAREN
 				: LBRACKET program? RBRACKET
-				: listExpr
+				: list-expr
+				: list-modif-expr
 				: if-expr
 				: for-expr
 				: for-each-expr
@@ -32,7 +33,9 @@ atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 				: int-cast
 				: str-cast
 
-listExpr        : LSQBRACKET (expr (COMMA expr)*)? RSQBRACKET
+list-expr       : LSQBRACKET (expr (COMMA expr)*)? RSQBRACKET
+
+list-modif-expr	: KEYWORD:MUT IDENTIFIER KEYWORD:AT expr EQ expr
 
 if-expr			: KEYWORD:IF expr KEYWORD:THEN expr
 				  (KEYWORD:ELIF expr KEYWORD:THEN expr)*

@@ -285,6 +285,43 @@ class Interpreter:
         if err:
             return res.failure(err)
         return res.success(result.setPos(node.startPos, node.endPos))
+    
+    def visitListModifNode(self, node, context):
+        res = RTResult()
+        
+        varName = node.varNameTkn.value
+        listValue = context.symbolTable.get(varName)
+        if listValue is None:
+            return res.failure(RTError(
+                node.varNameTkn.startPos, node.varNameTkn.endPos,
+                f"{varName} is not defined",
+                context
+            ))
+        listValue.setPos(node.startPos, node.endPos)
+        
+        idx = res.register(self.visit(node.idxNode, context))
+        if res.err:
+            return res
+        if not (isinstance(idx, Number) and isinstance(idx.value, int)):
+            return res.failure(RTError(
+                node.idxNode.startPos, node.idxNode.endPos,
+                "Index must be an int",
+                context
+            ))
+        if idx.value >= len(listValue.value) or idx.value < -len(listValue.value):
+            return res.failure(RTError(
+                node.idxNode.startPos, node.idxNode.endPos,
+                "Index out of range",
+                context
+            ))
+        
+        value = res.register(self.visit(node.valueNode, context))
+        if res.err:
+            return res
+        
+        listValue.value[idx.value] = value
+        context.symbolTable.set(varName, listValue)
+        return res.success(listValue)
 
     def visitIfNode(self, node, context):
         res = RTResult()
