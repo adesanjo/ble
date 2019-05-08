@@ -629,6 +629,8 @@ class Parser:
     
     def builtin(self, tkn):
         res = ParseResult()
+        res.registerAdvancement()
+        self.advance()
         if tkn.value == "true":
             newTkn = Token(TT_INT, 1, tkn.startPos, tkn.endPos)
             return res.success(NumberNode(newTkn))
