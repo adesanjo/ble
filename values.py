@@ -68,6 +68,8 @@ class Value:
         sTrue, sErr = self.isTrue()
         if sErr:
             return None, sErr
+        if not sTrue:
+            return Number(0).setContext(self.context)
         oTrue, oErr = other.isTrue()
         if oErr:
             return None, oErr
@@ -79,6 +81,8 @@ class Value:
         sTrue, sErr = self.isTrue()
         if sErr:
             return None, sErr
+        if sTrue:
+            return Number(1).setContext(self.context)
         oTrue, oErr = other.isTrue()
         if oErr:
             return None, oErr

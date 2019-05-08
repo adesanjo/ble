@@ -151,8 +151,7 @@ class Interpreter:
             )
         ]
         elseCase = lp.VarAccessNode(bTkn)
-        exprNodes = [lp.IfNode(cases, elseCase)]
-        bodyNode = lp.BlockNode(exprNodes)
+        bodyNode = lp.IfNode(cases, elseCase)
         return Function("<builtin - min>", bodyNode, ["a", "b"])
     
     def maxFunc(self):
@@ -166,8 +165,7 @@ class Interpreter:
             )
         ]
         elseCase = lp.VarAccessNode(bTkn)
-        exprNodes = [lp.IfNode(cases, elseCase)]
-        bodyNode = lp.BlockNode(exprNodes)
+        bodyNode = lp.IfNode(cases, elseCase)
         return Function("<builtin - max>", bodyNode, ["a", "b"])
 
     def visitVarAccessNode(self, node, context):
@@ -221,15 +219,7 @@ class Interpreter:
 
         context.symbolTable.set(varName, value)
         return res.success(value)
-    """
-    def visitListModifNode(self, node, context):
-        res = RTResult()
-        return res.failure(RTError(
-            node.startPos, node.endPos,
-            "Operation not yet supported",
-            context
-        ))
-    """
+    
     def visitBinOpNode(self, node, context):
         res = RTResult()
 
@@ -304,7 +294,10 @@ class Interpreter:
             if res.err:
                 return res
 
-            if condValue.isTrue():
+            isTrue, err = condValue.isTrue()
+            if err:
+                return res.failure(err)
+            if isTrue:
                 exprValue = res.register(self.visit(expr, context))
                 if res.err:
                     return res
@@ -377,7 +370,10 @@ class Interpreter:
             if res.err:
                 return res
 
-            if cond.isFalse():
+            isFalse, err = cond.isFalse()
+            if err:
+                return res.failure(err)
+            if isFalse:
                 break
 
             res.register(self.visit(node.bodyNode, context))
