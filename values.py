@@ -447,12 +447,15 @@ class List(Value):
         return None, self.illegalOperation(other)
     
     def subbedBy(self, other):
-        return Number(
-            1 if any(
-                [elem.value == other.value and type(elem) == type(other)
-                 for elem in self.value]
-            ) else 0
-        ).setContext(self.context), None
+        contains = False
+        for elem in self.value:
+            equal, err = elem.isEqual(other)
+            if err:
+                return None, err
+            if equal.value != 0:
+                contains = True
+                break
+        return Number(1 if contains else 0).setContext(self.context), None
     
     def multedBy(self, other):
         if isinstance(other, Number) and isinstance(other.value, int):
@@ -463,8 +466,19 @@ class List(Value):
 
     def isEqual(self, other):
         if isinstance(other, List):
+            equal = True
+            if len(self.value) != len(other.value):
+                equal = False
+            else:
+                for i in range(len(self.value)):
+                    notEqual, err = self.value[i].isNotEqual(other.value[i])
+                    if err:
+                        return None, err
+                    if notEqual.value != 0:
+                        equal = False
+                        break
             return Number(
-                1 if self.value == other.value else 0
+                1 if equal else 0
             ).setContext(self.context), None
         if isinstance(other, Number) and isinstance(other.value, int):
             return Number(
