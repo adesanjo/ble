@@ -10,6 +10,7 @@ import languageInterpreter as li
 
 class Value:
     def __init__(self):
+        self.value = None
         self.setPos()
         self.setContext()
 
@@ -38,10 +39,10 @@ class Value:
         return None, self.illegalOperation(other)
 
     def isEqual(self, other):
-        return None, self.illegalOperation(other)
+        return Number(0).setContext(self.context), None
 
     def isNotEqual(self, other):
-        return None, self.illegalOperation(other)
+        return Number(1).setContext(self.context), None
 
     def isLessThan(self, other):
         return None, self.illegalOperation(other)
@@ -442,6 +443,87 @@ class List(Value):
         if isinstance(other, Number):
             return Number(
                 len(self.value) + other.value
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+    
+    def subbedBy(self, other):
+        return Number(
+            1 if any(
+                [elem.value == other.value and type(elem) == type(other)
+                 for elem in self.value]
+            ) else 0
+        ).setContext(self.context), None
+    
+    def multedBy(self, other):
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return List(
+                self.value * other.value
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def isEqual(self, other):
+        if isinstance(other, List):
+            return Number(
+                1 if self.value == other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return Number(
+                1 if len(self.value) == other.value else 0
+            ).setContext(self.context), None
+        return Number(0).setContext(self.context), None
+
+    def isNotEqual(self, other):
+        if isinstance(other, List):
+            return Number(
+                1 if self.value != other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return Number(
+                1 if len(self.value) != other.value else 0
+            ).setContext(self.context), None
+        return Number(1).setContext(self.context), None
+
+    def isLessThan(self, other):
+        if isinstance(other, List):
+            return Number(
+                1 if self.value < other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return Number(
+                1 if len(self.value) < other.value else 0
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def isGreaterThan(self, other):
+        if isinstance(other, List):
+            return Number(
+                1 if self.value > other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return Number(
+                1 if len(self.value) > other.value else 0
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def isLessThanOrEqual(self, other):
+        if isinstance(other, List):
+            return Number(
+                1 if self.value <= other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return Number(
+                1 if len(self.value) <= other.value else 0
+            ).setContext(self.context), None
+        return None, self.illegalOperation(other)
+
+    def isGreaterThanOrEqual(self, other):
+        if isinstance(other, List):
+            return Number(
+                1 if self.value >= other.value else 0
+            ).setContext(self.context), None
+        if isinstance(other, Number) and isinstance(other.value, int):
+            return Number(
+                1 if len(self.value) >= other.value else 0
             ).setContext(self.context), None
         return None, self.illegalOperation(other)
     
