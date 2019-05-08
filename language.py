@@ -14,8 +14,8 @@ extension: .ble
 globalSymbolTable = SymbolTable()
 
 
-def run(fn, text):
-    lexer = Lexer(fn, text)
+def run(fn, text, module="<main>"):
+    lexer = Lexer(fn, text, module)
     tokens, err = lexer.makeTokens()
     if err is not None:
         return None, err

@@ -221,6 +221,14 @@ class StrCastNode:
         self.endPos = exprNode.endPos
 
 
+class IncludeNode:
+    def __init__(self, fileTkn):
+        self.fileTkn = fileTkn
+        
+        self.startPos = fileTkn.startPos
+        self.endPos = fileTkn.endPos
+
+
 ################
 # PARSE RESULT
 ################
@@ -674,6 +682,28 @@ class Parser:
         
         return res.success(ListNode(exprs))
     
+    def includeExpr(self):
+        res = ParseResult()
+        
+        if not self.tkn.matches(TT_KEYWORD, "include"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'include'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        fileTkn = self.tkn
+        if self.tkn.type != TT_STRING:
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected string"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        return res.success(IncludeNode(fileTkn))
+    
     def atom(self):
         res = ParseResult()
         tkn = self.tkn
@@ -737,6 +767,11 @@ class Parser:
             if res.err:
                 return res
             return res.success(listModifExpr)
+        elif tkn.matches(TT_KEYWORD, "include"):
+            includeExpr = res.register(self.includeExpr())
+            if res.err:
+                return res
+            return res.success(includeExpr)
         elif tkn.matches(TT_KEYWORD, "if"):
             ifExpr = res.register(self.ifExpr())
             if res.err:

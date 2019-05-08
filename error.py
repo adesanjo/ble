@@ -80,6 +80,7 @@ class RTError(Error):
         while ctx:
             oldRes = res
             res = f"  File {pos.fn}, line {pos.ln + 1}, in {ctx.displayName}\n"
+            res += f"  Module {pos.module}\n"
             res += oldRes
             pos = ctx.parentEntryPos
             ctx = ctx.parent
@@ -99,12 +100,13 @@ class RTError(Error):
 
 
 class Position:
-    def __init__(self, idx, ln, col, fn, ftxt):
+    def __init__(self, idx, ln, col, fn, ftxt, module):
         self.idx = idx
         self.ln = ln
         self.col = col
         self.fn = fn
         self.ftxt = ftxt
+        self.module = module
 
     def advance(self, char=None):
         self.idx += 1
@@ -116,4 +118,4 @@ class Position:
         return self
 
     def copy(self):
-        return Position(self.idx, self.ln, self.col, self.fn, self.ftxt)
+        return Position(self.idx, self.ln, self.col, self.fn, self.ftxt, self.module)

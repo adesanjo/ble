@@ -20,6 +20,7 @@ call			: atom (LPAREN (expr (COMMA expr)*)? RPAREN)*
 atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 			    : LPAREN expr RPAREN
 				: LBRACKET program? RBRACKET
+				: include-expr
 				: list-expr
 				: list-modif-expr
 				: if-expr
@@ -32,6 +33,8 @@ atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 				: rand-expr
 				: int-cast
 				: str-cast
+
+include-expr	: KEYWORD:INCLUDE STRING
 
 list-expr       : LSQBRACKET (expr (COMMA expr)*)? RSQBRACKET
 

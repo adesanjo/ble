@@ -16,6 +16,7 @@ LETTERS_DIGITS = LETTERS + "_" + DIGITS
 ################
 
 KEYWORDS = [
+    "include",
     "and",
     "or",
     "not",
@@ -70,10 +71,11 @@ class Token:
 
 
 class Lexer:
-    def __init__(self, fn, text):
+    def __init__(self, fn, text, module):
         self.fn = fn
         self.text = text
-        self.pos = Position(-1, 0, -1, fn, text)
+        self.module = module
+        self.pos = Position(-1, 0, -1, fn, text, module)
         self.char = None
         self.advance()
 

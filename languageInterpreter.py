@@ -1,10 +1,12 @@
 from random import random
+import os
 
 from error import RTError
 import tokens as tok
 from values import NoneValue, Number, String, Function, List
 import languageParser as lp
 from languageLexer import Token
+import language
 
 ################
 # RUNTIME RESULT
@@ -95,6 +97,22 @@ class Interpreter:
 
     def noVisitMethod(self, node, context):
         raise Exception(f"No visit{type(node).__name__} method defined")
+    
+    def visitIncludeNode(self, node, context):
+        res = RTResult()
+        
+        fn = node.fileTkn.value
+        if not os.path.isfile(fn):
+            return res.failure(RTError(
+                node.startPos, node.endPos,
+                f"File '{fn}' not found",
+                context
+            ))
+        with open(fn) as f:
+            result, err = language.run(fn, f.read(), f"{node.startPos.module} -> {fn}")
+        if err:
+            return res.failure(err)
+        return res.success(result)
     
     def visitNumberNode(self, node, context):
         return RTResult().success(
