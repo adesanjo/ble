@@ -3,6 +3,8 @@ from random import random
 from error import RTError
 import tokens as tok
 from values import NoneValue, Number, String, Function, List
+import languageParser as lp
+from languageLexer import Token
 
 ################
 # RUNTIME RESULT
@@ -75,6 +77,16 @@ class SymbolTable:
 ################
 
 
+BUILTINS = [
+    "true",
+    "false",
+    "none",
+    "abs",
+    "min",
+    "max"
+]
+
+
 class Interpreter:
     def visit(self, node, context):
         methodName = f"visit{type(node).__name__}"
@@ -113,11 +125,83 @@ class Interpreter:
             if res.err:
                 return res
         return res.success(List(value))
+    
+    def absFunc(self):
+        xTkn = Token(tok.TT_IDENTIFIER, "x")
+        cases = [
+            (
+                lp.BinOpNode(
+                    lp.VarAccessNode(xTkn), Token(tok.TT_LT), lp.NumberNode(Token(tok.TT_INT, 0))
+                ), lp.UnaryOpNode(Token(tok.TT_MINUS), lp.VarAccessNode(xTkn))
+            )
+        ]
+        elseCase = lp.VarAccessNode(xTkn)
+        exprNodes = [lp.IfNode(cases, elseCase)]
+        bodyNode = lp.BlockNode(exprNodes)
+        return Function("<builtin - abs>", bodyNode, ["x"])
+    
+    def minFunc(self):
+        aTkn = Token(tok.TT_IDENTIFIER, "a")
+        bTkn = Token(tok.TT_IDENTIFIER, "b")
+        cases = [
+            (
+                lp.BinOpNode(
+                    lp.VarAccessNode(aTkn), Token(tok.TT_LT), lp.VarAccessNode(bTkn)
+                ), lp.VarAccessNode(aTkn)
+            )
+        ]
+        elseCase = lp.VarAccessNode(bTkn)
+        exprNodes = [lp.IfNode(cases, elseCase)]
+        bodyNode = lp.BlockNode(exprNodes)
+        return Function("<builtin - min>", bodyNode, ["a", "b"])
+    
+    def maxFunc(self):
+        aTkn = Token(tok.TT_IDENTIFIER, "a")
+        bTkn = Token(tok.TT_IDENTIFIER, "b")
+        cases = [
+            (
+                lp.BinOpNode(
+                    lp.VarAccessNode(aTkn), Token(tok.TT_GT), lp.VarAccessNode(bTkn)
+                ), lp.VarAccessNode(aTkn)
+            )
+        ]
+        elseCase = lp.VarAccessNode(bTkn)
+        exprNodes = [lp.IfNode(cases, elseCase)]
+        bodyNode = lp.BlockNode(exprNodes)
+        return Function("<builtin - max>", bodyNode, ["a", "b"])
 
     def visitVarAccessNode(self, node, context):
         res = RTResult()
         varName = node.varNameTkn.value
-        value = context.symbolTable.get(varName)
+        if varName in BUILTINS:
+            if varName == "true":
+                value = Number(1).setContext(context).setPos(
+                    node.startPos, node.endPos
+                )
+            elif varName == "false":
+                value = Number(0).setContext(context).setPos(
+                    node.startPos, node.endPos
+                )
+            elif varName == "none":
+                value = NoneValue().setContext(context).setPos(
+                    node.startPos, node.endPos
+                )
+            elif varName == "abs":
+                value = self.absFunc().setContext(context).setPos(
+                    node.startPos, node.endPos
+                )
+            elif varName == "min":
+                value = self.minFunc().setContext(context).setPos(
+                    node.startPos, node.endPos
+                )
+            elif varName == "max":
+                value = self.maxFunc().setContext(context).setPos(
+                    node.startPos, node.endPos
+                )
+            else:
+                value = None
+        else:
+            value = context.symbolTable.get(varName)
         if value is None:
             return res.failure(RTError(
                 node.startPos, node.endPos,
@@ -137,7 +221,7 @@ class Interpreter:
 
         context.symbolTable.set(varName, value)
         return res.success(value)
-    
+    """
     def visitListModifNode(self, node, context):
         res = RTResult()
         return res.failure(RTError(
@@ -145,7 +229,7 @@ class Interpreter:
             "Operation not yet supported",
             context
         ))
-    
+    """
     def visitBinOpNode(self, node, context):
         res = RTResult()
 

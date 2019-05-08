@@ -57,18 +57,40 @@ class Value:
 
     def isTrue(self):
         return None, self.illegalOperation()
-
+    
     def isFalse(self):
-        return None, self.illegalOperation()
+        isTrue, err = self.isTrue()
+        if err:
+            return None, err
+        return not isTrue, None
 
     def boolAnd(self, other):
-        return None, self.illegalOperation(other)
+        sTrue, sErr = self.isTrue()
+        if sErr:
+            return None, sErr
+        oTrue, oErr = other.isTrue()
+        if oErr:
+            return None, oErr
+        return Number(
+            1 if sTrue and oTrue else 0
+        ).setContext(self.context), None
 
     def boolOr(self, other):
-        return None, self.illegalOperation(other)
+        sTrue, sErr = self.isTrue()
+        if sErr:
+            return None, sErr
+        oTrue, oErr = other.isTrue()
+        if oErr:
+            return None, oErr
+        return Number(
+            1 if sTrue or oTrue else 0
+        ).setContext(self.context), None
 
     def boolNot(self):
-        return None, self.illegalOperation()
+        isTrue, err = self.isTrue()
+        if err:
+            return None, err
+        return Number(0 if isTrue else 1).setContext(self.context), None
 
     def execute(self, args, context):
         return li.RTResult().failure(self.illegalOperation())
@@ -95,6 +117,9 @@ class NoneValue(Value):
         if isinstance(other, NoneValue):
             return Number(1).setContext(self.context), None
         return Number(0).setContext(self.context), None
+    
+    def isTrue(self):
+        return False, None
     
     def isNotEqual(self, other):
         if isinstance(other, NoneValue):
@@ -239,29 +264,7 @@ class Number(Value):
         return None, self.illegalOperation(other)
 
     def isTrue(self):
-        return self.value != 0
-
-    def isFalse(self):
-        return self.value == 0
-
-    def boolAnd(self, other):
-        if isinstance(other, Number):
-            return Number(
-                1 if self.value != 0 and other.value != 0 else 0
-            ).setContext(self.context), None
-        return None, self.illegalOperation(other)
-
-    def boolOr(self, other):
-        if isinstance(other, Number):
-            return Number(
-                1 if self.value != 0 or other.value != 0 else 0
-            ).setContext(self.context), None
-        return None, self.illegalOperation(other)
-
-    def boolNot(self):
-        return Number(
-            1 if self.value == 0 else 0
-        ).setContext(self.context), None
+        return self.value != 0, None
 
     def copy(self):
         copy = Number(self.value)
@@ -369,6 +372,9 @@ class String(Value):
             ).setContext(self.context), None
         return None, self.illegalOperation(other)
     
+    def isTrue(self):
+        return len(self.value) > 0, None
+    
     def execute(self, args, context):
         res = li.RTResult()
         if len(args) == 1:
@@ -434,6 +440,9 @@ class List(Value):
                 len(self.value) + other.value
             ).setContext(self.context), None
         return None, self.illegalOperation(other)
+    
+    def isTrue(self):
+        return len(self.value) > 0, None
     
     def execute(self, args, context):
         res = li.RTResult()

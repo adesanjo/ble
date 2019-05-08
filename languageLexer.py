@@ -38,11 +38,6 @@ KEYWORDS = [
     "float",
     "str",
 ]
-BUILTINS = [
-    "true",
-    "false",
-    "none"
-]
 
 
 class Token:
@@ -194,8 +189,6 @@ class Lexer:
 
         if idStr in KEYWORDS:
             tknType = TT_KEYWORD
-        elif idStr in BUILTINS:
-            tknType = TT_BUILTIN
         else:
             tknType = TT_IDENTIFIER
         return Token(tknType, idStr, startPos, self.pos)
