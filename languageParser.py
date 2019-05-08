@@ -7,6 +7,16 @@ from languageLexer import Token
 ################
 
 
+class NoneValueNode:
+    def __init__(self, tkn):
+        self.tkn = tkn
+        self.startPos = tkn.startPos
+        self.endPos = tkn.endPos
+    
+    def __repr__(self):
+        return f"{self.tkn}"
+
+
 class NumberNode:
     def __init__(self, tkn):
         self.tkn = tkn
@@ -616,6 +626,19 @@ class Parser:
         self.advance()
         
         return res.success(ListNode(exprs))
+    
+    def builtin(self, tkn):
+        res = ParseResult()
+        if tkn.value == "true":
+            newTkn = Token(TT_INT, 1, tkn.startPos, tkn.endPos)
+            return res.success(NumberNode(newTkn))
+        elif tkn.value == "false":
+            newTkn = Token(TT_INT, 0, tkn.startPos, tkn.endPos)
+            return res.success(NumberNode(newTkn))
+        elif tkn.value == "none":
+            newTkn = Token(TT_BUILTIN, None, tkn.startPos, tkn.endPos)
+            return res.success(NoneValueNode(newTkn))
+        raise Exception(f"Unimplemented builtin: {tkn}")
 
     def atom(self):
         res = ParseResult()
@@ -633,6 +656,11 @@ class Parser:
             res.registerAdvancement()
             self.advance()
             return res.success(VarAccessNode(tkn))
+        elif tkn.type == TT_BUILTIN:
+            builtin = res.register(self.builtin(tkn))
+            if res.err:
+                return res
+            return res.success(builtin)
         elif tkn.type == TT_LPAREN:
             res.registerAdvancement()
             self.advance()

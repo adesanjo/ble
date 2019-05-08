@@ -12,8 +12,6 @@ extension: .ble
 ################
 
 globalSymbolTable = SymbolTable()
-globalSymbolTable.set("true", Number(1))
-globalSymbolTable.set("false", Number(0))
 
 
 def run(fn, text):

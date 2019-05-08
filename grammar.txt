@@ -17,7 +17,7 @@ power		    : call (POW factor)*
 
 call			: atom (LPAREN (expr (COMMA expr)*)? RPAREN)*
 
-atom 			: INT|FLOAT|STRING|IDENTIFIER
+atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 			    : LPAREN expr RPAREN
 				: LBRACKET program? RBRACKET
 				: listExpr

@@ -38,6 +38,11 @@ KEYWORDS = [
     "float",
     "str",
 ]
+BUILTINS = [
+    "true",
+    "false",
+    "none"
+]
 
 
 class Token:
@@ -187,7 +192,12 @@ class Lexer:
             idStr += self.char
             self.advance()
 
-        tknType = TT_KEYWORD if idStr in KEYWORDS else TT_IDENTIFIER
+        if idStr in KEYWORDS:
+            tknType = TT_KEYWORD
+        elif idStr in BUILTINS:
+            tknType = TT_BUILTIN
+        else:
+            tknType = TT_IDENTIFIER
         return Token(tknType, idStr, startPos, self.pos)
     
     def makeString(self):

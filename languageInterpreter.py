@@ -90,6 +90,13 @@ class Interpreter:
                 node.startPos, node.endPos
             )
         )
+    
+    def visitNoneValueNode(self, node, context):
+        return RTResult().success(
+            NoneValue().setContext(context).setPos(
+                node.startPos, node.endPos
+            )
+        )
 
     def visitStringNode(self, node, context):
         return RTResult().success(
