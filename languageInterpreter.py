@@ -85,7 +85,8 @@ BUILTINS = [
     "none",
     "abs",
     "min",
-    "max"
+    "max",
+    "module"
 ]
 
 
@@ -212,6 +213,10 @@ class Interpreter:
                 )
             elif varName == "max":
                 value = self.maxFunc().setContext(context).setPos(
+                    node.startPos, node.endPos
+                )
+            elif varName == "module":
+                value = String(node.startPos.module).setContext(context).setPos(
                     node.startPos, node.endPos
                 )
             else:
