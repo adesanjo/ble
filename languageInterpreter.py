@@ -105,7 +105,7 @@ class Interpreter:
         res = RTResult()
         
         dir = os.path.normpath(os.path.dirname(node.startPos.fn))
-        fn = dir + "/" + node.fileTkn.value + ".ble"
+        fn = os.path.normpath(dir + "/" + node.fileTkn.value + ".ble")
         if not os.path.isfile(fn):
             return res.failure(RTError(
                 node.startPos, node.endPos,
