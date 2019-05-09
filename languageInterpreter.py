@@ -1,5 +1,6 @@
 from random import random
 import os
+import sys
 
 from error import RTError
 import tokens as tok
@@ -86,7 +87,8 @@ BUILTINS = [
     "abs",
     "min",
     "max",
-    "module"
+    "module",
+    "argv"
 ]
 
 
@@ -217,6 +219,10 @@ class Interpreter:
                 )
             elif varName == "module":
                 value = String(node.startPos.module).setContext(context).setPos(
+                    node.startPos, node.endPos
+                )
+            elif varName == "argv":
+                value = List([String(arg) for arg in sys.argv[2:]]).setContext(context).setPos(
                     node.startPos, node.endPos
                 )
             else:
