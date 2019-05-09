@@ -1,6 +1,7 @@
 from random import random
 import os
 import sys
+import ntpath
 
 from error import RTError
 import tokens as tok
@@ -104,8 +105,11 @@ class Interpreter:
     def visitIncludeNode(self, node, context):
         res = RTResult()
         
-        fn = node.fileTkn.value
-        if not os.path.isfile(fn):
+        dir = ntpath.dirname(node.startPos.fn)
+        fn = node.fileTkn.value + ".ble"
+        if len(dir) > 0:
+            fn = dir + "/" + fn
+        if not ntpath.isfile(fn):
             return res.failure(RTError(
                 node.startPos, node.endPos,
                 f"File '{fn}' not found",
