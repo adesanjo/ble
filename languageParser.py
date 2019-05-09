@@ -223,11 +223,11 @@ class StrCastNode:
 
 
 class IncludeNode:
-    def __init__(self, fileTkn):
-        self.fileTkn = fileTkn
+    def __init__(self, fileNode):
+        self.fileNode = fileNode
         
-        self.startPos = fileTkn.startPos
-        self.endPos = fileTkn.endPos
+        self.startPos = fileNode.startPos
+        self.endPos = fileNode.endPos
 
 
 ################
@@ -699,16 +699,11 @@ class Parser:
         res.registerAdvancement()
         self.advance()
         
-        fileTkn = self.tkn
-        if self.tkn.type != TT_STRING:
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected string"
-            ))
-        res.registerAdvancement()
-        self.advance()
+        fileNode = res.register(self.expr())
+        if res.err:
+            return res
         
-        return res.success(IncludeNode(fileTkn))
+        return res.success(IncludeNode(fileNode))
     
     def atom(self):
         res = ParseResult()

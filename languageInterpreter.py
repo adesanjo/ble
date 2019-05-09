@@ -105,7 +105,16 @@ class Interpreter:
         res = RTResult()
         
         dir = os.path.normpath(os.path.dirname(node.startPos.fn))
-        fn = os.path.normpath(dir + "/" + node.fileTkn.value + ".ble")
+        fStr = res.register(self.visit(node.fileNode, context))
+        if res.err:
+            return res
+        if not isinstance(fStr, String):
+            return res.failure(RTError(
+                node.startPos, node.endPos,
+                "Expected string after expression evaluation",
+                context
+            ))
+        fn = os.path.normpath(dir + "/" + fStr.value + ".ble")
         if not os.path.isfile(fn):
             return res.failure(RTError(
                 node.startPos, node.endPos,

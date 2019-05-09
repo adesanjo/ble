@@ -34,7 +34,7 @@ atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 				: int-cast
 				: str-cast
 
-include-expr	: KEYWORD:INCLUDE STRING
+include-expr	: KEYWORD:INCLUDE expr
 
 list-expr       : LSQBRACKET (expr (COMMA expr)*)? RSQBRACKET
 
