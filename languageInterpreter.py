@@ -246,7 +246,8 @@ class Interpreter:
         if res.err:
             return res
 
-        context.symbolTable.set(varName, value)
+        if varName not in BUILTINS:
+            context.symbolTable.set(varName, value)
         return res.success(value)
     
     def visitBinOpNode(self, node, context):
@@ -458,7 +459,7 @@ class Interpreter:
             funcName, bodyNode, argNames
         ).setContext(context).setPos(node.startPos, node.endPos)
 
-        if node.varNameTkn:
+        if node.varNameTkn and funcName not in BUILTINS:
             context.symbolTable.set(funcName, funcValue)
 
         return res.success(funcValue)
