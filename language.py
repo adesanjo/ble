@@ -14,7 +14,7 @@ extension: .ble
 globalSymbolTable = SymbolTable()
 
 
-def run(fn, text, module="<main>"):
+def run(fn, text, module="<main>", context=None):
     lexer = Lexer(fn, text, module)
     tokens, err = lexer.makeTokens()
     if err is not None:
@@ -26,8 +26,9 @@ def run(fn, text, module="<main>"):
         return None, ast.err
 
     interpreter = Interpreter()
-    context = Context("<program>")
-    context.symbolTable = globalSymbolTable
+    if context is None:
+        context = Context("<program>")
+        context.symbolTable = globalSymbolTable
     res = interpreter.visit(ast.node, context)
 
     return res.value, res.err

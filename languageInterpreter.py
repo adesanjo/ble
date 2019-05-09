@@ -110,7 +110,7 @@ class Interpreter:
                 context
             ))
         with open(fn) as f:
-            result, err = language.run(fn, f.read(), f"{node.startPos.module} -> {fn}")
+            result, err = language.run(fn, f.read(), f"{node.startPos.module} -> {fn}", context)
         if err:
             return res.failure(err)
         return res.success(result)
