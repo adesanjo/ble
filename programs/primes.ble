@@ -8,9 +8,9 @@ fn prime(n):{
     p;
 };
 
-disp "From:";
+disp "From: ":;
 from = input;
-disp "To:";
+disp "To: ":;
 limit = input + 1;
 
 if limit > 2 and from <= 2 then{

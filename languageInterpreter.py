@@ -502,12 +502,12 @@ class Interpreter:
         if res.err:
             return res
 
-        print(exprValue)
+        print(exprValue, end="\n" if node.newLine else "")
         return res.success(exprValue)
     
     def visitInputNode(self, node, context):
         res = RTResult()
-        val = input("> ")
+        val = input()
         if not val.replace(".", "", 1).isdigit():
             return res.success(String(val))
         if "." in val:

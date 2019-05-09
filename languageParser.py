@@ -178,8 +178,9 @@ class BlockNode:
 
 
 class DispNode:
-    def __init__(self, bodyNode):
+    def __init__(self, bodyNode, newLine):
         self.bodyNode = bodyNode
+        self.newLine = newLine
 
         self.startPos = bodyNode.startPos
         self.endPos = bodyNode.endPos
@@ -362,7 +363,12 @@ class Parser:
         if res.err:
             return res
         
-        return res.success(DispNode(body))
+        if self.tkn.type == TT_COLON:
+            res.registerAdvancement()
+            self.advance()
+            return res.success(DispNode(body, False))
+        
+        return res.success(DispNode(body, True))
     
     def inputExpr(self):
         res = ParseResult()
