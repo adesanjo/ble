@@ -52,8 +52,7 @@ for-each-expr	: KEYWORD:FOR KEYWORD:EACH IDENTIFIER KEYWORD:IN expr KEYWORD:DO e
 while-expr	    : KEYWORD:WHILE expr KEYWORD:DO expr
 
 func-def		: KEYWORD:FN IDENTIFIER?
-				  LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN
-                  COLON expr
+				  LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN expr
 
 disp-expr       : KEYWORD:DISP expr
 

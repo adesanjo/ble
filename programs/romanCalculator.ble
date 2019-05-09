@@ -1,4 +1,4 @@
-fn romanToArabic(roman):{
+fn romanToArabic(roman){
     res = 0;
     while roman > 0 do{
         if roman(0, 2) == "CM" then{
@@ -47,7 +47,7 @@ fn romanToArabic(roman):{
     };
     res;
 };
-fn arabicToRoman(arabic):{
+fn arabicToRoman(arabic){
     res = "";
     while arabic > 0 do {
         if arabic >= 1000 then{

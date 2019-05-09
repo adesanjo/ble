@@ -1024,14 +1024,6 @@ class Parser:
         res.registerAdvancement()
         self.advance()
 
-        if self.tkn.type != TT_COLON:
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected ':'"
-            ))
-        res.registerAdvancement()
-        self.advance()
-
         nodeToReturn = res.register(self.expr())
         if res.err:
             return res
