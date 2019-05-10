@@ -203,11 +203,13 @@ class Lexer:
         
         self.advance()
         while self.char is not None and self.char != "\"":
-            string += self.char
             if self.char == "\\":
                 self.advance()
-                if self.char == "\"":
-                    string = string[:-1]
+                if self.char in ("\"", "\\"):
+                    string += self.char
+                elif self.char == "n":
+                    string += "\n"
+            else:
                 string += self.char
             self.advance()
         self.advance()

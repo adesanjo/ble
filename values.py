@@ -424,10 +424,12 @@ class String(Value):
         return copy
     
     def __repr__(self):
-        return f"\"{self.value}\""
+        value = self.value.replace("\\", "\\\\").replace(
+            "\n", "\\n").replace("\"", "\\\"")
+        return f"\"{value}\""
     
     def __str__(self):
-        return self.value.replace("\\n", "\n")
+        return self.value
 
 
 class List(Value):
