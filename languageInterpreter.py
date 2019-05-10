@@ -371,10 +371,7 @@ class Interpreter:
             if res.err:
                 return res
 
-            isTrue, err = condValue.isTrue()
-            if err:
-                return res.failure(err)
-            if isTrue:
+            if condValue.isTrue():
                 exprValue = res.register(self.visit(expr, context))
                 if res.err:
                     return res
@@ -447,10 +444,7 @@ class Interpreter:
             if res.err:
                 return res
 
-            isFalse, err = cond.isFalse()
-            if err:
-                return res.failure(err)
-            if isFalse:
+            if cond.isFalse():
                 break
 
             res.register(self.visit(node.bodyNode, context))
