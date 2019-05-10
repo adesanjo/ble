@@ -201,14 +201,18 @@ class Lexer:
         string = ""
         startPos = self.pos.copy()
         
+        escapeChars = {
+            "n": "\n",
+            "t": "\t",
+            "r": "\r"
+        }
+        
         self.advance()
         while self.char is not None and self.char != "\"":
             if self.char == "\\":
                 self.advance()
-                if self.char in ("\"", "\\"):
-                    string += self.char
-                elif self.char == "n":
-                    string += "\n"
+                if self.char in escapeChars:
+                    string += escapeChars[self.char]
                 else:
                     string += self.char
             else:

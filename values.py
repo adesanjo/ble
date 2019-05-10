@@ -424,8 +424,16 @@ class String(Value):
         return copy
     
     def __repr__(self):
-        value = self.value.replace("\\", "\\\\").replace(
-            "\n", "\\n").replace("\"", "\\\"")
+        escapeChars = {
+            "\\": "\\\\",
+            "\"": "\\\"",
+            "\n": "\\n",
+            "\t": "\\t",
+            "\r": "\\r"
+        }
+        value = self.value
+        for escape, char in escapeChars.items():
+            value = value.replace(escape, char)
         return f"\"{value}\""
     
     def __str__(self):
