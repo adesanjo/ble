@@ -643,6 +643,15 @@ class Parser:
         if res.err:
             return res
         
+        while self.tkn.type == TT_COMMA:
+            res.registerAdvancement()
+            self.advance()
+            
+            #TODO adapt for multiple indices
+            idxExpr = res.register(self.expr())
+            if res.err:
+                return res
+        
         if self.tkn.type != TT_EQ:
             return res.failure(InvalidSyntaxError(
                 self.tkn.startPos, self.tkn.endPos,
@@ -846,7 +855,9 @@ class Parser:
         if res.err:
             return res
 
+        paren = False
         while self.tkn.type == TT_LPAREN:
+            paren = True
             res.registerAdvancement()
             self.advance()
             argNodes = []
@@ -876,6 +887,14 @@ class Parser:
                 self.advance()
 
             atom = CallNode(atom, argNodes)
+        if paren and self.tkn.type == TT_EQ:
+            res.registerAdvancement()
+            self.advance()
+            
+            expr = res.register(self.expr())
+            if res.err:
+                return res
+            #TODO return ListModifNode
         return res.success(atom)
 
     def power(self):

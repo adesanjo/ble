@@ -342,6 +342,7 @@ class Interpreter:
             ))
         listValue.setPos(node.startPos, node.endPos)
         
+        #TODO adapt for multiple indices
         idx = res.register(self.visit(node.idxNode, context))
         if res.err:
             return res
