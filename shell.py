@@ -17,6 +17,16 @@ while True:
         if cmd == "global":
             print(language.globalSymbolTable)
             continue
+        if cmd == "reset":
+            language.globalSymbolTable.clear()
+            continue
+        if cmd == "help":
+            print("help:       print this message")
+            print("cls/clear:  clear screen")
+            print("exit/quit:  exit inerpreter")
+            print("gobal:      show global symbol table")
+            print("reset:      reset global symbol table")
+            continue
         
         res, err = language.run("<stdin>", cmd)
         if err:

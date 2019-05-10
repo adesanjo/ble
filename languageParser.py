@@ -1,6 +1,7 @@
 from error import InvalidSyntaxError
 from tokens import *
 from languageLexer import Token
+import languageInterpreter as li
 
 ################
 # NODES
@@ -925,6 +926,11 @@ class Parser:
 
         if self.tkn.type == TT_IDENTIFIER and self.nextTkn.type == TT_EQ:
             varName = self.tkn
+            if varName.value in li.BUILTINS:
+                return res.failure(InvalidSyntaxError(
+                    varName.startPos, varName.endPos,
+                    "Cannot redefine builtin variable"
+                ))
             res.registerAdvancement()
             self.advance()
             res.registerAdvancement()
