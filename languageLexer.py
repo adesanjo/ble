@@ -209,6 +209,8 @@ class Lexer:
                     string += self.char
                 elif self.char == "n":
                     string += "\n"
+                else:
+                    string += self.char
             else:
                 string += self.char
             self.advance()
