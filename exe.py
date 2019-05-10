@@ -1,6 +1,7 @@
 #!/bin/env python3
 
 import sys
+import readline
 
 import language
 

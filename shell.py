@@ -1,6 +1,7 @@
 #!/bin/env python3
 
 import os
+import readline
 
 import language
 from values import NoneValue
