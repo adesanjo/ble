@@ -286,13 +286,18 @@ class Parser:
         return self.tkn
 
     def parse(self):
-        res = self.program()
-        if not res.err and self.tkn.type != TT_EOF:
+        res = ParseResult()
+        if self.tkn.type == TT_EOF:
+            return res.success(NoneValueNode(Token(None)))
+        prog = res.register(self.program())
+        if res.err:
+            return res
+        elif self.tkn.type != TT_EOF:
             return res.failure(InvalidSyntaxError(
                 self.tkn.startPos, self.tkn.endPos,
                 "Expected ';'"
             ))
-        return res
+        return res.success(prog)
     
     def randExpr(self):
         res = ParseResult()
