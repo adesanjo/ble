@@ -340,30 +340,32 @@ class Interpreter:
                 f"{varName} is not defined",
                 context
             ))
-        listValue.setPos(node.startPos, node.endPos)
-        
-        #TODO adapt for multiple indices
-        idx = res.register(self.visit(node.idxNode, context))
-        if res.err:
-            return res
-        if not (isinstance(idx, Number) and isinstance(idx.value, int)):
-            return res.failure(RTError(
-                node.idxNode.startPos, node.idxNode.endPos,
-                "Index must be an int",
-                context
-            ))
-        if idx.value >= len(listValue.value) or idx.value < -len(listValue.value):
-            return res.failure(RTError(
-                node.idxNode.startPos, node.idxNode.endPos,
-                "Index out of range",
-                context
-            ))
+        listValue.setContext(context).setPos(node.startPos, node.endPos)
+        subListValue = listValue
         
         value = res.register(self.visit(node.valueNode, context))
         if res.err:
             return res
         
-        listValue.value[idx.value] = value
+        idxs = [res.register(self.visit(node.idxNode, context)) for node.idxNode in node.idxNodes]
+        if res.err:
+            return res
+        for idx in idxs:
+            if not (isinstance(idx, Number) and isinstance(idx.value, int)):
+                return res.failure(RTError(
+                    node.idxNode.startPos, node.idxNode.endPos,
+                    "Index must be an int",
+                    context
+                ))
+            if idx.value >= len(subListValue.value) or idx.value < -len(subListValue.value):
+                return res.failure(RTError(
+                    node.idxNode.startPos, node.idxNode.endPos,
+                    "Index out of range",
+                    context
+                ))
+            subListValue = subListValue.value[idx.value]
+        
+        subListValue.value = value.value
         context.symbolTable.set(varName, listValue)
         return res.success(listValue)
 

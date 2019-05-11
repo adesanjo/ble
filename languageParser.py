@@ -66,9 +66,9 @@ class VarAssignNode:
 
 
 class ListModifNode:
-    def __init__(self, varNameTkn, idxNode, valueNode):
+    def __init__(self, varNameTkn, idxNodes, valueNode):
         self.varNameTkn = varNameTkn
-        self.idxNode = idxNode
+        self.idxNodes = idxNodes
         self.valueNode = valueNode
         self.startPos = varNameTkn.startPos
         self.endPos = valueNode.endPos
@@ -639,7 +639,7 @@ class Parser:
         res.registerAdvancement()
         self.advance()
         
-        idxExpr = res.register(self.expr())
+        idxNodes = [res.register(self.expr())]
         if res.err:
             return res
         
@@ -647,8 +647,7 @@ class Parser:
             res.registerAdvancement()
             self.advance()
             
-            #TODO adapt for multiple indices
-            idxExpr = res.register(self.expr())
+            idxNodes.append(res.register(self.expr()))
             if res.err:
                 return res
         
@@ -664,7 +663,7 @@ class Parser:
         if res.err:
             return res
         
-        return res.success(ListModifNode(varNameTkn, idxExpr, valueExpr))
+        return res.success(ListModifNode(varNameTkn, idxNodes, valueExpr))
     
     def listExpr(self):
         res = ParseResult()
@@ -855,9 +854,12 @@ class Parser:
         if res.err:
             return res
 
-        paren = False
+        if isinstance(atom, VarAccessNode):
+            varNameTkn = atom.varNameTkn
+        else:
+            varNameTkn = None
+        idxNodes = []
         while self.tkn.type == TT_LPAREN:
-            paren = True
             res.registerAdvancement()
             self.advance()
             argNodes = []
@@ -866,9 +868,11 @@ class Parser:
                 res.registerAdvancement()
                 self.advance()
             else:
-                argNodes.append(res.register(self.expr()))
+                expr = res.register(self.expr())
                 if res.err:
                     return res
+                argNodes.append(expr)
+                idxNodes.append(expr)
 
                 while self.tkn.type == TT_COMMA:
                     res.registerAdvancement()
@@ -887,14 +891,14 @@ class Parser:
                 self.advance()
 
             atom = CallNode(atom, argNodes)
-        if paren and self.tkn.type == TT_EQ:
+        if len(idxNodes) > 0 and varNameTkn is not None and self.tkn.type == TT_EQ:
             res.registerAdvancement()
             self.advance()
             
-            expr = res.register(self.expr())
+            value = res.register(self.expr())
             if res.err:
                 return res
-            #TODO return ListModifNode
+            return res.success(ListModifNode(varNameTkn, idxNodes, value))
         return res.success(atom)
 
     def power(self):
