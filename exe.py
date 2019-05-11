@@ -1,8 +1,9 @@
 #!/bin/env python3
 
-import sys
 import os
-import readline
+import sys
+if sys.platform != "ios":
+    import readline
 
 import language
 

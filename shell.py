@@ -1,7 +1,9 @@
 #!/bin/env python3
 
 import os
-#import readline
+import sys
+if sys.platform != "ios":
+    import readline
 
 import language
 from values import NoneValue
