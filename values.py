@@ -455,9 +455,10 @@ class List(Value):
     
     def multedBy(self, other):
         if isinstance(other, Number) and isinstance(other.value, int):
-            return List(
-                self.value * other.value
-            ).setContext(self.context), None
+            newValue = []
+            for _ in range(other.value):
+                newValue.extend(deepcopy(self.value))
+            return List(newValue).setContext(self.context), None
         return None, self.illegalOperation(other)
 
     def isEqual(self, other):
