@@ -559,7 +559,7 @@ class List(Value):
             if isinstance(idxFrom, Number) and isinstance(idxFrom.value, int) and isinstance(idxTo, Number) and isinstance(idxTo.value, int):
                 return res.success(List(
                     self.value[idxFrom.value:idxTo.value]
-                ).setContext(self.context))
+                ).copy().setContext(self.context))
         elif len(args) == 3:
             idxFrom = args[0]
             idxTo = args[1]

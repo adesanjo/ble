@@ -908,9 +908,11 @@ class Parser:
                     res.registerAdvancement()
                     self.advance()
 
-                    argNodes.append(res.register(self.expr()))
+                    expr = res.register(self.expr())
                     if res.err:
                         return res
+                    argNodes.append(expr)
+                    idxNodes.append(expr)
 
                 if self.tkn.type != TT_RPAREN:
                     return res.failure(InvalidSyntaxError(
