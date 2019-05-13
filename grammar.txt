@@ -1,4 +1,4 @@
-program			: expr (SEMICOLON expr)* SEMICOLON?
+fruitsprogram			: expr (SEMICOLON expr)* SEMICOLON?
 
 expr            : IDENTIFIER EQ expr
                 : comp-expr ((KEYWORD:AND|KEYWORD:OR) comp-expr)*
@@ -21,6 +21,7 @@ atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 			    : LPAREN expr RPAREN
 				: LBRACKET program? RBRACKET
 				: include-expr
+				: type-expr
 				: list-expr
 				: list-modif-expr
 				: if-expr
@@ -35,6 +36,8 @@ atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 				: str-cast
 
 include-expr	: KEYWORD:INCLUDE expr
+
+type-expr		: KEYWORD:TYPE expr
 
 list-expr       : LSQBRACKET (expr (COMMA expr)*)? RSQBRACKET
 

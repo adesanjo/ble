@@ -130,6 +130,28 @@ class Interpreter:
             return res.failure(err)
         return res.success(result)
     
+    def visitTypeNode(self, node, context):
+        res = RTResult()
+        
+        value = res.register(self.visit(node.valueNode, context))
+        if res.err:
+            return res
+        
+        if isinstance(value, Number) and isinstance(value.value, int):
+            return res.success(String("int"))
+        if isinstance(value, Number) and isinstance(value.value, float):
+            return res.success(String("float"))
+        if isinstance(value, String):
+            return res.success(String("string"))
+        if isinstance(value, List):
+            return res.success(String("list"))
+        if isinstance(value, Function):
+            return res.success(String("function"))
+        if isinstance(value, NoneValue):
+            return res.success(String("none"))
+        
+        raise Exception("Type recognition not implemented")
+    
     def visitNumberNode(self, node, context):
         return RTResult().success(
             Number(node.tkn.value).setContext(context).setPos(

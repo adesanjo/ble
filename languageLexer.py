@@ -39,7 +39,8 @@ KEYWORDS = [
     "float",
     "str",
     "mut",
-    "at"
+    "at",
+    "type"
 ]
 
 

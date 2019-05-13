@@ -231,6 +231,14 @@ class IncludeNode:
         self.endPos = fileNode.endPos
 
 
+class TypeNode:
+    def __init__(self, valueNode):
+        self.valueNode = valueNode
+        
+        self.startPos = valueNode.startPos
+        self.endPos = valueNode.endPos
+
+
 ################
 # PARSE RESULT
 ################
@@ -702,6 +710,23 @@ class Parser:
         
         return res.success(ListNode(exprs))
     
+    def typeExpr(self):
+        res = ParseResult()
+        
+        if not self.tkn.matches(TT_KEYWORD, "type"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'type'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        valueNode = res.register(self.expr())
+        if res.err:
+            return res
+        
+        return res.success(TypeNode(valueNode))
+    
     def includeExpr(self):
         res = ParseResult()
         
@@ -787,6 +812,11 @@ class Parser:
             if res.err:
                 return res
             return res.success(includeExpr)
+        elif tkn.matches(TT_KEYWORD, "type"):
+            typeExpr = res.register(self.typeExpr())
+            if res.err:
+                return res
+            return res.success(typeExpr)
         elif tkn.matches(TT_KEYWORD, "if"):
             ifExpr = res.register(self.ifExpr())
             if res.err:
