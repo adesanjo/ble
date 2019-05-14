@@ -2,12 +2,16 @@
 
 mkdir -p $HOME/ble
 curl https://codeload.github.com/adesanjo/ble/zip/master > $HOME/ble/master.zip
-cd $HOME/ble
-unzip -o -qq master.zip
-rm master.zip
-cd $HOME
-echo "export PATH=$PATH:$HOME/ble/ble-master" >> $HOME/.bashrc
-echo "export PATH=$PATH:$HOME/ble/ble-master" >> $HOME/.zshrc
+unzip -o -qq $HOME/ble/master.zip -d $HOME/ble
+rm $HOME/ble/master.zip
+if grep -q "export PATH=$PATH:$HOME/ble/ble-master" $HOME/.bashrc
+then
+    echo "export PATH=$PATH:$HOME/ble/ble-master" >> $HOME/.bashrc
+fi
+if grep -q "export PATH=$PATH:$HOME/ble/ble-master" $HOME/.zshrc
+then
+    echo "export PATH=$PATH:$HOME/ble/ble-master" >> $HOME/.zshrc
+fi
 
 echo
 echo "-------------"
