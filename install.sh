@@ -10,21 +10,15 @@ rm $HOME/ble/master.zip
 echo "Finalising..."
 if [ $SHELL = /bin/bash ]
 then
-    if ! grep -q "export PATH=$PATH:$HOME/ble/ble-master" $HOME/.bashrc
+    if ! echo $PATH | grep -q "$HOME/ble/ble-master"
     then
-        if ! echo $PATH | grep -q "$HOME/ble/ble-master"
-        then
-            echo "export PATH=$PATH:$HOME/ble/ble-master" >> $HOME/.bashrc
-        fi
+        echo "export PATH=$PATH:$HOME/ble/ble-master" >> $HOME/.bashrc
     fi
 elif [ $SHELL = /bin/zsh ]
 then
-    if ! grep -q "export PATH=$PATH:$HOME/ble/ble-master" $HOME/.zshrc
+    if ! echo $PATH | grep -q "$HOME/ble/ble-master"
     then
-        if ! echo $PATH | grep -q "$HOME/ble/ble-master"
-        then
-            echo "export PATH=$PATH:$HOME/ble/ble-master" >> $HOME/.zshrc
-        fi
+        echo "export PATH=$PATH:$HOME/ble/ble-master" >> $HOME/.zshrc
     fi
 else
     echo "Your shell was not detected as being bash or zsh. Please add $HOME/ble/ble-master to your PATH variable."
