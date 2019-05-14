@@ -1,5 +1,6 @@
 #!/bin/sh
 
+rm -rf $HOME/ble
 mkdir -p $HOME/ble
 curl https://codeload.github.com/adesanjo/ble/zip/master > $HOME/ble/master.zip
 cd $HOME/ble
