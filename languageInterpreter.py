@@ -257,7 +257,7 @@ class Interpreter:
                     node.startPos, node.endPos
                 )
             elif varName == "argv":
-                value = List([String(arg) for arg in sys.argv[2:]]).setContext(context).setPos(
+                value = List([String(arg) for arg in sys.argv[1:]]).setContext(context).setPos(
                     node.startPos, node.endPos
                 )
             else:
