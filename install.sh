@@ -1,10 +1,9 @@
 #!/bin/sh
 
-rm -rf $HOME/ble
 mkdir -p $HOME/ble
 curl https://codeload.github.com/adesanjo/ble/zip/master > $HOME/ble/master.zip
 cd $HOME/ble
-unzip master.zip
+unzip -u master.zip
 rm master.zip
 cd $HOME
 echo "export PATH=$PATH:$HOME/ble/ble-master" >> .bashrc
