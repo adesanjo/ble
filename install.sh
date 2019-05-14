@@ -8,13 +8,26 @@ unzip -o -qq $HOME/ble/master.zip -d $HOME/ble
 rm $HOME/ble/master.zip
 
 echo "Finalising..."
-if ! grep -q "export PATH=$PATH:$HOME/ble/ble-master" $HOME/.bashrc
+if [ $SHELL = /bin/bash ]
 then
-    echo "export PATH=$PATH:$HOME/ble/ble-master" >> $HOME/.bashrc
-fi
-if ! grep -q "export PATH=$PATH:$HOME/ble/ble-master" $HOME/.zshrc
+    if ! grep -q "export PATH=$PATH:$HOME/ble/ble-master" $HOME/.bashrc
+    then
+        if ! echo $PATH | grep -q "$HOME/ble/ble-master"
+        then
+            echo "export PATH=$PATH:$HOME/ble/ble-master" >> $HOME/.bashrc
+        fi
+    fi
+elif [ $SHELL = /bin/zsh ]
 then
-    echo "export PATH=$PATH:$HOME/ble/ble-master" >> $HOME/.zshrc
+    if ! grep -q "export PATH=$PATH:$HOME/ble/ble-master" $HOME/.zshrc
+    then
+        if ! echo $PATH | grep -q "$HOME/ble/ble-master"
+        then
+            echo "export PATH=$PATH:$HOME/ble/ble-master" >> $HOME/.zshrc
+        fi
+    fi
+else
+    echo "Your shell was not detected as being bash or zsh. Please add $HOME/ble/ble-master to your PATH variable."
 fi
 
 echo
