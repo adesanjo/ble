@@ -233,11 +233,11 @@ class IncludeNode:
 
 
 class AccessNode:
-    def __init__(self, moduleTkn, varNameTkn):
-        self.moduleTkn = moduleTkn
+    def __init__(self, moduleNode, varNameTkn):
+        self.moduleNode = moduleNode
         self.varNameTkn = varNameTkn
         
-        self.startPos = moduleTkn.startPos
+        self.startPos = moduleNode.startPos
         self.endPos = varNameTkn.endPos
 
 
@@ -768,6 +768,14 @@ class Parser:
         
         return res.success(IncludeNode(fileNode, moduleName))
     
+    def accessExpr(self):
+        res = ParseResult()
+        
+        moduleNode = self.tkn
+        varNameNode = self.tkn
+        
+        return res.success(AccessNode(moduleNode, varNameTkn))
+    
     def atom(self):
         res = ParseResult()
         tkn = self.tkn
@@ -781,20 +789,13 @@ class Parser:
             self.advance()
             return res.success(StringNode(tkn))
         elif tkn.type == TT_IDENTIFIER:
+            if self.nextTkn.type == TT_DOT:
+                accessExpr = res.register(self.accessExpr())
+                if res.err:
+                    return res
+                return res.success(accessExpr)
             res.registerAdvancement()
             self.advance()
-            if self.tkn.type == TT_DOT:
-                res.registerAdvancement()
-                self.advance()
-                if self.tkn.type != TT_IDENTIFIER:
-                    return res.failure(InvalidSyntaxError(
-                        self.tkn.startPos, self.tkn.endPos,
-                        "Expected identifier"
-                    ))
-                varNameTkn = self.tkn
-                res.registerAdvancement()
-                self.advance()
-                return res.success(AccessNode(tkn, varNameTkn))
             return res.success(VarAccessNode(tkn))
         elif tkn.type == TT_LPAREN:
             res.registerAdvancement()
