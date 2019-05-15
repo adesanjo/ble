@@ -1,6 +1,7 @@
 from random import random
 import os
 import sys
+import pathlib
 
 from error import RTError
 import tokens as tok
@@ -123,7 +124,7 @@ class Interpreter:
         else:
             moduleName = os.path.basename(fStr.value)
         if not os.path.isfile(fn):
-            fn = os.path.normpath("lib/" + fStr.value + ".ble")
+            fn = os.path.normpath(pathlib.Path.home() + "/ble/ble-master/lib/" + fStr.value + ".ble")
             if not os.path.isfile(fn):
                 return res.failure(RTError(
                     node.startPos, node.endPos,
