@@ -402,14 +402,28 @@ class Interpreter:
 
     def visitForNode(self, node, context):
         res = RTResult()
+        
+        result = NoneValue().setContext(context).setPos(node.startPos, node.endPos)
 
         startValue = res.register(self.visit(node.startValueNode, context))
         if res.err:
             return res
+        if not isinstance(startValue, Number) or not isinstance(startValue.value, int):
+            return res.failure(RTError(
+                node.startPos, node.endPos,
+                "Expected int",
+                context
+            ))
 
         endValue = res.register(self.visit(node.endValueNode, context))
         if res.err:
             return res
+        if not isinstance(endValue, Number) or not isinstance(endValue.value, int):
+            return res.failure(RTError(
+                node.startPos, node.endPos,
+                "Expected int",
+                context
+            ))
 
         if node.stepValueNode:
             stepValue = res.register(self.visit(node.stepValueNode, context))
@@ -417,18 +431,26 @@ class Interpreter:
                 return res
         else:
             stepValue = Number(1)
+        if not isinstance(stepValue, Number) or not isinstance(stepValue.value, int):
+            return res.failure(RTError(
+                node.startPos, node.endPos,
+                "Expected int",
+                context
+            ))
 
         for i in range(startValue.value, endValue.value, stepValue.value):
             context.symbolTable.set(node.varNameTkn.value, Number(i))
 
-            res.register(self.visit(node.bodyNode, context))
+            result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
 
-        return res.success(NoneValue().setContext(context).setPos(node.startPos, node.endPos))
+        return res.success(result)
     
     def visitForEachNode(self, node, context):
         res = RTResult()
+        
+        result = NoneValue().setContext(context).setPos(node.startPos, node.endPos)
 
         listExpr = res.register(self.visit(node.listNode, context))
         if res.err:
@@ -445,14 +467,16 @@ class Interpreter:
                 elem = String(elem)
             context.symbolTable.set(node.varNameTkn.value, elem)
 
-            res.register(self.visit(node.bodyNode, context))
+            result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
 
-        return res.success(NoneValue().setContext(context).setPos(node.startPos, node.endPos))
+        return res.success(result)
 
     def visitWhileNode(self, node, context):
         res = RTResult()
+        
+        result = NoneValue().setContext(context).setPos(node.startPos, node.endPos)
 
         while True:
             cond = res.register(self.visit(node.condNode, context))
@@ -462,11 +486,11 @@ class Interpreter:
             if cond.isFalse():
                 break
 
-            res.register(self.visit(node.bodyNode, context))
+            result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
 
-        return res.success(NoneValue().setContext(context).setPos(node.startPos, node.endPos))
+        return res.success(result)
 
     def visitFuncDefNode(self, node, context):
         res = RTResult()
