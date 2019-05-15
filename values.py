@@ -74,7 +74,7 @@ class Value:
     def boolOr(self, other):
         sTrue = self.isTrue()
         if sTrue:
-            return Number(1).setContext(self.context)
+            return Number(1).setContext(self.context), None
         oTrue = other.isTrue()
         return Number(
             1 if sTrue or oTrue else 0
@@ -86,8 +86,8 @@ class Value:
     def execute(self, args, context):
         return li.RTResult().failure(self.illegalOperation())
     
-    def access(self, other):
-        return None, self.illegalOperation(other)
+    def access(self, varNameTkn):
+        return None, self.illegalOperation(varNameTkn)
 
     def illegalOperation(self, other=None):
         if other is None:
@@ -639,5 +639,19 @@ class Function(Value):
 
 
 class Module(Value):
-    def __init__(self):
+    def __init__(self, moduleContext):
         super().__init__()
+        self.moduleContext = moduleContext
+    
+    def access(self, varNameTkn):
+        value = self.moduleContext.symbolTable.get(varNameTkn.value)
+        if value is None:
+            return None, li.RTError(
+                varNameTkn.startPos, varNameTkn.endPos,
+                f"{varNameTkn.value} is not defined",
+                self.context
+            )
+        return value, None
+    
+    def __repr__(self):
+        return repr(self.moduleContext)

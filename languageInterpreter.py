@@ -4,7 +4,7 @@ import sys
 
 from error import RTError
 import tokens as tok
-from values import NoneValue, Number, String, Function, List
+from values import NoneValue, Number, String, Function, List, Module
 import languageParser as lp
 from languageLexer import Token
 import language
@@ -44,6 +44,9 @@ class Context:
         self.parent = parent
         self.parentEntryPos = parentEntryPos
         self.symbolTable = None
+    
+    def __repr__(self):
+        return repr(self.symbolTable)
 
 
 ################
@@ -87,9 +90,6 @@ BUILTINS = [
     "true",
     "false",
     "none",
-    "abs",
-    "min",
-    "max",
     "module",
     "argv"
 ]
@@ -118,17 +118,43 @@ class Interpreter:
                 context
             ))
         fn = os.path.normpath(dir + "/" + fStr.value + ".ble")
+        if node.moduleName:
+            moduleName = node.moduleName
+        else:
+            moduleName = os.path.basename(fStr.value)
         if not os.path.isfile(fn):
-            return res.failure(RTError(
-                node.startPos, node.endPos,
-                f"File '{fn}' not found",
-                context
-            ))
+            fn = os.path.normpath("lib/" + fStr.value + ".ble")
+            if not os.path.isfile(fn):
+                return res.failure(RTError(
+                    node.startPos, node.endPos,
+                    f"File '{fn}' not found",
+                    context
+                ))
+        
+        moduleContext = Context(moduleName)
+        moduleContext.symbolTable = SymbolTable()
         with open(fn) as f:
-            result, err = language.run(fn, f.read(), f"{node.startPos.module} -> {fn}", context)
+            result, err = language.run(fn, f.read(), f"{node.startPos.module} -> {fn}", moduleContext)
         if err:
             return res.failure(err)
+        
+        if moduleName not in BUILTINS:
+            context.symbolTable.set(moduleName,
+                Module(moduleContext).setContext(context).setPos(node.startPos, node.endPos)
+            )
         return res.success(result)
+    
+    def visitAccessNode(self, node, context):
+        res = RTResult()
+        
+        module = res.register(self.visit(node.moduleNode, context))
+        if res.err:
+            return res
+        value, err = module.access(node.varNameTkn)
+        if err:
+            return res.failure(err)
+        
+        return res.success(value)
     
     def visitTypeNode(self, node, context):
         res = RTResult()
@@ -182,48 +208,6 @@ class Interpreter:
                 return res
         return res.success(List(value))
     
-    def absFunc(self):
-        xTkn = Token(tok.TT_IDENTIFIER, "x")
-        cases = [
-            (
-                lp.BinOpNode(
-                    lp.VarAccessNode(xTkn), Token(tok.TT_LT), lp.NumberNode(Token(tok.TT_INT, 0))
-                ), lp.UnaryOpNode(Token(tok.TT_MINUS), lp.VarAccessNode(xTkn))
-            )
-        ]
-        elseCase = lp.VarAccessNode(xTkn)
-        exprNodes = [lp.IfNode(cases, elseCase)]
-        bodyNode = lp.BlockNode(exprNodes)
-        return Function("<builtin - abs>", bodyNode, ["x"])
-    
-    def minFunc(self):
-        aTkn = Token(tok.TT_IDENTIFIER, "a")
-        bTkn = Token(tok.TT_IDENTIFIER, "b")
-        cases = [
-            (
-                lp.BinOpNode(
-                    lp.VarAccessNode(aTkn), Token(tok.TT_LT), lp.VarAccessNode(bTkn)
-                ), lp.VarAccessNode(aTkn)
-            )
-        ]
-        elseCase = lp.VarAccessNode(bTkn)
-        bodyNode = lp.IfNode(cases, elseCase)
-        return Function("<builtin - min>", bodyNode, ["a", "b"])
-    
-    def maxFunc(self):
-        aTkn = Token(tok.TT_IDENTIFIER, "a")
-        bTkn = Token(tok.TT_IDENTIFIER, "b")
-        cases = [
-            (
-                lp.BinOpNode(
-                    lp.VarAccessNode(aTkn), Token(tok.TT_GT), lp.VarAccessNode(bTkn)
-                ), lp.VarAccessNode(aTkn)
-            )
-        ]
-        elseCase = lp.VarAccessNode(bTkn)
-        bodyNode = lp.IfNode(cases, elseCase)
-        return Function("<builtin - max>", bodyNode, ["a", "b"])
-
     def visitVarAccessNode(self, node, context):
         res = RTResult()
         varName = node.varNameTkn.value
@@ -238,18 +222,6 @@ class Interpreter:
                 )
             elif varName == "none":
                 value = NoneValue().setContext(context).setPos(
-                    node.startPos, node.endPos
-                )
-            elif varName == "abs":
-                value = self.absFunc().setContext(context).setPos(
-                    node.startPos, node.endPos
-                )
-            elif varName == "min":
-                value = self.minFunc().setContext(context).setPos(
-                    node.startPos, node.endPos
-                )
-            elif varName == "max":
-                value = self.maxFunc().setContext(context).setPos(
                     node.startPos, node.endPos
                 )
             elif varName == "module":

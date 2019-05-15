@@ -15,7 +15,7 @@ factor			: (PLUS|MINUS) factor
 
 power		    : call (POW factor)*
 
-call			: atom ((LPAREN (expr (COMMA expr)*)? RPAREN)* (EQ expr)?)?
+call			: atom (LPAREN (expr (COMMA expr)*)? RPAREN (LPAREN (expr (COMMA expr)*)? RPAREN)* (EQ expr)?)?
 
 atom 			: access-expr
                 : INT|FLOAT|STRING|IDENTIFIER|BUILTIN
@@ -38,7 +38,7 @@ atom 			: access-expr
 
 include-expr	: KEYWORD:INCLUDE expr (KEYWORD:AS IDENTIFIER)?
 
-access-expr     : IDENTIFIER DOT IDENTIFIER
+access-expr     : IDENTIFIER DOT IDENTIFIER (DOT IDENTIFIER)*
 
 type-expr		: KEYWORD:TYPE expr
 

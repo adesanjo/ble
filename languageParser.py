@@ -771,8 +771,46 @@ class Parser:
     def accessExpr(self):
         res = ParseResult()
         
-        moduleNode = self.tkn
-        varNameNode = self.tkn
+        if self.tkn.type != TT_IDENTIFIER:
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected identifier"
+            ))
+        moduleNode = VarAccessNode(self.tkn)
+        res.registerAdvancement()
+        self.advance()
+        
+        if self.tkn.type != TT_DOT:
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected '.'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        if self.tkn.type != TT_IDENTIFIER:
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected identifier"
+            ))
+        varNameTkn = self.tkn
+        res.registerAdvancement()
+        self.advance()
+        
+        while self.tkn.type == TT_DOT:
+            moduleNode = AccessNode(moduleNode, varNameTkn)
+            
+            res.registerAdvancement()
+            self.advance()
+            
+            if self.tkn.type != TT_IDENTIFIER:
+                return res.failure(InvalidSyntaxError(
+                    self.tkn.startPos, self.tkn.endPos,
+                    "Expected identifier"
+                ))
+            varNameTkn = self.tkn
+            res.registerAdvancement()
+            self.advance()
         
         return res.success(AccessNode(moduleNode, varNameTkn))
     
