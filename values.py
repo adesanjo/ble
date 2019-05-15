@@ -196,10 +196,12 @@ class Number(Value):
             return Number(
                 1 if self.value == other.value else 0
             ).setContext(self.context), None
+        """
         if isinstance(other, String) and isinstance(self.value, int):
             return Number(
                 1 if self.value == len(other.value) else 0
             ).setContext(self.context), None
+        """
         return Number(0).setContext(self.context), None
 
     def isNotEqual(self, other):
@@ -207,10 +209,12 @@ class Number(Value):
             return Number(
                 1 if self.value != other.value else 0
             ).setContext(self.context), None
+        """
         if isinstance(other, String) and isinstance(self.value, int):
             return Number(
                 1 if self.value != len(other.value) else 0
             ).setContext(self.context), None
+        """
         return Number(1).setContext(self.context), None
 
     def isLessThan(self, other):
@@ -311,10 +315,12 @@ class String(Value):
             return Number(
                 1 if self.value == other.value else 0
             ).setContext(self.context), None
+        """
         if isinstance(other, Number) and isinstance(other.value, int):
             return Number(
                 1 if len(self.value) == other.value else 0
             ).setContext(self.context), None
+        """
         return Number(0).setContext(self.context), None
 
     def isNotEqual(self, other):
@@ -322,10 +328,12 @@ class String(Value):
             return Number(
                 1 if self.value != other.value else 0
             ).setContext(self.context), None
+        """
         if isinstance(other, Number) and isinstance(other.value, int):
             return Number(
                 1 if len(self.value) != other.value else 0
             ).setContext(self.context), None
+        """
         return Number(1).setContext(self.context), None
 
     def isLessThan(self, other):
