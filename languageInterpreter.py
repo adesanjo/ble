@@ -550,7 +550,7 @@ class Interpreter:
         canCast = True
         if not isinstance(expr, Number):
             canCast = False
-        if isinstance(expr, String) and expr.value.isdigit():
+        if isinstance(expr, String) and self.isNum(expr.value) and len(expr.value) > 0:
             canCast = True
         if not canCast:
             return res.failure(RTError(
@@ -566,7 +566,7 @@ class Interpreter:
         canCast = True
         if not isinstance(expr, Number):
             canCast = False
-        if isinstance(expr, String) and expr.value.replace(".", "", 1).isdigit():
+        if isinstance(expr, String) and self.isNum(expr.value.replace(".", "", 1)) and len(expr.value) > 0:
             canCast = True
         if not canCast:
             return res.failure(RTError(
