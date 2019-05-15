@@ -491,7 +491,7 @@ class Interpreter:
             if res.err:
                 return res
 
-        returnValue = res.register(valueToCall.execute(args, context))
+        returnValue = res.register(valueToCall.execute(args, context, self.dev))
         if res.err:
             return res
 

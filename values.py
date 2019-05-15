@@ -83,7 +83,7 @@ class Value:
     def boolNot(self):
         return Number(0 if self.isTrue() else 1).setContext(self.context), None
 
-    def execute(self, args, context):
+    def execute(self, args, context, dev=False):
         return li.RTResult().failure(self.illegalOperation())
     
     def access(self, varNameTkn):
@@ -369,7 +369,7 @@ class String(Value):
     def isTrue(self):
         return len(self.value) > 0
     
-    def execute(self, args, context):
+    def execute(self, args, context, dev=False):
         res = li.RTResult()
         if len(args) == 1:
             idx = args[0]
@@ -544,7 +544,7 @@ class List(Value):
     def isTrue(self):
         return len(self.value) > 0
     
-    def execute(self, args, context):
+    def execute(self, args, context, dev=False):
         res = li.RTResult()
         if len(args) == 1:
             idx = args[0]
@@ -596,9 +596,9 @@ class Function(Value):
         self.bodyNode = bodyNode
         self.argNames = argNames
 
-    def execute(self, args, context):
+    def execute(self, args, context, dev=False):
         res = li.RTResult()
-        interpreter = li.Interpreter()
+        interpreter = li.Interpreter(dev)
         newContext = li.Context(self.name, context, self.startPos)
         newContext.symbolTable = li.SymbolTable(context.symbolTable)
 
