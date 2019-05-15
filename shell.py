@@ -26,7 +26,7 @@ while True:
             print("help:       print this message")
             print("cls/clear:  clear screen")
             print("exit/quit:  exit inerpreter")
-            print("gobal:      show global symbol table")
+            print("global:     show global symbol table")
             print("reset:      reset global symbol table")
             continue
         
