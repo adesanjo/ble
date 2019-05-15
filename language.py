@@ -2,6 +2,7 @@ from languageInterpreter import SymbolTable, Number, Interpreter, Context
 from languageLexer import Lexer
 from languageParser import Parser
 import error
+import sys
 
 """
 Best Language Ever
@@ -17,6 +18,7 @@ globalSymbolTable = SymbolTable()
 
 def run(fn, text, module="<main>", context=None, dev=False):
     try:
+        sys.setrecursionlimit(2**15-1)
         lexer = Lexer(fn, text, module)
         tokens, err = lexer.makeTokens()
         if err is not None:

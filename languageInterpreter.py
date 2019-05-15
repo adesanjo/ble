@@ -46,6 +46,11 @@ class Context:
         self.parentEntryPos = parentEntryPos
         self.symbolTable = None
     
+    def depth(self):
+        if self.parent == None:
+            return 1
+        return 1 + self.parent.depth()
+    
     def __repr__(self):
         return repr(self.symbolTable)
 

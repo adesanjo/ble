@@ -2,6 +2,7 @@ from copy import deepcopy
 
 from error import RTError
 import languageInterpreter as li
+import time
 
 ################
 # VALUES
@@ -612,10 +613,18 @@ class Function(Value):
 
     def execute(self, args, context, dev=False):
         res = li.RTResult()
+        
+        if context.depth() > 1000:
+            return res.failure(RTError(
+                self.startPos, self.endPos,
+                f"Maximum recursion depth exceeded",
+                context
+            ))
+        
         interpreter = li.Interpreter(dev)
         newContext = li.Context(self.name, context, self.startPos)
         newContext.symbolTable = li.SymbolTable(context.symbolTable)
-
+        
         if len(args) > len(self.argNames):
             dif = len(args) - len(self.argNames)
             return res.failure(RTError(
