@@ -15,7 +15,7 @@ extension: .ble
 globalSymbolTable = SymbolTable()
 
 
-def run(fn, text, module="<main>", context=None):
+def run(fn, text, module="<main>", context=None, dev=False):
     try:
         lexer = Lexer(fn, text, module)
         tokens, err = lexer.makeTokens()
@@ -27,7 +27,7 @@ def run(fn, text, module="<main>", context=None):
         if ast.err:
             return None, ast.err
 
-        interpreter = Interpreter()
+        interpreter = Interpreter(dev)
         if context is None:
             context = Context("<program>")
             context.symbolTable = globalSymbolTable

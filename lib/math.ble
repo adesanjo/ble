@@ -8,6 +8,22 @@ fn max(a, b){
     else b;
 };
 
+fn minl(l){
+    m = l(0);
+    for each i in l do{
+        if i < m then m = i;
+    };
+    m;
+};
+
+fn maxl(l){
+    m = l(0);
+    for each i in l do{
+        if i > m then m = i;
+    };
+    m;
+};
+
 fn abs(x){
     if x < 0 then -x
     else x;

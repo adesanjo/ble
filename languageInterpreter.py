@@ -97,6 +97,9 @@ BUILTINS = [
 
 
 class Interpreter:
+    def __init__(self, dev):
+        self.dev = dev
+    
     def visit(self, node, context):
         methodName = f"visit{type(node).__name__}"
         method = getattr(self, methodName, self.noVisitMethod)
@@ -124,7 +127,11 @@ class Interpreter:
         else:
             moduleName = os.path.basename(fStr.value)
         if not os.path.isfile(fn):
-            fn = os.path.normpath(str(pathlib.Path.home()) + "/ble/ble-master/lib/" + fStr.value + ".ble")
+            if self.dev:
+                libDir = str(pathlib.Path.home()) + "/Documents/projects/ble/lib/"
+            else:
+                libDir = str(pathlib.Path.home()) + "/ble/ble-master/lib/"
+            fn = os.path.normpath(libDir + fStr.value + ".ble")
             if not os.path.isfile(fn):
                 return res.failure(RTError(
                     node.startPos, node.endPos,

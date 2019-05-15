@@ -6,6 +6,8 @@ if sys.platform != "ios":
 import language
 from values import NoneValue
 
+dev = len(sys.argv) > 1 and sys.argv[1] == "dev"
+
 while True:
     try:
         cmd = input("$> ")
@@ -28,7 +30,7 @@ while True:
             print("reset:      reset global symbol table")
             continue
         
-        res, err = language.run("<stdin>", cmd)
+        res, err = language.run("<stdin>", cmd, dev=dev)
         if err:
             print(err)
         elif not isinstance(res, NoneValue):
