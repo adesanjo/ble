@@ -5,7 +5,7 @@ curl https://codeload.github.com/adesanjo/ble/zip/master > $HOME/ble/master.zip
 
 echo "Unzipping..."
 unzip -o -qq $HOME/ble/master.zip -d $HOME/ble
-rm $HOME/ble/master.zip
+rm -f $HOME/ble/master.zip
 
 echo "Finalising..."
 if [ $SHELL = /bin/bash ]
