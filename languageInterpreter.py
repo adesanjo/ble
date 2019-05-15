@@ -547,6 +547,8 @@ class Interpreter:
     def visitIntCastNode(self, node, context):
         res = RTResult()
         expr = res.register(self.visit(node.exprNode, context))
+        if res.err:
+            return res
         canCast = True
         if not isinstance(expr, Number):
             canCast = False
@@ -563,6 +565,8 @@ class Interpreter:
     def visitFloatCastNode(self, node, context):
         res = RTResult()
         expr = res.register(self.visit(node.exprNode, context))
+        if res.err:
+            return res
         canCast = True
         if not isinstance(expr, Number):
             canCast = False
@@ -579,4 +583,6 @@ class Interpreter:
     def visitStrCastNode(self, node, context):
         res = RTResult()
         expr = res.register(self.visit(node.exprNode, context))
+        if res.err:
+            return res
         return res.success(String(str(expr.value)))
