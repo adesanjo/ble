@@ -139,6 +139,13 @@ class Interpreter:
                     context
                 ))
         
+        if fn in node.startPos.module.split(" -> "):
+            return res.failure(RTError(
+                node.startPos, node.endPos,
+                "Cyclic include chain detected",
+                context
+            ))
+        
         moduleContext = Context(moduleName)
         moduleContext.symbolTable = SymbolTable()
         with open(fn) as f:
