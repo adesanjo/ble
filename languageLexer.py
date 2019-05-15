@@ -103,6 +103,9 @@ class Lexer:
             elif self.char == "#":
                 while self.char is not None and self.char != "\n":
                     self.advance()
+            elif self.char == ".":
+                tokens.append(Token(TT_DOT, startPos=self.pos))
+                self.advance()
             elif self.char == "+":
                 tokens.append(Token(TT_PLUS, startPos=self.pos))
                 self.advance()

@@ -17,7 +17,8 @@ power		    : call (POW factor)*
 
 call			: atom ((LPAREN (expr (COMMA expr)*)? RPAREN)* (EQ expr)?)?
 
-atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
+atom 			: access-expr
+                : INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 			    : LPAREN expr RPAREN
 				: LBRACKET program? RBRACKET
 				: include-expr
@@ -36,6 +37,8 @@ atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 				: str-cast
 
 include-expr	: KEYWORD:INCLUDE expr (KEYWORD:AS IDENTIFIER)?
+
+access-expr     : IDENTIFIER DOT IDENTIFIER
 
 type-expr		: KEYWORD:TYPE expr
 

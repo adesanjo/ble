@@ -232,6 +232,15 @@ class IncludeNode:
         self.endPos = fileNode.endPos
 
 
+class AccessNode:
+    def __init__(self, moduleTkn, varNameTkn):
+        self.moduleTkn = moduleTkn
+        self.varNameTkn = varNameTkn
+        
+        self.startPos = moduleTkn.startPos
+        self.endPos = varNameTkn.endPos
+
+
 class TypeNode:
     def __init__(self, valueNode):
         self.valueNode = valueNode
@@ -774,6 +783,18 @@ class Parser:
         elif tkn.type == TT_IDENTIFIER:
             res.registerAdvancement()
             self.advance()
+            if self.tkn.type == TT_DOT:
+                res.registerAdvancement()
+                self.advance()
+                if self.tkn.type != TT_IDENTIFIER:
+                    return res.failure(InvalidSyntaxError(
+                        self.tkn.startPos, self.tkn.endPos,
+                        "Expected identifier"
+                    ))
+                varNameTkn = self.tkn
+                res.registerAdvancement()
+                self.advance()
+                return res.success(AccessNode(tkn, varNameTkn))
             return res.success(VarAccessNode(tkn))
         elif tkn.type == TT_LPAREN:
             res.registerAdvancement()
