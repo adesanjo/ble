@@ -7,7 +7,7 @@ from error import RTError
 import tokens as tok
 from values import NoneValue, Number, String, Function, List, Module
 import languageParser as lp
-from languageLexer import Token
+from languageLexer import Token, DIGITS
 import language
 
 ################
@@ -525,10 +525,16 @@ class Interpreter:
         print(exprValue, end="\n" if node.newLine else "")
         return res.success(exprValue)
     
+    def isNum(self, s):
+        for c in s:
+            if c not in DIGITS:
+                return False
+        return True
+    
     def visitInputNode(self, node, context):
         res = RTResult()
         val = input()
-        if not val.replace(".", "", 1).isdigit():
+        if not self.isNum(val.replace(".", "", 1)):
             return res.success(String(val))
         if "." in val:
             return res.success(Number(float(val)))
