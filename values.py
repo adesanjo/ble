@@ -287,6 +287,12 @@ class String(Value):
         return None, self.illegalOperation(other)
 
     def subbedBy(self, other):
+        if isinstance(other, String):
+            if len(other.value) == 0:
+                return String(self.value).setContext(self.context), None
+            return String(
+                "".join(self.value.split(other.value))
+            ).setContext(self.context), None
         if isinstance(other, Number) and isinstance(other.value, int):
             return String(
                 self.value[:-other.value] if other.value > 0 else self.value
