@@ -224,8 +224,9 @@ class StrCastNode:
 
 
 class IncludeNode:
-    def __init__(self, fileNode):
+    def __init__(self, fileNode, moduleName):
         self.fileNode = fileNode
+        self.moduleName = moduleName
         
         self.startPos = fileNode.startPos
         self.endPos = fileNode.endPos
@@ -742,7 +743,21 @@ class Parser:
         if res.err:
             return res
         
-        return res.success(IncludeNode(fileNode))
+        if self.tkn.matches(TT_KEYWORD, "as"):
+            res.registerAdvancement()
+            self.advance()
+            if self.tkn.type != TT_IDENTIFIER:
+                return res.failure(InvalidSyntaxError(
+                    self.tkn.startPos, self.tkn.endPos,
+                    "Expected identifier"
+                ))
+            moduleName = self.tkn.value
+            res.registerAdvancement()
+            self.advance()
+        else:
+            moduleName = None
+        
+        return res.success(IncludeNode(fileNode, moduleName))
     
     def atom(self):
         res = ParseResult()

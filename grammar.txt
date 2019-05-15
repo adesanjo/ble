@@ -35,7 +35,7 @@ atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 				: int-cast
 				: str-cast
 
-include-expr	: KEYWORD:INCLUDE expr
+include-expr	: KEYWORD:INCLUDE expr (KEYWORD:AS IDENTIFIER)?
 
 type-expr		: KEYWORD:TYPE expr
 

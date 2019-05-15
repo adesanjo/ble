@@ -85,6 +85,9 @@ class Value:
 
     def execute(self, args, context):
         return li.RTResult().failure(self.illegalOperation())
+    
+    def access(self, other):
+        return None, self.illegalOperation(other)
 
     def illegalOperation(self, other=None):
         if other is None:
@@ -633,3 +636,8 @@ class Function(Value):
 
     def __repr__(self):
         return f"<function {self.name}>"
+
+
+class Module(Value):
+    def __init__(self):
+        super().__init__()

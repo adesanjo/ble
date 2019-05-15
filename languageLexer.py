@@ -17,6 +17,7 @@ LETTERS_DIGITS = LETTERS + "_" + DIGITS
 
 KEYWORDS = [
     "include",
+    "as",
     "and",
     "or",
     "not",
