@@ -1,4 +1,5 @@
 from copy import deepcopy
+import sys
 
 from error import RTError
 import languageInterpreter as li
@@ -613,7 +614,11 @@ class Function(Value):
     def execute(self, args, context, dev=False):
         res = li.RTResult()
         
-        if context.depth() > 1000:
+        if sys.platform == "ios":
+            limit = 200
+        else:
+            limit = 1000
+        if context.depth() > limit:
             return res.failure(RTError(
                 self.startPos, self.endPos,
                 f"Maximum recursion depth exceeded",
