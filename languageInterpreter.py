@@ -534,7 +534,7 @@ class Interpreter:
     def visitInputNode(self, node, context):
         res = RTResult()
         val = input()
-        if not self.isNum(val.replace(".", "", 1)):
+        if not self.isNum(val.replace(".", "", 1)) or len(val) == 0:
             return res.success(String(val))
         if "." in val:
             return res.success(Number(float(val)))
