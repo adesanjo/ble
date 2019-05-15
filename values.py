@@ -2,7 +2,6 @@ from copy import deepcopy
 
 from error import RTError
 import languageInterpreter as li
-import time
 
 ################
 # VALUES
