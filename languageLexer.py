@@ -8,14 +8,15 @@ from tokens import *
 ################
 
 DIGITS = "0123456789"
-LETTERS = string.ascii_letters
-LETTERS_DIGITS = LETTERS + "_" + DIGITS
+LETTERS = string.ascii_letters + "_"
+LETTERS_DIGITS = LETTERS + DIGITS
 
 ################
 # TOKENS
 ################
 
 KEYWORDS = [
+    "class",
     "include",
     "as",
     "and",

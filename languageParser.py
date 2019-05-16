@@ -138,10 +138,11 @@ class WhileNode:
 
 
 class FuncDefNode:
-    def __init__(self, varNameTkn, argNameTkns, bodyNode):
+    def __init__(self, varNameTkn, argNameTkns, bodyNode, canMod):
         self.varNameTkn = varNameTkn
         self.argNameTkns = argNameTkns
         self.bodyNode = bodyNode
+        self.canMod = canMod
 
         if varNameTkn:
             self.startPos = varNameTkn.startPos
@@ -247,6 +248,16 @@ class TypeNode:
         
         self.startPos = valueNode.startPos
         self.endPos = valueNode.endPos
+
+
+class ClassNode:
+    def __init__(self, varNameTkn, parentTkn, bodyNode):
+        self.varNameTkn = varNameTkn
+        self.bodyNode = bodyNode
+        self.parentTkn = parentTkn
+
+        self.startPos = varNameTkn.startPos
+        self.endPos = bodyNode.endPos
 
 
 ################
@@ -814,6 +825,53 @@ class Parser:
         
         return res.success(AccessNode(moduleNode, varNameTkn))
     
+    def classExpr(self):
+        res = ParseResult()
+        
+        if not self.tkn.matches(TT_KEYWORD, "class"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.end,
+                "Expected 'class'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        if self.tkn.type != TT_IDENTIFIER:
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.end,
+                "Expected identifier"
+            ))
+        varNameTkn = self.tkn
+        res.registerAdvancement()
+        self.advance()
+        
+        if self.tkn.type == TT_LPAREN:
+            res.registerAdvancement()
+            self.advance()
+            if self.tkn.type != TT_IDENTIFIER:
+                return res.failure(InvalidSyntaxError(
+                    self.tkn.startPos, self.tkn.end,
+                    "Expected identifier"
+                ))
+            parentTkn = self.tkn
+            res.registerAdvancement()
+            self.advance()
+            if self.tkn.type != TT_RPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.tkn.startPos, self.tkn.end,
+                    "Expected ')'"
+                ))
+            res.registerAdvancement()
+            self.advance()
+        else:
+            parentTkn = None
+        
+        bodyNode = res.register(self.expr())
+        if res.err:
+            return res
+        
+        return res.success(ClassNode(varNameTkn, parentTkn, bodyNode))
+    
     def atom(self):
         res = ParseResult()
         tkn = self.tkn
@@ -882,6 +940,11 @@ class Parser:
             if res.err:
                 return res
             return res.success(listModifExpr)
+        elif tkn.matches(TT_KEYWORD, "class"):
+            classExpr = res.register(self.classExpr())
+            if res.err:
+                return res
+            return res.success(classExpr)
         elif tkn.matches(TT_KEYWORD, "include"):
             includeExpr = res.register(self.includeExpr())
             if res.err:
@@ -1108,6 +1171,13 @@ class Parser:
             ))
         res.registerAdvancement()
         self.advance()
+        
+        if self.tkn.matches(TT_KEYWORD, "mut"):
+            res.registerAdvancement()
+            self.advance()
+            canMod = True
+        else:
+            canMod = False
 
         if self.tkn.type == TT_IDENTIFIER:
             varNameTkn = self.tkn
@@ -1164,7 +1234,7 @@ class Parser:
         if res.err:
             return res
 
-        return res.success(FuncDefNode(varNameTkn, argNameTkns, nodeToReturn))
+        return res.success(FuncDefNode(varNameTkn, argNameTkns, nodeToReturn, canMod))
     
     def program(self):
         res = ParseResult()

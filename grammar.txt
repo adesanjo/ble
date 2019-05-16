@@ -18,9 +18,10 @@ power		    : call (POW factor)*
 call			: atom (LPAREN (expr (COMMA expr)*)? RPAREN (LPAREN (expr (COMMA expr)*)? RPAREN)* (EQ expr)?)?
 
 atom 			: access-expr
-                : INT|FLOAT|STRING|IDENTIFIER|BUILTIN
-			    : LPAREN expr RPAREN
+            	: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
+				: LPAREN expr RPAREN
 				: LBRACKET program? RBRACKET
+				: class-expr
 				: include-expr
 				: type-expr
 				: list-expr
@@ -35,6 +36,8 @@ atom 			: access-expr
 				: rand-expr
 				: int-cast
 				: str-cast
+
+class-expr		: KEYWORD:CLASS IDENTIFIER (LPAREN IDENTIFIER RPAREN)? expr
 
 include-expr	: KEYWORD:INCLUDE expr (KEYWORD:AS IDENTIFIER)?
 
@@ -57,7 +60,7 @@ for-each-expr	: KEYWORD:FOR KEYWORD:EACH IDENTIFIER KEYWORD:IN expr KEYWORD:DO e
 
 while-expr	    : KEYWORD:WHILE expr KEYWORD:DO expr
 
-func-def		: KEYWORD:FN IDENTIFIER?
+func-def		: KEYWORD:FN KEYWORD:MUT? IDENTIFIER?
 				  LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN expr
 
 disp-expr       : KEYWORD:DISP expr

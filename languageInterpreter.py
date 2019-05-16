@@ -5,7 +5,7 @@ import pathlib
 
 from error import RTError
 import tokens as tok
-from values import NoneValue, Number, String, Function, List, Module
+from values import NoneValue, Number, String, Function, List, Module, Class
 import languageParser as lp
 from languageLexer import Token, DIGITS
 import language
@@ -113,6 +113,37 @@ class Interpreter:
     def noVisitMethod(self, node, context):
         raise Exception(f"No visit{type(node).__name__} method defined")
     
+    def visitClassNode(self, node, context):
+        res = RTResult()
+        
+        className = node.varNameTkn.value
+        if node.parentTkn:
+            parent = context.symbolTable.get(node.parentTkn.value)
+            if not isinstance(parent, Class):
+                return res.failure(RTError(
+                    node.parentTkn.startPos, node.parentTkn.endPos,
+                    "Class parent but be a defined class",
+                    context
+                ))
+            newContext = Context(className, parent.context, parent.startPos)
+            newContext.symbolTable = SymbolTable(parent.context.symbolTable)
+        else:
+            parent = None
+            newContext = Context(className)
+            newContext.symbolTable = SymbolTable()
+        
+        bodyNode = node.bodyNode
+        
+        classValue = Class(
+            className, parent, bodyNode
+        ).setContext(newContext).setPos(node.startPos, node.endPos)
+        classValue.initContext()
+
+        if className not in BUILTINS:
+            context.symbolTable.set(className, classValue)
+        
+        return res.success(classValue)
+    
     def visitIncludeNode(self, node, context):
         res = RTResult()
         
@@ -195,6 +226,10 @@ class Interpreter:
             return res.success(String("function"))
         if isinstance(value, NoneValue):
             return res.success(String("none"))
+        if isinstance(value, Module):
+            return res.success(String("module"))
+        if isinstance(value, Class):
+            return res.success(String("class"))
         
         raise Exception("Type recognition not implemented")
     
@@ -503,8 +538,9 @@ class Interpreter:
         funcName = node.varNameTkn.value if node.varNameTkn else None
         bodyNode = node.bodyNode
         argNames = [argName.value for argName in node.argNameTkns]
+        canMod = node.canMod
         funcValue = Function(
-            funcName, bodyNode, argNames
+            funcName, bodyNode, argNames, canMod
         ).setContext(context).setPos(node.startPos, node.endPos)
 
         if node.varNameTkn and funcName not in BUILTINS:
@@ -526,8 +562,10 @@ class Interpreter:
             args.append(res.register(self.visit(argNode, context)))
             if res.err:
                 return res
+        
+        callContext = context if valueToCall.context is None else valueToCall.context
 
-        returnValue = res.register(valueToCall.execute(args, context, self.dev))
+        returnValue = res.register(valueToCall.execute(args, callContext, self.dev))
         if res.err:
             return res
 

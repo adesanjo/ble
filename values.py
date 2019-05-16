@@ -122,7 +122,7 @@ class NoneValue(Value):
         return Number(1).setContext(self.context), None
     
     def __repr__(self):
-        return str(self.value)
+        return "none"
 
 
 class Number(Value):
@@ -605,11 +605,12 @@ class List(Value):
 
 
 class Function(Value):
-    def __init__(self, name, bodyNode, argNames):
+    def __init__(self, name, bodyNode, argNames, canMod):
         super().__init__()
         self.name = name or "<anonymous>"
         self.bodyNode = bodyNode
         self.argNames = argNames
+        self.canMod = canMod
 
     def execute(self, args, context, dev=False):
         res = li.RTResult()
@@ -626,8 +627,11 @@ class Function(Value):
             ))
         
         interpreter = li.Interpreter(dev)
-        newContext = li.Context(self.name, context, self.startPos)
-        newContext.symbolTable = li.SymbolTable(context.symbolTable)
+        if self.canMod:
+            newContext = context
+        else:
+            newContext = li.Context(self.name, context, self.startPos)
+            newContext.symbolTable = li.SymbolTable(context.symbolTable)
         
         if len(args) > len(self.argNames):
             dif = len(args) - len(self.argNames)
@@ -656,7 +660,7 @@ class Function(Value):
         return res.success(value)
 
     def copy(self):
-        copy = Function(self.name, self.bodyNode, self.argNames)
+        copy = Function(self.name, self.bodyNode, self.argNames, self.canMod)
         copy.setContext(self.context)
         copy.setPos(self.startPos, self.endPos)
         return copy
@@ -682,3 +686,48 @@ class Module(Value):
     
     def __repr__(self):
         return repr(self.moduleContext)
+
+
+class Class(Value):
+    def __init__(self, name, parent, bodyNode):
+        super().__init__()
+        self.name = name
+        self.parent = parent
+        self.bodyNode = bodyNode
+    
+    def initContext(self):
+        res = li.RTResult()
+        
+        interpreter = li.Interpreter(False)
+        
+        res.register(interpreter.visit(self.bodyNode, self.context))
+        if res.err:
+            return res
+        
+        return res.success(self)
+    
+    def access(self, varNameTkn):
+        value = self.context.symbolTable.get(varNameTkn.value)
+        if value is None:
+            if self.parent:
+                value, err = self.parent.access(varNameTkn)
+                if err:
+                    return None, err
+                return value, None
+            return None, li.RTError(
+                varNameTkn.startPos, varNameTkn.endPos,
+                f"{varNameTkn.value} is not defined",
+                self.context
+            )
+        return value, None
+    
+    def execute(self, args, context, dev=False):
+        return li.RTResult().success(self.copy())
+    
+    def copy(self):
+        return Class(
+            self.name, deepcopy(self.parent), deepcopy(self.bodyNode)
+        ).setContext(deepcopy(self.context)).setPos(self.startPos, self.endPos)
+    
+    def __repr__(self):
+        return f"<class {self.name}>"
