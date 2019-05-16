@@ -37,6 +37,8 @@ while True:
             print(repr(res))
     except KeyboardInterrupt:
         print()
+        if sys.platform == "ios":
+            break
     except EOFError:
         print()
         print("Goodbye")

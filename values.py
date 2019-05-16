@@ -666,6 +666,8 @@ class Function(Value):
         return copy
 
     def __repr__(self):
+        if self.canMod:
+            return f"<mut-function {self.name}>"
         return f"<function {self.name}>"
 
 
