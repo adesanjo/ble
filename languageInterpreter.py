@@ -122,15 +122,15 @@ class Interpreter:
             if not isinstance(parent, Class):
                 return res.failure(RTError(
                     node.parentTkn.startPos, node.parentTkn.endPos,
-                    "Class parent but be a defined class",
+                    "Class parent must be a defined class",
                     context
                 ))
             newContext = Context(className, parent.context, parent.startPos)
             newContext.symbolTable = SymbolTable(parent.context.symbolTable)
         else:
             parent = None
-            newContext = Context(className)
-            newContext.symbolTable = SymbolTable()
+            newContext = Context(className, context, node.startPos)
+            newContext.symbolTable = SymbolTable(context.symbolTable)
         
         bodyNode = node.bodyNode
         

@@ -3,6 +3,8 @@ import sys
 
 from error import RTError
 import languageInterpreter as li
+from languageLexer import Token
+from tokens import TT_IDENTIFIER
 
 ################
 # VALUES
@@ -640,6 +642,7 @@ class Function(Value):
                 f"{dif} too many args passed into {self.name}",
                 context
             ))
+        
         if len(args) < len(self.argNames):
             dif = len(self.argNames) - len(args)
             return res.failure(RTError(
@@ -724,7 +727,22 @@ class Class(Value):
         return value, None
     
     def execute(self, args, context, dev=False):
-        return li.RTResult().success(self.copy())
+        res = li.RTResult()
+        
+        instance = self.copy()
+        constructor = context.symbolTable.symbols.get(self.name, None)
+        if constructor:
+            res.register(constructor.execute(args, instance.context))
+            if res.err:
+                return res
+        elif len(args) > 0:
+            return res.failure(RTError(
+                self.startPos, self.endPos,
+                f"{len(args)} too many args passed into {self.name}",
+                context
+            ))
+        
+        return res.success(instance)
     
     def copy(self):
         return Class(

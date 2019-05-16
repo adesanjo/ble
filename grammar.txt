@@ -13,12 +13,13 @@ term            : factor ((MUL|DIV|MOD) factor)*
 factor			: (PLUS|MINUS) factor
 				: power
 
-power		    : call (POW factor)*
+power		    : access (POW factor)*
+
+access     		: call (DOT IDENTIFIER)*
 
 call			: atom (LPAREN (expr (COMMA expr)*)? RPAREN (LPAREN (expr (COMMA expr)*)? RPAREN)* (EQ expr)?)?
 
-atom 			: access-expr
-            	: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
+atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 				: LPAREN expr RPAREN
 				: LBRACKET program? RBRACKET
 				: class-expr
@@ -40,8 +41,6 @@ atom 			: access-expr
 class-expr		: KEYWORD:CLASS IDENTIFIER (LPAREN IDENTIFIER RPAREN)? expr
 
 include-expr	: KEYWORD:INCLUDE expr (KEYWORD:AS IDENTIFIER)?
-
-access-expr     : IDENTIFIER DOT IDENTIFIER (DOT IDENTIFIER)*
 
 type-expr		: KEYWORD:TYPE expr
 

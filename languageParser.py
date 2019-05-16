@@ -779,52 +779,6 @@ class Parser:
         
         return res.success(IncludeNode(fileNode, moduleName))
     
-    def accessExpr(self):
-        res = ParseResult()
-        
-        if self.tkn.type != TT_IDENTIFIER:
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected identifier"
-            ))
-        moduleNode = VarAccessNode(self.tkn)
-        res.registerAdvancement()
-        self.advance()
-        
-        if self.tkn.type != TT_DOT:
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected '.'"
-            ))
-        res.registerAdvancement()
-        self.advance()
-        
-        if self.tkn.type != TT_IDENTIFIER:
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected identifier"
-            ))
-        varNameTkn = self.tkn
-        res.registerAdvancement()
-        self.advance()
-        
-        while self.tkn.type == TT_DOT:
-            moduleNode = AccessNode(moduleNode, varNameTkn)
-            
-            res.registerAdvancement()
-            self.advance()
-            
-            if self.tkn.type != TT_IDENTIFIER:
-                return res.failure(InvalidSyntaxError(
-                    self.tkn.startPos, self.tkn.endPos,
-                    "Expected identifier"
-                ))
-            varNameTkn = self.tkn
-            res.registerAdvancement()
-            self.advance()
-        
-        return res.success(AccessNode(moduleNode, varNameTkn))
-    
     def classExpr(self):
         res = ParseResult()
         
@@ -885,11 +839,6 @@ class Parser:
             self.advance()
             return res.success(StringNode(tkn))
         elif tkn.type == TT_IDENTIFIER:
-            if self.nextTkn.type == TT_DOT:
-                accessExpr = res.register(self.accessExpr())
-                if res.err:
-                    return res
-                return res.success(accessExpr)
             res.registerAdvancement()
             self.advance()
             return res.success(VarAccessNode(tkn))
@@ -1070,9 +1019,31 @@ class Parser:
                 return res
             return res.success(ListModifNode(varNameTkn, idxNodes, value))
         return res.success(atom)
+    
+    def access(self):
+        res = ParseResult()
+        
+        accessNode = res.register(self.call())
+        if res.err:
+            return res
+        
+        while self.tkn.type == TT_DOT:
+            res.registerAdvancement()
+            self.advance()
+            
+            if self.tkn.type != TT_IDENTIFIER:
+                return res.failure(InvalidSyntaxError(
+                    self.tkn.startPos, self.tkn.endPos,
+                    "Expected identifier"
+                ))
+            accessNode = AccessNode(accessNode, self.tkn)
+            res.registerAdvancement()
+            self.advance()
+        
+        return res.success(accessNode)
 
     def power(self):
-        return self.binOp(self.call, (TT_POW,), self.factor)
+        return self.binOp(self.access, (TT_POW,), self.factor)
 
     def factor(self):
         res = ParseResult()
