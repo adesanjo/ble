@@ -887,7 +887,7 @@ class Parser:
         fileContentNode = res.register(self.expr())
         if res.err:
             return res
-        return res.success(WriteNode(fileNameNode, fileContentNode))
+        return res.success(WriteNode(fileNameNode, fileContentNode, byteMode))
     
     def atom(self):
         res = ParseResult()
