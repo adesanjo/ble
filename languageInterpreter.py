@@ -730,8 +730,15 @@ class Interpreter:
                     "File content must be a list of integers from 0 to 255",
                     context
                 ))
-            with open(fn, "wb") as f:
-                f.write(bytes([num.value for num in fileContent.value]))
+            try:
+                with open(fn, "wb") as f:
+                    f.write(bytes([num.value for num in fileContent.value]))
+            except FileNotFoundError:
+                return res.failure(RTError(
+                    node.fileContentNode.startPos, node.fileContentNode.endPos,
+                    f"File {fileName} could not be created. No such directory",
+                    context
+                ))
         else:
             if not isinstance(fileContent, String):
                 return res.failure(RTError(
@@ -739,7 +746,14 @@ class Interpreter:
                     "File content must be a string",
                     context
                 ))
-            with open(fn, "w") as f:
-                f.write(fileContent.value)
+            try:
+                with open(fn, "w") as f:
+                    f.write(fileContent.value)
+            except FileNotFoundError:
+                return res.failure(RTError(
+                    node.fileContentNode.startPos, node.fileContentNode.endPos,
+                    f"File {fileName} could not be created. No such directory",
+                    context
+                ))
         
         return res.success(fileContent)
