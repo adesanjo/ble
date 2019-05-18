@@ -706,12 +706,6 @@ class Interpreter:
         
         dir = os.path.normpath(os.path.dirname(node.startPos.fn))
         fn = os.path.normpath(dir + "/" + fileName.value)
-        if not os.path.isfile(fn):
-            return res.failure(RTError(
-                node.fileNameNode.startPos, node.fileNameNode.endPos,
-                f"File {fileName} not found",
-                context
-            ))
         
         with open(fn, "w") as f:
             f.write(fileContent.value)
