@@ -176,24 +176,25 @@ class Interpreter:
                 ))
         
         if fn in node.startPos.module.split(" -> "):
-            return res.failure(RTError(
-                node.startPos, node.endPos,
-                "Cyclic include chain detected",
-                context
-            ))
+            module = context.symbolTable.get(moduleName)
+            if moduleName not in BUILTINS:
+                context.symbolTable.set(moduleName,module)
+            return res.success(module)
         
-        moduleContext = Context(moduleName)
-        moduleContext.symbolTable = SymbolTable()
+        moduleContext = Context(moduleName, context, node.startPos)
+        moduleContext.symbolTable = SymbolTable(context.symbolTable)
         with open(fn) as f:
-            result, err = language.run(fn, f.read(), f"{node.startPos.module} -> {fn}", moduleContext)
+            _, err = language.run(fn, f.read(), f"{node.startPos.module} -> {fn}", moduleContext)
         if err:
             return res.failure(err)
+        moduleContext.parent = None
+        moduleContext.parentEntryPos = None
+        moduleContext.symbolTable.parent = None
+        module = Module(moduleContext).setContext(context).setPos(node.startPos, node.endPos)
         
         if moduleName not in BUILTINS:
-            context.symbolTable.set(moduleName,
-                Module(moduleContext).setContext(context).setPos(node.startPos, node.endPos)
-            )
-        return res.success(result)
+            context.symbolTable.set(moduleName,module)
+        return res.success(module)
     
     def visitAccessNode(self, node, context):
         res = RTResult()
