@@ -1,6 +1,6 @@
 import os
 import sys
-if sys.platform != "ios":
+if sys.platform == "linux":
     import readline
 
 import language
