@@ -39,6 +39,8 @@ atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 				: str-cast
 				: read-expr
 				: write-expr
+				: readb-expr
+				: writeb-expr
 
 class-expr		: KEYWORD:CLASS IDENTIFIER (LPAREN IDENTIFIER RPAREN)? expr
 
@@ -79,3 +81,7 @@ str-cast		: KEYWORD:STR expr
 read-expr		: KEYWORD:READ expr
 
 write-expr		: KEYWORD:WRITE expr COMMA expr
+
+readb-expr		: KEYWORD:READB expr
+
+writeb-expr		: KEYWORD:WRITEB expr COMMA expr

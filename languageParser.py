@@ -845,13 +845,13 @@ class Parser:
         
         return res.success(ClassNode(varNameTkn, parentTkn, bodyNode))
     
-    def readExpr(self):
+    def readExpr(self, byteMode=False):
         res = ParseResult()
         
-        if not self.tkn.matches(TT_KEYWORD, "read"):
+        if not (self.tkn.matches(TT_KEYWORD, "read") or self.tkn.matches(TT_KEYWORD, "readb")):
             return res.failure(InvalidSyntaxError(
                 self.tkn.startPos, self.tkn.end,
-                "Expected 'read'"
+                "Expected 'read' or 'readb'"
             ))
         res.registerAdvancement()
         self.advance()
@@ -859,15 +859,15 @@ class Parser:
         fileNameNode = res.register(self.expr())
         if res.err:
             return res
-        return res.success(ReadNode(fileNameNode))
+        return res.success(ReadNode(fileNameNode, byteMode))
     
-    def writeExpr(self):
+    def writeExpr(self, byteMode=False):
         res = ParseResult()
         
-        if not self.tkn.matches(TT_KEYWORD, "write"):
+        if not (self.tkn.matches(TT_KEYWORD, "write") or self.tkn.matches(TT_KEYWORD, "writeb")):
             return res.failure(InvalidSyntaxError(
                 self.tkn.startPos, self.tkn.end,
-                "Expected 'write'"
+                "Expected 'write' or 'writeb'"
             ))
         res.registerAdvancement()
         self.advance()
@@ -1029,6 +1029,16 @@ class Parser:
             return res.success(readExpr)
         elif tkn.matches(TT_KEYWORD, "write"):
             writeExpr = res.register(self.writeExpr())
+            if res.err:
+                return res
+            return res.success(writeExpr)
+        elif tkn.matches(TT_KEYWORD, "readb"):
+            readExpr = res.register(self.readExpr(True))
+            if res.err:
+                return res
+            return res.success(readExpr)
+        elif tkn.matches(TT_KEYWORD, "writeb"):
+            writeExpr = res.register(self.writeExpr(True))
             if res.err:
                 return res
             return res.success(writeExpr)
