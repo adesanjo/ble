@@ -1,3 +1,5 @@
 include "string";
 
+disp "Module 'csv' under construction";
+
 moduleName = "csv";

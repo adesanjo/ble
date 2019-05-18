@@ -179,7 +179,7 @@ class Interpreter:
             module = context.symbolTable.get(moduleName)
             if moduleName not in BUILTINS:
                 context.symbolTable.set(moduleName,module)
-            return res.success(module)
+            return res.success(moduleName)
         
         moduleContext = Context(moduleName, context, node.startPos)
         moduleContext.symbolTable = SymbolTable(context.symbolTable)
@@ -193,7 +193,7 @@ class Interpreter:
         moduleContext.parent = None
         moduleContext.parentEntryPos = None
         moduleContext.symbolTable.parent = None
-        return res.success(module)
+        return res.success(moduleName)
     
     def visitAccessNode(self, node, context):
         res = RTResult()
