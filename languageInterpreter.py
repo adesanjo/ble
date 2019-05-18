@@ -691,8 +691,15 @@ class Interpreter:
             with open(fn, "rb") as f:
                 result = List([Number(i) for i in list(f.read())])
         else:
-            with open(fn, "r") as f:
-                result = String(f.read())
+            try:
+                with open(fn, "r") as f:
+                    result = String(f.read())
+            except UnicodeDecodeError:
+                return res.failure(RTError(
+                    node.fileNameNode.startPos, node.fileNameNode.endPos,
+                    f"File {fileName} could not be read as text",
+                    context
+                ))
         
         return res.success(result)
     
