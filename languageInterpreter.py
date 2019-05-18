@@ -653,3 +653,67 @@ class Interpreter:
         if res.err:
             return res
         return res.success(String(str(expr.value)))
+    
+    def visitReadNode(self, node, context):
+        res = RTResult()
+        
+        fileName = res.register(self.visit(node.fileNameNode, context))
+        if res.err:
+            return res
+        if not isinstance(fileName, String):
+            return res.failure(RTError(
+                node.fileNameNode.startPos, node.fileNameNode.endPos,
+                "File name must be a string",
+                context
+            ))
+        
+        dir = os.path.normpath(os.path.dirname(node.startPos.fn))
+        fn = os.path.normpath(dir + "/" + fileName.value)
+        if not os.path.isfile(fn):
+            return res.failure(RTError(
+                node.fileNameNode.startPos, node.fileNameNode.endPos,
+                f"File {fileName} not found",
+                context
+            ))
+        
+        with open(fn) as f:
+            result = String(f.read())
+        
+        return res.success(result)
+    
+    def visitWriteNode(self, node, context):
+        res = RTResult()
+        
+        fileName = res.register(self.visit(node.fileNameNode, context))
+        if res.err:
+            return res
+        if not isinstance(fileName, String):
+            return res.failure(RTError(
+                node.fileNameNode.startPos, node.fileNameNode.endPos,
+                "File name must be a string",
+                context
+            ))
+        
+        fileContent = res.register(self.visit(node.fileContentNode, context))
+        if res.err:
+            return res
+        if not isinstance(fileContent, String):
+            return res.failure(RTError(
+                node.fileContentNode.startPos, node.fileContentNode.endPos,
+                "File content must be a string",
+                context
+            ))
+        
+        dir = os.path.normpath(os.path.dirname(node.startPos.fn))
+        fn = os.path.normpath(dir + "/" + fileName.value)
+        if not os.path.isfile(fn):
+            return res.failure(RTError(
+                node.fileNameNode.startPos, node.fileNameNode.endPos,
+                f"File {fileName} not found",
+                context
+            ))
+        
+        with open(fn, "w") as f:
+            f.write(fileContent.value)
+        
+        return res.success(fileContent)

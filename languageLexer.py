@@ -42,7 +42,9 @@ KEYWORDS = [
     "str",
     "mut",
     "at",
-    "type"
+    "type",
+    "read",
+    "write"
 ]
 
 

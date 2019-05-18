@@ -260,6 +260,23 @@ class ClassNode:
         self.endPos = bodyNode.endPos
 
 
+class ReadNode:
+    def __init__(self, fileNameNode):
+        self.fileNameNode = fileNameNode
+        
+        self.startPos = fileNameNode.startPos
+        self.endPos = fileNameNode.endPos
+
+
+class WriteNode:
+    def __init__(self, fileNameNode, fileContentNode):
+        self.fileNameNode = fileNameNode
+        self.fileContentNode = fileContentNode
+        
+        self.startPos = fileNameNode.startPos
+        self.endPos = fileContentNode.endPos
+
+
 ################
 # PARSE RESULT
 ################
@@ -826,6 +843,50 @@ class Parser:
         
         return res.success(ClassNode(varNameTkn, parentTkn, bodyNode))
     
+    def readExpr(self):
+        res = ParseResult()
+        
+        if not self.tkn.matches(TT_KEYWORD, "read"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.end,
+                "Expected 'read'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        fileNameNode = res.register(self.expr())
+        if res.err:
+            return res
+        return res.success(ReadNode(fileNameNode))
+    
+    def writeExpr(self):
+        res = ParseResult()
+        
+        if not self.tkn.matches(TT_KEYWORD, "write"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.end,
+                "Expected 'write'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        fileNameNode = res.register(self.expr())
+        if res.err:
+            return res
+        
+        if self.tkn.type != TT_COMMA:
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.end,
+                "Expected ','"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        fileContentNode = res.register(self.expr())
+        if res.err:
+            return res
+        return res.success(WriteNode(fileNameNode, fileContentNode))
+    
     def atom(self):
         res = ParseResult()
         tkn = self.tkn
@@ -959,6 +1020,16 @@ class Parser:
             if res.err:
                 return res
             return res.success(strExpr)
+        elif tkn.matches(TT_KEYWORD, "read"):
+            readExpr = res.register(self.readExpr())
+            if res.err:
+                return res
+            return res.success(readExpr)
+        elif tkn.matches(TT_KEYWORD, "write"):
+            writeExpr = res.register(self.writeExpr())
+            if res.err:
+                return res
+            return res.success(writeExpr)
 
         return res.failure(InvalidSyntaxError(
             tkn.startPos, tkn.endPos,
