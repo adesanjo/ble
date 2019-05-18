@@ -742,7 +742,7 @@ class Interpreter:
         else:
             if not isinstance(fileContent, String):
                 return res.failure(RTError(
-                    node.fileContentNode.startPos, node.fileContentNode.endPos,
+                    node.fileContentNode.startPos, node.fileNameNode.endPos,
                     "File content must be a string",
                     context
                 ))
@@ -751,7 +751,7 @@ class Interpreter:
                     f.write(fileContent.value)
             except FileNotFoundError:
                 return res.failure(RTError(
-                    node.fileContentNode.startPos, node.fileContentNode.endPos,
+                    node.fileContentNode.startPos, node.fileNameNode.endPos,
                     f"File {fileName} could not be created. No such directory",
                     context
                 ))
