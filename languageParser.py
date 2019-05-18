@@ -850,7 +850,7 @@ class Parser:
         
         if not (self.tkn.matches(TT_KEYWORD, "read") or self.tkn.matches(TT_KEYWORD, "readb")):
             return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.end,
+                self.tkn.startPos, self.tkn.endPos,
                 "Expected 'read' or 'readb'"
             ))
         res.registerAdvancement()
@@ -866,7 +866,7 @@ class Parser:
         
         if not (self.tkn.matches(TT_KEYWORD, "write") or self.tkn.matches(TT_KEYWORD, "writeb")):
             return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.end,
+                self.tkn.startPos, self.tkn.endPos,
                 "Expected 'write' or 'writeb'"
             ))
         res.registerAdvancement()
@@ -878,7 +878,7 @@ class Parser:
         
         if self.tkn.type != TT_COMMA:
             return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.end,
+                self.tkn.startPos, self.tkn.endPos,
                 "Expected ','"
             ))
         res.registerAdvancement()
