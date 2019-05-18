@@ -682,8 +682,12 @@ class Interpreter:
                 context
             ))
         
-        with open(fn) as f:
-            result = String(f.read())
+        if node.byteMode:
+            with open(fn, "rb") as f:
+                result = List([Number(i) for i in list(f.read())])
+        else:
+            with open(fn, "r") as f:
+                result = String(f.read())
         
         return res.success(result)
     
@@ -700,20 +704,30 @@ class Interpreter:
                 context
             ))
         
-        fileContent = res.register(self.visit(node.fileContentNode, context))
-        if res.err:
-            return res
-        if not isinstance(fileContent, String):
-            return res.failure(RTError(
-                node.fileContentNode.startPos, node.fileContentNode.endPos,
-                "File content must be a string",
-                context
-            ))
-        
         dir = os.path.normpath(os.path.dirname(node.startPos.fn))
         fn = os.path.normpath(dir + "/" + fileName.value)
         
-        with open(fn, "w") as f:
-            f.write(fileContent.value)
+        fileContent = res.register(self.visit(node.fileContentNode, context))
+        if res.err:
+            return res
+        
+        if node.byteMode:
+            if not (isinstance(fileContent, List) and all(isinstance(num, Number) and num.value in range(256) for num in fileContent.value)):
+                return res.failure(RTError(
+                    node.fileContentNode.startPos, node.fileContentNode.endPos,
+                    "File content must be a list of integers from 0 to 255",
+                    context
+                ))
+            with open(fn, "wb") as f:
+                f.write(bytes([num.value for num in fileContent.value]))
+        else:
+            if not isinstance(fileContent, String):
+                return res.failure(RTError(
+                    node.fileContentNode.startPos, node.fileContentNode.endPos,
+                    "File content must be a string",
+                    context
+                ))
+            with open(fn, "w") as f:
+                f.write(fileContent.value)
         
         return res.success(fileContent)

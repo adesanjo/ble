@@ -261,17 +261,19 @@ class ClassNode:
 
 
 class ReadNode:
-    def __init__(self, fileNameNode):
+    def __init__(self, fileNameNode, byteMode=False):
         self.fileNameNode = fileNameNode
+        self.byteMode = byteMode
         
         self.startPos = fileNameNode.startPos
         self.endPos = fileNameNode.endPos
 
 
 class WriteNode:
-    def __init__(self, fileNameNode, fileContentNode):
+    def __init__(self, fileNameNode, fileContentNode, byteMode=False):
         self.fileNameNode = fileNameNode
         self.fileContentNode = fileContentNode
+        self.byteMode = byteMode
         
         self.startPos = fileNameNode.startPos
         self.endPos = fileContentNode.endPos

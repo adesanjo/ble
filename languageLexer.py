@@ -44,7 +44,9 @@ KEYWORDS = [
     "at",
     "type",
     "read",
-    "write"
+    "readb",
+    "write",
+    "writeb"
 ]
 
 
