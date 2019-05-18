@@ -183,6 +183,9 @@ class Interpreter:
         
         moduleContext = Context(moduleName, context, node.startPos)
         moduleContext.symbolTable = SymbolTable(context.symbolTable)
+        module = Module(moduleContext).setContext(context).setPos(node.startPos, node.endPos)
+        if moduleName not in BUILTINS:
+            context.symbolTable.set(moduleName,module)
         with open(fn) as f:
             _, err = language.run(fn, f.read(), f"{node.startPos.module} -> {fn}", moduleContext)
         if err:
@@ -190,10 +193,6 @@ class Interpreter:
         moduleContext.parent = None
         moduleContext.parentEntryPos = None
         moduleContext.symbolTable.parent = None
-        module = Module(moduleContext).setContext(context).setPos(node.startPos, node.endPos)
-        
-        if moduleName not in BUILTINS:
-            context.symbolTable.set(moduleName,module)
         return res.success(module)
     
     def visitAccessNode(self, node, context):
