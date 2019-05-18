@@ -163,7 +163,9 @@ class Interpreter:
         else:
             moduleName = os.path.basename(fStr.value)
         if not os.path.isfile(fn):
-            if self.dev:
+            if sys.platform == "ios":
+                libDir = "lib/"
+            elif self.dev:
                 libDir = str(pathlib.Path.home()) + "/Documents/projects/ble/lib/"
             else:
                 libDir = str(pathlib.Path.home()) + "/ble/ble-master/lib/"
