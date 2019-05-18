@@ -68,4 +68,40 @@ fn upper(s){
     r;
 };
 
+fn split(s, c){
+    l = [];
+    ss = "";
+    for i = 0 to +s do{
+        if s(i, i+c) == c then{
+            l = l + [ss];
+            ss = "";
+        }else{
+            ss = ss + s(i);
+        };
+    };
+    l = l + [ss];
+    l;
+};
+
+fn join(c, l){
+    s = "";
+    for each ll in l do{
+        s = s + c + ll;
+    };
+    s = s(+c, +s);
+    s;
+};
+
+fn strip(s){
+    i = 0;
+    j = +s;
+    while i < j and [" ", "\t", "\n"] - s(i) do{
+        i = i + 1;
+    };
+    while j > i and [" ", "\t", "\n"] - s(j - 1) do{
+        j = j - 1;
+    };
+    s(i, j);
+};
+
 moduleName = "string";

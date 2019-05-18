@@ -67,8 +67,6 @@ class Value:
 
     def boolAnd(self, other):
         sTrue = self.isTrue()
-        if not sTrue:
-            return Number(0).setContext(self.context), None
         oTrue = other.isTrue()
         return Number(
             1 if sTrue and oTrue else 0
@@ -76,8 +74,6 @@ class Value:
 
     def boolOr(self, other):
         sTrue = self.isTrue()
-        if sTrue:
-            return Number(1).setContext(self.context), None
         oTrue = other.isTrue()
         return Number(
             1 if sTrue or oTrue else 0

@@ -318,6 +318,12 @@ class Interpreter:
         left = res.register(self.visit(node.lNode, context))
         if res.err:
             return res
+        
+        if node.opTkn.matches(tok.TT_KEYWORD, "and") and left.isFalse():
+            return res.success(Number(0).setContext(left.context).setPos(node.startPos, node.endPos))
+        if node.opTkn.matches(tok.TT_KEYWORD, "or") and left.isTrue():
+            return res.success(Number(1).setContext(left.context).setPos(node.startPos, node.endPos))
+        
         right = res.register(self.visit(node.rNode, context))
         if res.err:
             return res

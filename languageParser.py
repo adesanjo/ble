@@ -1038,7 +1038,7 @@ class Parser:
 
     def call(self):
         res = ParseResult()
-        atom = res.register(self.atom())
+        atom = res.register(self.access())
         if res.err:
             return res
 
@@ -1094,7 +1094,7 @@ class Parser:
     def access(self):
         res = ParseResult()
         
-        accessNode = res.register(self.call())
+        accessNode = res.register(self.atom())
         if res.err:
             return res
         
@@ -1114,7 +1114,7 @@ class Parser:
         return res.success(accessNode)
 
     def power(self):
-        return self.binOp(self.access, (TT_POW,), self.factor)
+        return self.binOp(self.call, (TT_POW,), self.factor)
 
     def factor(self):
         res = ParseResult()

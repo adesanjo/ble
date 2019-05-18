@@ -13,11 +13,11 @@ term            : factor ((MUL|DIV|MOD) factor)*
 factor			: (PLUS|MINUS) factor
 				: power
 
-power		    : access (POW factor)*
+power		    : call (POW factor)*
 
-access     		: call (DOT IDENTIFIER)*
+call			: access (LPAREN (expr (COMMA expr)*)? RPAREN (LPAREN (expr (COMMA expr)*)? RPAREN)* (EQ expr)?)?
 
-call			: atom (LPAREN (expr (COMMA expr)*)? RPAREN (LPAREN (expr (COMMA expr)*)? RPAREN)* (EQ expr)?)?
+access     		: atom (DOT IDENTIFIER)*
 
 atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 				: LPAREN expr RPAREN
