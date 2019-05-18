@@ -83,7 +83,7 @@ fn split(s, c){
     l;
 };
 
-fn join(c, l){
+fn join(l, c){
     s = "";
     for each ll in l do{
         s = s + c + ll;

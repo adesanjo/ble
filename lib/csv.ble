@@ -1,5 +1,19 @@
 include "string";
 
-disp "Module 'csv' under construction";
+fn fromCSV(s){
+    l = string.split(s, "\n");
+    for i = 0 to +l do{
+        l(i) = string.split(l(i), ",");
+    };
+    l;
+};
+
+fn toCSV(l){
+    for i = 0 to +l do{
+        l(i) = string.join(l(i), ",");
+    };
+    s = string.join(l, "\n");
+    s;
+};
 
 moduleName = "csv";

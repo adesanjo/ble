@@ -397,6 +397,7 @@ class Interpreter:
             ))
         listValue.setContext(context).setPos(node.startPos, node.endPos)
         subListValue = listValue
+        subList = None
         
         value = res.register(self.visit(node.valueNode, context))
         if res.err:
@@ -418,9 +419,13 @@ class Interpreter:
                     "Index out of range",
                     context
                 ))
+            subList = subListValue
             subListValue = subListValue.value[idx.value]
         
-        subListValue.value = value.value
+        if subList:
+            subList.value[idx.value] = value.copy()
+        else:
+            subListValue.value = value.value
         context.symbolTable.set(varName, listValue)
         return res.success(listValue)
 
