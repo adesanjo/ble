@@ -40,6 +40,7 @@ class KBHit:
     
             # New terminal setting unbuffered
             self.new_term[3] = (self.new_term[3] & ~termios.ICANON & ~termios.ECHO)
+            self.set_getch_term()
     
             # Support normal-terminal reset at exit
             atexit.register(self.set_normal_term)
