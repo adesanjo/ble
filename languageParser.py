@@ -297,6 +297,12 @@ class ClsNode:
         self.endPos = tkn.endPos
 
 
+class TimeNode:
+    def __init__(self, tkn):
+        self.startPos = tkn.startPos
+        self.endPos = tkn.endPos
+
+
 ################
 # PARSE RESULT
 ################
@@ -949,6 +955,20 @@ class Parser:
         
         return res.success(ClsNode(tkn))
     
+    def timeExpr(self):
+        res = ParseResult()
+        
+        tkn = self.tkn
+        if not self.tkn.matches(TT_KEYWORD, "time"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'time'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        return res.success(TimeNode(tkn))
+    
     def atom(self):
         res = ParseResult()
         tkn = self.tkn
@@ -1117,6 +1137,11 @@ class Parser:
             if res.err:
                 return res
             return res.success(clsExpr)
+        elif tkn.matches(TT_KEYWORD, "time"):
+            timeExpr = res.register(self.timeExpr())
+            if res.err:
+                return res
+            return res.success(timeExpr)
 
         return res.failure(InvalidSyntaxError(
             tkn.startPos, tkn.endPos,

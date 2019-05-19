@@ -49,7 +49,8 @@ KEYWORDS = [
     "readb",
     "write",
     "writeb",
-    "cls"
+    "cls",
+    "time"
 ]
 
 

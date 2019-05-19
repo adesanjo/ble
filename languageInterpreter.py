@@ -2,6 +2,7 @@ from random import random
 import os
 import sys
 import pathlib
+import time
 
 if os.name == "nt":
     import msvcrt  # pylint: disable=import-error
@@ -852,3 +853,7 @@ class Interpreter:
     def visitClsNode(self, node, context):
         os.system("cls" if os.name == "nt" else "clear")
         return RTResult().success(NoneValue().setContext(context).setPos(node.startPos, node.endPos))
+    
+    def visitTimeNode(self, node, context):
+        t = round(time.time() * 1000000)
+        return RTResult().success(Number(t).setContext(context).setPos(node.startPos, node.endPos))
