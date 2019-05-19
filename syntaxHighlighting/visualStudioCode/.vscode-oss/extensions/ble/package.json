@@ -1,0 +1,25 @@
+{
+    "name": "ble",
+    "displayName": "ble",
+    "description": "ble syntax highlighting",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.33.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "ble",
+            "aliases": ["ble", "ble"],
+            "extensions": [".ble"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "ble",
+            "scopeName": "source.ble",
+            "path": "./syntaxes/ble.tmLanguage.json"
+        }]
+    }
+}

@@ -1,0 +1,40 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "ble",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#comments"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.ble",
+				"match": "\\b(include|as|and|or|not|rand|int|float|str|if|then|elif|else|while|for|to|step|each|in|do|fn|disp|input|getch|kbhit|mut|at|type|true|false|none|argv|class|read|write|readb|writeb|cls|time)\\b"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.ble",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.ble",
+					"match": "\\\\."
+				}
+			]
+		},
+		"comments": {
+			"name": "comment.ble",
+			"begin": "#",
+			"end": "\n"
+		}
+	},
+	"scopeName": "source.ble"
+}
