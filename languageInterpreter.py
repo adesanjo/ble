@@ -74,9 +74,11 @@ class KBHit:
             Should not be called in the same program as getarrow().
         '''
         if os.name == 'nt':
-            return msvcrt.getch().decode('utf-8')
+            res = msvcrt.getch().decode('utf-8')
         else:
-            return sys.stdin.read(1)
+            res = sys.stdin.read(1)
+            termios.tcflush(self.fd, termios.TCIFLUSH)
+        return res
                         
 
     def kbhit(self):
