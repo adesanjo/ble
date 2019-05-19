@@ -29,7 +29,7 @@ class KBHit:
         '''Creates a KBHit object that you can call to do various keyboard things.
         '''
 
-        if os.name == 'nt':
+        if os.name == "nt" or sys.platform == "ios":
             pass
         
         else:
@@ -51,7 +51,7 @@ class KBHit:
         ''' Resets to normal terminal.  On Windows this is a no-op.
         '''
         
-        if os.name == 'nt':
+        if os.name == "nt" or sys.platform == "ios":
             pass
         
         else:
@@ -62,7 +62,7 @@ class KBHit:
         ''' Resets to normal terminal.  On Windows this is a no-op.
         '''
         
-        if os.name == 'nt':
+        if os.name == "nt" or sys.platform == "ios":
             pass
         
         else:
@@ -71,9 +71,10 @@ class KBHit:
 
     def getch(self):
         ''' Returns a keyboard character after kbhit() has been called.
-            Should not be called in the same program as getarrow().
         '''
-        if os.name == 'nt':
+        if sys.platform == "ios":
+            res = input()
+        elif os.name == "nt":
             res = msvcrt.getch().decode('utf-8')
         else:
             res = sys.stdin.read(1)
@@ -84,7 +85,9 @@ class KBHit:
     def kbhit(self):
         ''' Returns True if keyboard character was hit, False otherwise.
         '''
-        if os.name == 'nt':
+        if sys.platform == "ios":
+            return False
+        elif os.name == "nt":
             return msvcrt.kbhit()
         else:
             dr,_,_ = select([sys.stdin], [], [], 0)
