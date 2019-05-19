@@ -759,3 +759,7 @@ class Interpreter:
                 ))
         
         return res.success(fileContent)
+    
+    def visitClsNode(self, node, context):
+        os.system("cls" if os.name == "nt" else "clear")
+        return RTResult().success(NoneValue().setContext(context).setPos(node.startPos, node.endPos))

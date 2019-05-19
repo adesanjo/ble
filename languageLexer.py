@@ -46,7 +46,8 @@ KEYWORDS = [
     "read",
     "readb",
     "write",
-    "writeb"
+    "writeb",
+    "cls"
 ]
 
 

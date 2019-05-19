@@ -1,4 +1,3 @@
-import os
 import sys
 if sys.platform == "linux":
     import readline
@@ -13,9 +12,6 @@ while True:
         cmd = input("$> ")
         if cmd in ("quit", "exit"):
             break
-        if cmd in ("clear", "cls"):
-            os.system("cls" if os.name == "nt" else "clear")
-            continue
         if cmd == "global":
             print(language.globalSymbolTable)
             continue
@@ -24,7 +20,6 @@ while True:
             continue
         if cmd == "help":
             print("help:       print this message")
-            print("cls/clear:  clear screen")
             print("exit/quit:  exit inerpreter")
             print("global:     show global symbol table")
             print("reset:      reset global symbol table")

@@ -279,6 +279,12 @@ class WriteNode:
         self.endPos = fileContentNode.endPos
 
 
+class ClsNode:
+    def __init__(self, tkn):
+        self.startPos = tkn.startPos
+        self.endPos = tkn.endPos
+
+
 ################
 # PARSE RESULT
 ################
@@ -889,6 +895,20 @@ class Parser:
             return res
         return res.success(WriteNode(fileNameNode, fileContentNode, byteMode))
     
+    def clsExpr(self):
+        res = ParseResult()
+        
+        tkn = self.tkn
+        if not self.tkn.matches(TT_KEYWORD, "cls"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'cls'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        return res.success(ClsNode(tkn))
+    
     def atom(self):
         res = ParseResult()
         tkn = self.tkn
@@ -1042,6 +1062,11 @@ class Parser:
             if res.err:
                 return res
             return res.success(writeExpr)
+        elif tkn.matches(TT_KEYWORD, "cls"):
+            clsExpr = res.register(self.clsExpr())
+            if res.err:
+                return res
+            return res.success(clsExpr)
 
         return res.failure(InvalidSyntaxError(
             tkn.startPos, tkn.endPos,

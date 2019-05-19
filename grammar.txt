@@ -41,6 +41,7 @@ atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 				: write-expr
 				: readb-expr
 				: writeb-expr
+				: cls-expr
 
 class-expr		: KEYWORD:CLASS IDENTIFIER (LPAREN IDENTIFIER RPAREN)? expr
 
@@ -85,3 +86,5 @@ write-expr		: KEYWORD:WRITE expr COMMA expr
 readb-expr		: KEYWORD:READB expr
 
 writeb-expr		: KEYWORD:WRITEB expr COMMA expr
+
+cls-expr		: KEYWORD:CLS
