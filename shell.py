@@ -39,6 +39,5 @@ while True:
             break
     except EOFError:
         break
-KB.set_normal_term()
 print()
 print("Goodbye")
