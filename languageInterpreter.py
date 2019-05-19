@@ -213,14 +213,14 @@ class Interpreter:
             newContext.symbolTable = SymbolTable(parent.context.symbolTable)
         else:
             parent = None
-            newContext = Context(className, context, node.startPos)
-            newContext.symbolTable = SymbolTable(context.symbolTable)
+            newContext = Context(className)
+            newContext.symbolTable = SymbolTable()
         
         bodyNode = node.bodyNode
         
         classValue = Class(
-            className, parent, bodyNode
-        ).setContext(newContext).setPos(node.startPos, node.endPos)
+            className, parent, bodyNode, newContext
+        ).setContext(context).setPos(node.startPos, node.endPos)
         classValue.initContext()
 
         if className not in BUILTINS:

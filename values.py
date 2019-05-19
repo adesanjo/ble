@@ -699,25 +699,26 @@ class Module(Value):
 
 
 class Class(Value):
-    def __init__(self, name, parent, bodyNode):
+    def __init__(self, name, parent, bodyNode, classContext):
         super().__init__()
         self.name = name
         self.parent = parent
         self.bodyNode = bodyNode
+        self.classContext = classContext
     
     def initContext(self):
         res = li.RTResult()
         
         interpreter = li.Interpreter(False)
         
-        res.register(interpreter.visit(self.bodyNode, self.context))
+        res.register(interpreter.visit(self.bodyNode, self.classContext))
         if res.err:
             return res
         
         return res.success(self)
     
     def access(self, varNameTkn):
-        value = self.context.symbolTable.get(varNameTkn.value)
+        value = self.classContext.symbolTable.get(varNameTkn.value)
         if value is None:
             if self.parent:
                 value, err = self.parent.access(varNameTkn)
@@ -735,9 +736,9 @@ class Class(Value):
         res = li.RTResult()
         
         instance = self.copy()
-        constructor = context.symbolTable.symbols.get(self.name, None)
+        constructor = self.classContext.symbolTable.symbols.get(self.name, None)
         if constructor:
-            res.register(constructor.execute(args, instance.context))
+            res.register(constructor.execute(args, instance.classContext))
             if res.err:
                 return res
         elif len(args) > 0:
@@ -751,8 +752,8 @@ class Class(Value):
     
     def copy(self):
         return Class(
-            self.name, deepcopy(self.parent), deepcopy(self.bodyNode)
+            self.name, deepcopy(self.parent), deepcopy(self.bodyNode), deepcopy(self.classContext)
         ).setContext(deepcopy(self.context)).setPos(self.startPos, self.endPos)
     
     def __repr__(self):
-        return f"<class {self.name}>"
+        return f"<class {self.name}>\n{self.classContext}"
