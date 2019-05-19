@@ -568,7 +568,9 @@ class List(Value):
     
     def execute(self, args, context, dev=False):
         res = li.RTResult()
-        if len(args) == 1:
+        if len(args) == 0:
+            return res.success(self.copy())
+        elif len(args) == 1:
             idx = args[0]
             if isinstance(idx, Number) and isinstance(idx.value, int):
                 if idx.value >= len(self.value) or idx.value < -len(self.value):
