@@ -34,6 +34,8 @@ atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
 				: func-def
                 : disp-expr
 				: input-expr
+				: getch-expr
+				: kbhit-expr
 				: rand-expr
 				: int-cast
 				: str-cast
@@ -70,6 +72,10 @@ func-def		: KEYWORD:FN KEYWORD:MUT? IDENTIFIER?
 disp-expr       : KEYWORD:DISP expr
 
 input-expr		: KEYWORD:INPUT
+
+getch-expr		: KEYWORD:GETCH
+
+kbhit-expr		: KEYWORD:KBHIT
 
 rand-expr		: KEYWORD:RAND
 

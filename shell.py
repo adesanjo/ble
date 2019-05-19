@@ -4,6 +4,7 @@ if sys.platform == "linux":
 
 import language
 from values import NoneValue
+from languageInterpreter import KB
 
 dev = len(sys.argv) > 1 and sys.argv[1] == "dev"
 
@@ -25,7 +26,9 @@ while True:
             print("reset:      reset global symbol table")
             continue
         
+        KB.set_getch_term()
         res, err = language.run("<stdin>", cmd, dev=dev)
+        KB.set_normal_term()
         if err:
             print(err)
         elif not isinstance(res, NoneValue):
@@ -35,6 +38,7 @@ while True:
         if sys.platform == "ios":
             break
     except EOFError:
-        print()
-        print("Goodbye")
         break
+KB.set_normal_term()
+print()
+print("Goodbye")

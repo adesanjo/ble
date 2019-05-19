@@ -4,14 +4,11 @@ import sys
 import pathlib
 
 if os.name == "nt":
-    try:
-        import msvcrt
-    except ImportError:
-        pass
+    import msvcrt  # pylint: disable=import-error
 else:
-    import tty
+    import atexit
     import termios
-    import select
+    from select import select
 
 from error import RTError
 import tokens as tok
@@ -25,27 +22,72 @@ import language
 ################
 
 
-class _GetchUnix:
-    def __call__(self):
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(sys.stdin.fileno())
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
+class KBHit:
+    
+    def __init__(self):
+        '''Creates a KBHit object that you can call to do various keyboard things.
+        '''
+
+        if os.name == 'nt':
+            pass
+        
+        else:
+    
+            # Save the terminal settings
+            self.fd = sys.stdin.fileno()
+            self.new_term = termios.tcgetattr(self.fd)
+            self.old_term = termios.tcgetattr(self.fd)
+    
+            # New terminal setting unbuffered
+            self.new_term[3] = (self.new_term[3] & ~termios.ICANON & ~termios.ECHO)
+    
+            # Support normal-terminal reset at exit
+            atexit.register(self.set_normal_term)
+    
+    
+    def set_getch_term(self):
+        ''' Resets to normal terminal.  On Windows this is a no-op.
+        '''
+        
+        if os.name == 'nt':
+            pass
+        
+        else:
+            termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.new_term)
+    
+    
+    def set_normal_term(self):
+        ''' Resets to normal terminal.  On Windows this is a no-op.
+        '''
+        
+        if os.name == 'nt':
+            pass
+        
+        else:
+            termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.old_term)
 
 
-class _GetchWindows:
-    def __call__(self):
-        return msvcrt.getch()
+    def getch(self):
+        ''' Returns a keyboard character after kbhit() has been called.
+            Should not be called in the same program as getarrow().
+        '''
+        if os.name == 'nt':
+            return msvcrt.getch().decode('utf-8')
+        else:
+            return sys.stdin.read(1)
+                        
+
+    def kbhit(self):
+        ''' Returns True if keyboard character was hit, False otherwise.
+        '''
+        if os.name == 'nt':
+            return msvcrt.kbhit()
+        else:
+            dr,_,_ = select([sys.stdin], [], [], 0)
+            return dr != []
 
 
-if os.name == "nt":
-    getch = _GetchWindows()
-else:
-    getch = _GetchUnix()
+KB = KBHit()
 
 
 ################
@@ -651,7 +693,9 @@ class Interpreter:
     
     def visitInputNode(self, node, context):
         res = RTResult()
+        KB.set_normal_term()
         val = input()
+        KB.set_getch_term()
         if not self.isNum(val.replace(".", "", 1)) or len(val) == 0:
             return res.success(String(val).setContext(context).setPos(node.startPos, node.endPos))
         if "." in val:
@@ -659,8 +703,10 @@ class Interpreter:
         return res.success(Number(int(val)).setContext(context).setPos(node.startPos, node.endPos))
     
     def visitGetchNode(self, node, context):
-        c = getch()
-        return RTResult().success(String(c).setContext(context).setPos(node.startPos, node.endPos))
+        return RTResult().success(String(KB.getch()).setContext(context).setPos(node.startPos, node.endPos))
+    
+    def visitKbhitNode(self, node, context):
+       return RTResult().success(Number(1 if KB.kbhit() else 0).setContext(context).setPos(node.startPos, node.endPos))
     
     def visitRandNode(self, node, context):
         res = RTResult()

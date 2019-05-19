@@ -200,6 +200,12 @@ class GetchNode:
         self.endPos = getchTkn.endPos
 
 
+class KbhitNode:
+    def __init__(self, kbhitTkn):
+        self.startPos = kbhitTkn.startPos
+        self.endPos = kbhitTkn.endPos
+
+
 class RandNode:
     def __init__(self, randTkn):
         self.startPos = randTkn.startPos
@@ -463,6 +469,20 @@ class Parser:
         self.advance()
         
         return res.success(GetchNode(tkn))
+    
+    def kbhitExpr(self):
+        res = ParseResult()
+
+        if not self.tkn.matches(TT_KEYWORD, "kbhit"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'kbhit'"
+            ))
+        tkn = self.tkn
+        res.registerAdvancement()
+        self.advance()
+        
+        return res.success(KbhitNode(tkn))
 
     def forExpr(self):
         res = ParseResult()
@@ -1047,6 +1067,11 @@ class Parser:
             if res.err:
                 return res
             return res.success(getchExpr)
+        elif tkn.matches(TT_KEYWORD, "kbhit"):
+            kbhitExpr = res.register(self.kbhitExpr())
+            if res.err:
+                return res
+            return res.success(kbhitExpr)
         elif tkn.matches(TT_KEYWORD, "rand"):
             randExpr = res.register(self.randExpr())
             if res.err:

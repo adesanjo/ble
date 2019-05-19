@@ -37,6 +37,7 @@ KEYWORDS = [
     "disp",
     "input",
     "getch",
+    "kbhit",
     "rand",
     "int",
     "float",

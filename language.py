@@ -1,8 +1,9 @@
+import error
+import sys
+
 from languageInterpreter import SymbolTable, Number, Interpreter, Context
 from languageLexer import Lexer
 from languageParser import Parser
-import error
-import sys
 
 """
 Best Language Ever
