@@ -36,6 +36,7 @@ KEYWORDS = [
     "fn",
     "disp",
     "input",
+    "getch",
     "rand",
     "int",
     "float",

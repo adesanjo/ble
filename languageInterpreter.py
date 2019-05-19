@@ -3,12 +3,50 @@ import os
 import sys
 import pathlib
 
+if os.name == "nt":
+    try:
+        import msvcrt
+    except ImportError:
+        pass
+else:
+    import tty
+    import termios
+    import select
+
 from error import RTError
 import tokens as tok
 from values import NoneValue, Number, String, Function, List, Module, Class
 import languageParser as lp
 from languageLexer import Token, DIGITS
 import language
+
+################
+# GETCH
+################
+
+
+class _GetchUnix:
+    def __call__(self):
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
+
+
+class _GetchWindows:
+    def __call__(self):
+        return msvcrt.getch()
+
+
+if os.name == "nt":
+    getch = _GetchWindows()
+else:
+    getch = _GetchUnix()
+
 
 ################
 # RUNTIME RESULT
@@ -615,10 +653,14 @@ class Interpreter:
         res = RTResult()
         val = input()
         if not self.isNum(val.replace(".", "", 1)) or len(val) == 0:
-            return res.success(String(val))
+            return res.success(String(val).setContext(context).setPos(node.startPos, node.endPos))
         if "." in val:
-            return res.success(Number(float(val)))
-        return res.success(Number(int(val)))
+            return res.success(Number(float(val)).setContext(context).setPos(node.startPos, node.endPos))
+        return res.success(Number(int(val)).setContext(context).setPos(node.startPos, node.endPos))
+    
+    def visitGetchNode(self, node, context):
+        c = getch()
+        return RTResult().success(String(c).setContext(context).setPos(node.startPos, node.endPos))
     
     def visitRandNode(self, node, context):
         res = RTResult()

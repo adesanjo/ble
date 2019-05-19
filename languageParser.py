@@ -194,6 +194,12 @@ class InputNode:
         self.endPos = inputTkn.endPos
 
 
+class GetchNode:
+    def __init__(self, getchTkn):
+        self.startPos = getchTkn.startPos
+        self.endPos = getchTkn.endPos
+
+
 class RandNode:
     def __init__(self, randTkn):
         self.startPos = randTkn.startPos
@@ -443,6 +449,20 @@ class Parser:
         self.advance()
         
         return res.success(InputNode(tkn))
+    
+    def getchExpr(self):
+        res = ParseResult()
+
+        if not self.tkn.matches(TT_KEYWORD, "getch"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'getch'"
+            ))
+        tkn = self.tkn
+        res.registerAdvancement()
+        self.advance()
+        
+        return res.success(GetchNode(tkn))
 
     def forExpr(self):
         res = ParseResult()
@@ -1022,6 +1042,11 @@ class Parser:
             if res.err:
                 return res
             return res.success(inputExpr)
+        elif tkn.matches(TT_KEYWORD, "getch"):
+            getchExpr = res.register(self.getchExpr())
+            if res.err:
+                return res
+            return res.success(getchExpr)
         elif tkn.matches(TT_KEYWORD, "rand"):
             randExpr = res.register(self.randExpr())
             if res.err:

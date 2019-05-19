@@ -433,6 +433,15 @@ class String(Value):
             "\t": "\\t",
             "\r": "\\r"
         }
+        for i in range(9):
+            escapeChars[chr(i)] = f"\\x{i:02x}"
+        for i in range(11, 13):
+            escapeChars[chr(i)] = f"\\x{i:02x}"
+        for i in range(14, 32):
+            escapeChars[chr(i)] = f"\\x{i:02x}"
+        for i in range(127, 161):
+            escapeChars[chr(i)] = f"\\x{i:02x}"
+        escapeChars["\xad"] = "\\xad"
         value = self.value
         for escape, char in escapeChars.items():
             value = value.replace(escape, char)
