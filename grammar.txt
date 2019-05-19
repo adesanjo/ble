@@ -1,4 +1,4 @@
-fruitsprogram			: expr (SEMICOLON expr)* SEMICOLON?
+program			: expr (SEMICOLON? expr)* SEMICOLON?
 
 expr            : IDENTIFIER EQ expr
                 : comp-expr ((KEYWORD:AND|KEYWORD:OR) comp-expr)*

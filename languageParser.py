@@ -1397,9 +1397,10 @@ class Parser:
         if res.err:
             return res
         
-        while self.tkn.type == TT_SEMICOLON:
-            res.registerAdvancement()
-            self.advance()
+        while self.tkn.type not in (TT_RBRACKET, TT_EOF):
+            if self.tkn.type == TT_SEMICOLON:
+                res.registerAdvancement()
+                self.advance()
             
             if self.tkn.type in (TT_RBRACKET, TT_EOF):
                 break

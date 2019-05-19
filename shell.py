@@ -10,7 +10,9 @@ dev = len(sys.argv) > 1 and sys.argv[1] == "dev"
 
 while True:
     try:
+        KB.set_normal_term()
         cmd = input("$> ")
+        KB.set_getch_term()
         if cmd in ("quit", "exit"):
             break
         if cmd == "global":
@@ -26,9 +28,7 @@ while True:
             print("reset:      reset global symbol table")
             continue
         
-        KB.set_getch_term()
         res, err = language.run("<stdin>", cmd, dev=dev)
-        KB.set_normal_term()
         if err:
             print(err)
         elif not isinstance(res, NoneValue):
