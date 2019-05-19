@@ -225,6 +225,15 @@ class Lexer:
                 self.advance()
                 if self.char in escapeChars:
                     string += escapeChars[self.char]
+                elif self.char == "x":
+                    self.advance()
+                    a = self.char
+                    self.advance()
+                    b = self.char
+                    if a in DIGITS + "abcdef" and b in DIGITS + "abcdef":
+                        string += chr(int(a + b, 16))
+                    else:
+                        string += "?"
                 else:
                     string += self.char
             else:
