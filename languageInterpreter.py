@@ -350,7 +350,11 @@ class Interpreter:
             value.append(res.register(self.visit(exprNode, context)))
             if res.err:
                 return res
-        return res.success(List(value))
+        return res.success(
+            List(value).setContext(context).setPos(
+                node.startPos, node.endPos
+            )
+        )
     
     def visitVarAccessNode(self, node, context):
         res = RTResult()
