@@ -555,21 +555,12 @@ class Parser:
             stepValue = res.register(self.expr())
             if res.err:
                 return res
-            if not self.tkn.matches(TT_KEYWORD, "do"):
-                return res.failure(InvalidSyntaxError(
-                    self.tkn.startPos, self.tkn.endPos,
-                    "Expected 'do'"
-                ))
         else:
             stepValue = None
-            if not self.tkn.matches(TT_KEYWORD, "do"):
-                return res.failure(InvalidSyntaxError(
-                    self.tkn.startPos, self.tkn.endPos,
-                    "Expected 'step' or 'do'"
-                ))
 
-        res.registerAdvancement()
-        self.advance()
+        if self.tkn.matches(TT_KEYWORD, "do"):
+            res.registerAdvancement()
+            self.advance()
 
         body = res.register(self.expr())
         if res.err:
@@ -619,14 +610,9 @@ class Parser:
         if res.err:
             return res
 
-        if not self.tkn.matches(TT_KEYWORD, "do"):
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected 'do'"
-            ))
-
-        res.registerAdvancement()
-        self.advance()
+        if self.tkn.matches(TT_KEYWORD, "do"):
+            res.registerAdvancement()
+            self.advance()
 
         body = res.register(self.expr())
         if res.err:
@@ -651,13 +637,9 @@ class Parser:
         if res.err:
             return res
 
-        if not self.tkn.matches(TT_KEYWORD, "do"):
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected 'do'"
-            ))
-        res.registerAdvancement()
-        self.advance()
+        if self.tkn.matches(TT_KEYWORD, "do"):
+            res.registerAdvancement()
+            self.advance()
 
         body = res.register(self.expr())
         if res.err:
@@ -681,13 +663,9 @@ class Parser:
         if res.err:
             return res
 
-        if not self.tkn.matches(TT_KEYWORD, "then"):
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected 'then'"
-            ))
-        res.registerAdvancement()
-        self.advance()
+        if self.tkn.matches(TT_KEYWORD, "then"):
+            res.registerAdvancement()
+            self.advance()
 
         expr = res.register(self.expr())
         if res.err:
@@ -702,13 +680,9 @@ class Parser:
             if res.err:
                 return res
 
-            if not self.tkn.matches(TT_KEYWORD, "then"):
-                return res.failure(InvalidSyntaxError(
-                    self.tkn.startPos, self.tkn.endPos,
-                    "Expected 'then'"
-                ))
-            res.registerAdvancement()
-            self.advance()
+            if self.tkn.matches(TT_KEYWORD, "then"):
+                res.registerAdvancement()
+                self.advance()
 
             expr = res.register(self.expr())
             if res.err:
@@ -724,60 +698,6 @@ class Parser:
                 return res
 
         return res.success(IfNode(cases, elseCase))
-    
-    def listModifExpr(self):
-        res = ParseResult()
-        
-        if not self.tkn.matches(TT_KEYWORD, "mut"):
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected 'mut'"
-            ))
-        res.registerAdvancement()
-        self.advance()
-        
-        varNameTkn = self.tkn
-        if self.tkn.type != TT_IDENTIFIER:
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected identifier"
-            ))
-        res.registerAdvancement()
-        self.advance()
-        
-        if not self.tkn.matches(TT_KEYWORD, "at"):
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected 'at'"
-            ))
-        res.registerAdvancement()
-        self.advance()
-        
-        idxNodes = [res.register(self.expr())]
-        if res.err:
-            return res
-        
-        while self.tkn.type == TT_COMMA:
-            res.registerAdvancement()
-            self.advance()
-            
-            idxNodes.append(res.register(self.expr()))
-            if res.err:
-                return res
-        
-        if self.tkn.type != TT_EQ:
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected '='"
-            ))
-        res.registerAdvancement()
-        self.advance()
-        
-        valueExpr = res.register(self.expr())
-        if res.err:
-            return res
-        
-        return res.success(ListModifNode(varNameTkn, idxNodes, valueExpr))
     
     def listExpr(self):
         res = ParseResult()
@@ -1072,11 +992,6 @@ class Parser:
             if res.err:
                 return res
             return res.success(lst)
-        elif tkn.matches(TT_KEYWORD, "mut"):
-            listModifExpr = res.register(self.listModifExpr())
-            if res.err:
-                return res
-            return res.success(listModifExpr)
         elif tkn.matches(TT_KEYWORD, "class"):
             classExpr = res.register(self.classExpr())
             if res.err:
