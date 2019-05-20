@@ -19,7 +19,7 @@ from languageLexer import Token, DIGITS
 import language
 
 ################
-# GETCH
+# GETCH & KBHIT
 ################
 
 
