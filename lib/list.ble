@@ -1,9 +1,9 @@
 fn range(start, end){
-    l = [];
-    for i = start to end do{
-        l = l + [i];
-    };
-    l;
-};
+    l = []
+    for i = start to end{
+        l = l + [i]
+    }
+    l
+}
 
-moduleName = "list";
+moduleName = "list"

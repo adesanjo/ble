@@ -1,19 +1,36 @@
-include "string";
+include "string"
 
 fn fromCSV(s){
     l = string.split(s, "\n");
-    for i = 0 to +l do{
-        l(i) = string.split(l(i), ",");
-    };
-    l;
-};
+    for i = 0 to +l{
+        l(i) = string.split(l(i), ",")
+    }
+    l
+}
 
 fn toCSV(l){
-    for i = 0 to +l do{
-        l(i) = string.join(l(i), ",");
-    };
-    s = string.join(l, "\n");
-    s;
-};
+    for i = 0 to +l{
+        l(i) = string.join(l(i), ",")
+    }
+    s = string.join(l, "\n")
+    s
+}
 
-moduleName = "csv";
+fn fromCSVfile(f){
+    s = read f
+    l = string.split(s, "\n")
+    for i = 0 to +l{
+        l(i) = string.split(l(i), ",")
+    }
+    l
+}
+
+fn toCSVfile(f, l){
+    for i = 0 to +l{
+        l(i) = string.join(l(i), ",")
+    }
+    s = string.join(l, "\n")
+    write f, s
+}
+
+moduleName = "csv"

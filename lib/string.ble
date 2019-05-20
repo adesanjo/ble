@@ -1,107 +1,107 @@
 fn lower(s){
-    r = "";
-    for each c in s do{
-        if c == "A" then l = "a"
-        elif c == "B" then l = "b"
-        elif c == "C" then l = "c"
-        elif c == "D" then l = "d"
-        elif c == "E" then l = "e"
-        elif c == "F" then l = "f"
-        elif c == "G" then l = "g"
-        elif c == "H" then l = "h"
-        elif c == "I" then l = "i"
-        elif c == "J" then l = "j"
-        elif c == "K" then l = "k"
-        elif c == "L" then l = "l"
-        elif c == "M" then l = "m"
-        elif c == "N" then l = "n"
-        elif c == "O" then l = "o"
-        elif c == "P" then l = "p"
-        elif c == "Q" then l = "q"
-        elif c == "R" then l = "r"
-        elif c == "S" then l = "s"
-        elif c == "T" then l = "t"
-        elif c == "U" then l = "u"
-        elif c == "V" then l = "v"
-        elif c == "W" then l = "w"
-        elif c == "X" then l = "x"
-        elif c == "Y" then l = "y"
-        elif c == "Z" then l = "z"
-        else l = c;
+    r = ""
+    for each c in s{
+        if c == "A" l = "a"
+        elif c == "B" l = "b"
+        elif c == "C" l = "c"
+        elif c == "D" l = "d"
+        elif c == "E" l = "e"
+        elif c == "F" l = "f"
+        elif c == "G" l = "g"
+        elif c == "H" l = "h"
+        elif c == "I" l = "i"
+        elif c == "J" l = "j"
+        elif c == "K" l = "k"
+        elif c == "L" l = "l"
+        elif c == "M" l = "m"
+        elif c == "N" l = "n"
+        elif c == "O" l = "o"
+        elif c == "P" l = "p"
+        elif c == "Q" l = "q"
+        elif c == "R" l = "r"
+        elif c == "S" l = "s"
+        elif c == "T" l = "t"
+        elif c == "U" l = "u"
+        elif c == "V" l = "v"
+        elif c == "W" l = "w"
+        elif c == "X" l = "x"
+        elif c == "Y" l = "y"
+        elif c == "Z" l = "z"
+        else l = c
         r = r + l
-    };
-    r;
-};
+    }
+    r
+}
 
 fn upper(s){
-    r = "";
-    for each c in s do{
-        if c == "a" then l = "A"
-        elif c == "b" then l = "B"
-        elif c == "c" then l = "C"
-        elif c == "d" then l = "D"
-        elif c == "e" then l = "E"
-        elif c == "f" then l = "F"
-        elif c == "g" then l = "G"
-        elif c == "h" then l = "H"
-        elif c == "i" then l = "I"
-        elif c == "j" then l = "J"
-        elif c == "k" then l = "K"
-        elif c == "l" then l = "L"
-        elif c == "m" then l = "M"
-        elif c == "n" then l = "N"
-        elif c == "o" then l = "O"
-        elif c == "p" then l = "P"
-        elif c == "q" then l = "Q"
-        elif c == "r" then l = "R"
-        elif c == "s" then l = "S"
-        elif c == "t" then l = "T"
-        elif c == "u" then l = "U"
-        elif c == "v" then l = "V"
-        elif c == "w" then l = "W"
-        elif c == "x" then l = "X"
-        elif c == "y" then l = "Y"
-        elif c == "z" then l = "Z"
-        else l = c;
+    r = ""
+    for each c in s{
+        if c == "a" l = "A"
+        elif c == "b" l = "B"
+        elif c == "c" l = "C"
+        elif c == "d" l = "D"
+        elif c == "e" l = "E"
+        elif c == "f" l = "F"
+        elif c == "g" l = "G"
+        elif c == "h" l = "H"
+        elif c == "i" l = "I"
+        elif c == "j" l = "J"
+        elif c == "k" l = "K"
+        elif c == "l" l = "L"
+        elif c == "m" l = "M"
+        elif c == "n" l = "N"
+        elif c == "o" l = "O"
+        elif c == "p" l = "P"
+        elif c == "q" l = "Q"
+        elif c == "r" l = "R"
+        elif c == "s" l = "S"
+        elif c == "t" l = "T"
+        elif c == "u" l = "U"
+        elif c == "v" l = "V"
+        elif c == "w" l = "W"
+        elif c == "x" l = "X"
+        elif c == "y" l = "Y"
+        elif c == "z" l = "Z"
+        else l = c
         r = r + l
-    };
-    r;
-};
+    }
+    r
+}
 
 fn split(s, c){
-    l = [];
-    ss = "";
-    for i = 0 to +s do{
-        if s(i, i+c) == c then{
-            l = l + [ss];
-            ss = "";
+    l = []
+    ss = ""
+    for i = 0 to +s{
+        if s(i, i+c) == c{
+            l = l + [ss]
+            ss = ""
         }else{
-            ss = ss + s(i);
-        };
-    };
-    l = l + [ss];
-    l;
-};
+            ss = ss + s(i)
+        }
+    }
+    l = l + [ss]
+    l
+}
 
 fn join(l, c){
-    s = "";
-    for each ll in l do{
-        s = s + c + ll;
-    };
-    s = s(+c, +s);
-    s;
-};
+    s = ""
+    for each ll in l{
+        s = s + c + ll
+    }
+    s = s(+c, +s)
+    s
+}
 
 fn strip(s){
-    i = 0;
-    j = +s;
-    while i < j and [" ", "\t", "\n"] - s(i) do{
-        i = i + 1;
-    };
-    while j > i and [" ", "\t", "\n"] - s(j - 1) do{
-        j = j - 1;
-    };
-    s(i, j);
-};
+    i = 0
+    j = +s
+    while i < j and [" ", "\t", "\n"] - s(i){
+        i = i + 1
+    }
+    while j > i and [" ", "\t", "\n"] - s(j - 1){
+        j = j - 1
+    }
+    s(i, j)
+}
 
-moduleName = "string";
+moduleName = "string"
