@@ -303,6 +303,20 @@ class TimeNode:
         self.endPos = tkn.endPos
 
 
+class CLINode:
+    def __init__(self, cmdNode):
+        self.cmdNode = cmdNode
+        
+        self.startPos = cmdNode.startPos
+        self.endPos = cmdNode.endPos
+
+
+class OSNode:
+    def __init__(self, tkn):
+        self.startPos = tkn.startPos
+        self.endPos = tkn.endPos
+
+
 ################
 # PARSE RESULT
 ################
@@ -969,6 +983,37 @@ class Parser:
         
         return res.success(TimeNode(tkn))
     
+    def cliExpr(self):
+        res = ParseResult()
+        
+        if not self.tkn.matches(TT_KEYWORD, "cli"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'cli'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        cmdNode = res.register(self.expr())
+        if res.err:
+            return res
+        
+        return res.success(CLINode(cmdNode))
+    
+    def osExpr(self):
+        res = ParseResult()
+        
+        tkn = self.tkn
+        if not self.tkn.matches(TT_KEYWORD, "os"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'os'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        return res.success(OSNode(tkn))
+    
     def atom(self):
         res = ParseResult()
         tkn = self.tkn
@@ -1142,6 +1187,16 @@ class Parser:
             if res.err:
                 return res
             return res.success(timeExpr)
+        elif tkn.matches(TT_KEYWORD, "cli"):
+            cliExpr = res.register(self.cliExpr())
+            if res.err:
+                return res
+            return res.success(cliExpr)
+        elif tkn.matches(TT_KEYWORD, "os"):
+            osExpr = res.register(self.osExpr())
+            if res.err:
+                return res
+            return res.success(osExpr)
 
         return res.failure(InvalidSyntaxError(
             tkn.startPos, tkn.endPos,

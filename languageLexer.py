@@ -50,7 +50,9 @@ KEYWORDS = [
     "write",
     "writeb",
     "cls",
-    "time"
+    "time",
+    "cli",
+    "os"
 ]
 
 

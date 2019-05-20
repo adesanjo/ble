@@ -861,4 +861,27 @@ class Interpreter:
     
     def visitTimeNode(self, node, context):
         t = round(time.time() * 1000000)
-        return RTResult().success(Number(t).setContext(context).setPos(node.startPos, node.endPos))
+        return RTResult().success(
+            Number(t).setContext(context).setPos(node.startPos, node.endPos)
+        )
+    
+    def visitCLINode(self, node, context):
+        res = RTResult()
+        cmd = res.register(self.visit(node.cmdNode, context))
+        if res.err:
+            return res
+        if not isinstance(cmd, String):
+            return res.failure(RTError(
+                node.startPos, node.endPos,
+                "CLI command must be a string value",
+                context
+            ))
+        os.system(cmd.value)
+        return res.success(
+            NoneValue().setContext(context).setPos(node.startPos, node.endPos)
+        )
+    
+    def visitOSNode(self, node, context):
+        return RTResult().success(
+            String(sys.platform).setContext(context).setPos(node.startPos, node.endPos)
+        )
