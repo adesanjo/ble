@@ -6,4 +6,19 @@ fn range(start, end){
     l
 }
 
+fn map(f, l){
+    for i = 0 to +l{
+        l(i) = f(l(i))
+    }
+    l
+}
+
+fn filter(l, f){
+    nl = []
+    for each ll in l{
+        if f(ll) nl = nl + [ll]
+    }
+    nl
+}
+
 moduleName = "list"
