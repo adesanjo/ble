@@ -12,7 +12,7 @@ inoremap {<CR> {<C-o>o}<C-o>O
 syntax case match
 
 " Keywords
-syntax keyword bleKeyword include as and or not if then elif else for to step each in while do fn disp input getch kbhit rand int float str mut at type true false none argv class read write readb writeb cls time
+syntax keyword bleKeyword include as and or not if then elif else for to step each in while do fn disp input getch kbhit rand int float str mut at type true false none argv class read write readb writeb cls time cli os
 
 " Identifiers
 syntax match bleIdentifier /$[a-zA-Z0-9_]*/
