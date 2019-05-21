@@ -293,7 +293,7 @@ class Interpreter:
         moduleContext.parent = None
         moduleContext.parentEntryPos = None
         moduleContext.symbolTable.parent = None
-        return res.success(moduleName)
+        return res.success(module)
     
     def visitAccessNode(self, node, context):
         res = RTResult()
