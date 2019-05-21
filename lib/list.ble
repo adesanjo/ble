@@ -33,4 +33,14 @@ fn builtin reduce(f, l){
     }
 }
 
+fn builtin index(ll, l){
+    idx = -1
+    for i = 0 to +l{
+        if l(i) == ll and idx == -1{
+            idx = i
+        }
+    }
+    idx
+}
+
 moduleName = "list"
