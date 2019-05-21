@@ -1,4 +1,5 @@
 from random import random
+from copy import deepcopy
 import os
 import sys
 import pathlib
@@ -174,7 +175,7 @@ class SymbolTable:
     
     def copy(self):
         res = SymbolTable(self.parent.copy() if self.parent else None)
-        res.symbols = dict((key, value.copy())for key, value in self.symbols.items())
+        res.symbols = deepcopy(self.symbols)
         return res
 
     def __repr__(self):
