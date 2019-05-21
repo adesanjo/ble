@@ -700,7 +700,7 @@ class Module(Value):
         return value, None
     
     def __repr__(self):
-        return repr(self.moduleContext)
+        return f"<module {self.moduleContext.displayName}>"
 
 
 class Class(Value):
@@ -761,4 +761,4 @@ class Class(Value):
         ).setContext(self.context).setPos(self.startPos, self.endPos)
     
     def __repr__(self):
-        return f"<class {self.name}>\n{self.classContext}"
+        return f"<class {self.name}>"
