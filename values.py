@@ -1,4 +1,3 @@
-from copy import deepcopy
 import sys
 
 from error import RTError
@@ -482,7 +481,7 @@ class List(Value):
         if isinstance(other, Number) and isinstance(other.value, int):
             newValue = []
             for _ in range(other.value):
-                newValue.extend(deepcopy(self.value))
+                newValue.extend([val.copy() for val in self.value])
             return List(newValue).setContext(self.context), None
         return None, self.illegalOperation(other)
 
@@ -604,7 +603,7 @@ class List(Value):
         return res.failure(self.illegalOperation(args[-1] if len(args) > 0 else None))
     
     def copy(self):
-        copy = List(deepcopy(self.value))
+        copy = List([val.copy() for val in self.value])
         copy.setPos(self.startPos, self.endPos)
         copy.setContext(self.context)
         return copy
