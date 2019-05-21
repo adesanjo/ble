@@ -1,4 +1,4 @@
-fn lower(s){
+fn builtin lower(s){
     r = ""
     for each c in s{
         if c == "A" l = "a"
@@ -33,7 +33,7 @@ fn lower(s){
     r
 }
 
-fn upper(s){
+fn builtin upper(s){
     r = ""
     for each c in s{
         if c == "a" l = "A"
@@ -68,7 +68,7 @@ fn upper(s){
     r
 }
 
-fn split(s, c){
+fn builtin split(s, c){
     l = []
     ss = ""
     for i = 0 to +s{
@@ -83,7 +83,7 @@ fn split(s, c){
     l
 }
 
-fn join(l, c){
+fn builtin join(l, c){
     s = ""
     for each ll in l{
         s = s + c + ll
@@ -92,7 +92,7 @@ fn join(l, c){
     s
 }
 
-fn strip(s){
+fn builtin strip(s){
     i = 0
     j = +s
     while i < j and [" ", "\t", "\n"] - s(i){

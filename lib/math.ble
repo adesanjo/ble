@@ -1,14 +1,14 @@
-fn min(a, b){
+fn builtin min(a, b){
     if a < b a
     else b
 }
 
-fn max(a, b){
+fn builtin max(a, b){
     if a > b a
     else b
 }
 
-fn minl(l){
+fn builtin minl(l){
     m = l(0)
     for each i in l{
         if i < m m = i;
@@ -16,7 +16,7 @@ fn minl(l){
     m
 }
 
-fn maxl(l){
+fn builtin maxl(l){
     m = l(0)
     for each i in l{
         if i > m m = i;
@@ -24,7 +24,7 @@ fn maxl(l){
     m
 }
 
-fn abs(x){
+fn builtin abs(x){
     if x < 0 then -x
     else x
 }

@@ -1,6 +1,6 @@
 include "string"
 
-fn fromCSV(s){
+fn builtin fromCSV(s){
     l = string.split(s, "\n");
     for i = 0 to +l{
         l(i) = string.split(l(i), ",")
@@ -8,7 +8,7 @@ fn fromCSV(s){
     l
 }
 
-fn toCSV(l){
+fn builtin toCSV(l){
     for i = 0 to +l{
         l(i) = string.join(l(i), ",")
     }
@@ -16,7 +16,7 @@ fn toCSV(l){
     s
 }
 
-fn fromCSVfile(f){
+fn builtin fromCSVfile(f){
     s = read f
     l = string.split(s, "\n")
     for i = 0 to +l{
@@ -25,7 +25,7 @@ fn fromCSVfile(f){
     l
 }
 
-fn toCSVfile(f, l){
+fn builtin toCSVfile(f, l){
     for i = 0 to +l{
         l(i) = string.join(l(i), ",")
     }

@@ -1,4 +1,4 @@
-fn range(start, end){
+fn builtin range(start, end){
     l = []
     for i = start to end{
         l = l + [i]
@@ -6,14 +6,14 @@ fn range(start, end){
     l
 }
 
-fn map(f, l){
+fn builtin map(f, l){
     for i = 0 to +l{
         l(i) = f(l(i))
     }
     l
 }
 
-fn filter(f, l){
+fn builtin filter(f, l){
     nl = []
     for each ll in l{
         if f(ll) nl = nl + [ll]
