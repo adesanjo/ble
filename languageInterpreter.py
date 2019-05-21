@@ -1,4 +1,5 @@
 from random import random
+from copy import deepcopy
 import os
 import sys
 import pathlib
@@ -138,6 +139,11 @@ class Context:
             return 1
         return 1 + self.parent.depth()
     
+    def copy(self):
+        res = Context(self.displayName, self.parent.copy() if self.parent else None, self.parentEntryPos.copy() if self.parentEntryPos else None)
+        res.symbolTable = self.symbolTable.copy()
+        return res
+    
     def __repr__(self):
         return repr(self.symbolTable)
 
@@ -166,6 +172,11 @@ class SymbolTable:
     
     def clear(self):
         self.symbols.clear()
+    
+    def copy(self):
+        res = SymbolTable(self.parent.copy() if self.parent else None)
+        res.symbols = deepcopy(self.symbols)
+        return res
 
     def __repr__(self):
         res = repr(self.symbols)

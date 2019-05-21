@@ -758,8 +758,8 @@ class Class(Value):
     
     def copy(self):
         return Class(
-            self.name, deepcopy(self.parent), deepcopy(self.bodyNode), deepcopy(self.classContext)
-        ).setContext(deepcopy(self.context)).setPos(self.startPos, self.endPos)
+            self.name, self.parent.copy() if self.parent else None, self.bodyNode, self.classContext.copy()
+        ).setContext(self.context).setPos(self.startPos, self.endPos)
     
     def __repr__(self):
         return f"<class {self.name}>\n{self.classContext}"
