@@ -643,8 +643,9 @@ class Interpreter:
         bodyNode = node.bodyNode
         argNames = [argName.value for argName in node.argNameTkns]
         canMod = node.canMod
+        isBuiltin = node.isBuiltin
         funcValue = Function(
-            funcName, bodyNode, argNames, canMod
+            funcName, bodyNode, argNames, canMod, isBuiltin
         ).setContext(context).setPos(node.startPos, node.endPos)
 
         if node.varNameTkn and funcName not in BUILTINS:

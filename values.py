@@ -614,12 +614,13 @@ class List(Value):
 
 
 class Function(Value):
-    def __init__(self, name, bodyNode, argNames, canMod):
+    def __init__(self, name, bodyNode, argNames, canMod, isBuiltin):
         super().__init__()
         self.name = name or "<anonymous>"
         self.bodyNode = bodyNode
         self.argNames = argNames
         self.canMod = canMod
+        self.isBuiltin = isBuiltin
 
     def execute(self, args, context, dev=False):
         res = li.RTResult()
@@ -670,15 +671,18 @@ class Function(Value):
         return res.success(value)
 
     def copy(self):
-        copy = Function(self.name, self.bodyNode, self.argNames, self.canMod)
+        copy = Function(self.name, self.bodyNode, self.argNames, self.canMod, self.isBuiltin)
         copy.setContext(self.context)
         copy.setPos(self.startPos, self.endPos)
         return copy
 
     def __repr__(self):
+        prefix = ""
+        if self.isBuiltin:
+            prefix += "built-in "
         if self.canMod:
-            return f"<mut-function {self.name}>"
-        return f"<function {self.name}>"
+            prefix += "mut-"
+        return f"<{prefix}function {self.name}>"
 
 
 class Module(Value):

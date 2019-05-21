@@ -138,11 +138,12 @@ class WhileNode:
 
 
 class FuncDefNode:
-    def __init__(self, varNameTkn, argNameTkns, bodyNode, canMod):
+    def __init__(self, varNameTkn, argNameTkns, bodyNode, canMod, isBuiltin):
         self.varNameTkn = varNameTkn
         self.argNameTkns = argNameTkns
         self.bodyNode = bodyNode
         self.canMod = canMod
+        self.isBuiltin = isBuiltin
 
         if varNameTkn:
             self.startPos = varNameTkn.startPos
@@ -1302,6 +1303,13 @@ class Parser:
             canMod = True
         else:
             canMod = False
+        
+        if self.tkn.matches(TT_KEYWORD, "builtin"):
+            res.registerAdvancement()
+            self.advance()
+            isBuiltin = True
+        else:
+            isBuiltin = False
 
         if self.tkn.type == TT_IDENTIFIER:
             varNameTkn = self.tkn
@@ -1358,7 +1366,7 @@ class Parser:
         if res.err:
             return res
 
-        return res.success(FuncDefNode(varNameTkn, argNameTkns, nodeToReturn, canMod))
+        return res.success(FuncDefNode(varNameTkn, argNameTkns, nodeToReturn, canMod, isBuiltin))
     
     def program(self):
         res = ParseResult()

@@ -13,12 +13,24 @@ fn map(f, l){
     l
 }
 
-fn filter(l, f){
+fn filter(f, l){
     nl = []
     for each ll in l{
         if f(ll) nl = nl + [ll]
     }
     nl
+}
+
+fn builtin reduce(f, l){
+    if +l > 0{
+        res = l(0)
+        for i = 1 to +l{
+            res = f(res, l(i))
+        }
+        res
+    }else{
+        none
+    }
 }
 
 moduleName = "list"
