@@ -132,4 +132,12 @@ fn builtin isNum(s){
     isInt(s) or isFloat(s)
 }
 
+fn builtin toAscii(s){
+    0
+}
+
+fn builtin fromAscii(n){
+    "a"
+}
+
 moduleName = "string"
