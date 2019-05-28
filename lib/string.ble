@@ -114,4 +114,22 @@ fn builtin isInt(s){
     res
 }
 
+fn builtin isFloat(s){
+    res = true
+    ss = s - "."
+    if +ss != +s - 1{
+        res = false
+    }
+    for each c in ss{
+        if not ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"] - c{
+            res = false
+        }
+    }
+    res
+}
+
+fn builtin isNum(s){
+    isInt(s) or isFloat(s)
+}
+
 moduleName = "string"
