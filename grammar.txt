@@ -1,6 +1,6 @@
 program			: expr (SEMICOLON? expr)* SEMICOLON?
 
-expr            : IDENTIFIER EQ expr
+expr            : IDENTIFIER (EQ|PLUSEQ|MINUSEQ|MULEQ|DIVEQ|MODEQ|POWEQ) expr
                 : comp-expr ((KEYWORD:AND|KEYWORD:OR) comp-expr)*
 
 comp-expr       : NOT comp-expr

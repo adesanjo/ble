@@ -118,23 +118,17 @@ class Lexer:
                 tokens.append(Token(TT_DOT, startPos=self.pos))
                 self.advance()
             elif self.char == "+":
-                tokens.append(Token(TT_PLUS, startPos=self.pos))
-                self.advance()
+                tokens.append(self.makePlus())
             elif self.char == "-":
-                tokens.append(Token(TT_MINUS, startPos=self.pos))
-                self.advance()
+                tokens.append(self.makeMinus())
             elif self.char == "*":
-                tokens.append(Token(TT_MUL, startPos=self.pos))
-                self.advance()
+                tokens.append(self.makeMul())
             elif self.char == "/":
-                tokens.append(Token(TT_DIV, startPos=self.pos))
-                self.advance()
+                tokens.append(self.makeDiv())
             elif self.char == "%":
-                tokens.append(Token(TT_MOD, startPos=self.pos))
-                self.advance()
+                tokens.append(self.makeMod())
             elif self.char == "^":
-                tokens.append(Token(TT_POW, startPos=self.pos))
-                self.advance()
+                tokens.append(self.makePow())
             elif self.char == "(":
                 tokens.append(Token(TT_LPAREN, startPos=self.pos))
                 self.advance()
@@ -246,6 +240,60 @@ class Lexer:
         self.advance()
         
         return Token(TT_STRING, string, startPos, self.pos)
+
+    def makePlus(self):
+        tknType = TT_PLUS
+        startPos = self.pos.copy()
+        self.advance()
+        if self.char == "=":
+            self.advance()
+            tknType = TT_PLUSEQ
+        return Token(tknType, startPos=startPos, endPos=self.pos)
+
+    def makeMinus(self):
+        tknType = TT_MINUS
+        startPos = self.pos.copy()
+        self.advance()
+        if self.char == "=":
+            self.advance()
+            tknType = TT_MINUSEQ
+        return Token(tknType, startPos=startPos, endPos=self.pos)
+
+    def makeMul(self):
+        tknType = TT_MUL
+        startPos = self.pos.copy()
+        self.advance()
+        if self.char == "=":
+            self.advance()
+            tknType = TT_MULEQ
+        return Token(tknType, startPos=startPos, endPos=self.pos)
+
+    def makeDiv(self):
+        tknType = TT_DIV
+        startPos = self.pos.copy()
+        self.advance()
+        if self.char == "=":
+            self.advance()
+            tknType = TT_DIVEQ
+        return Token(tknType, startPos=startPos, endPos=self.pos)
+
+    def makeMod(self):
+        tknType = TT_MOD
+        startPos = self.pos.copy()
+        self.advance()
+        if self.char == "=":
+            self.advance()
+            tknType = TT_MODEQ
+        return Token(tknType, startPos=startPos, endPos=self.pos)
+
+    def makePow(self):
+        tknType = TT_POW
+        startPos = self.pos.copy()
+        self.advance()
+        if self.char == "=":
+            self.advance()
+            tknType = TT_POWEQ
+        return Token(tknType, startPos=startPos, endPos=self.pos)
 
     def makeNotEquals(self):
         startPos = self.pos.copy()

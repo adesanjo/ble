@@ -1242,7 +1242,7 @@ class Parser:
     def expr(self):
         res = ParseResult()
 
-        if self.tkn.type == TT_IDENTIFIER and self.nextTkn.type == TT_EQ:
+        if self.tkn.type == TT_IDENTIFIER and self.nextTkn.type in (TT_EQ, TT_PLUSEQ, TT_MINUSEQ, TT_MULEQ, TT_DIVEQ, TT_MODEQ, TT_POWEQ):
             varName = self.tkn
             if varName.value in li.BUILTINS:
                 return res.failure(InvalidSyntaxError(
@@ -1251,11 +1251,14 @@ class Parser:
                 ))
             res.registerAdvancement()
             self.advance()
+            tkn = self.tkn
             res.registerAdvancement()
             self.advance()
             expr = res.register(self.expr())
             if res.err:
                 return res
+            if tkn.type == TT_PLUSEQ:
+                expr = BinOpNode(VarAccessNode(varName), Token(TT_PLUS, None, tkn.startPos, tkn.endPos), expr)
             return res.success(VarAssignNode(varName, expr))
 
         node = res.register(self.binOp(
