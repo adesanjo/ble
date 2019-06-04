@@ -1259,6 +1259,16 @@ class Parser:
                 return res
             if tkn.type == TT_PLUSEQ:
                 expr = BinOpNode(VarAccessNode(varName), Token(TT_PLUS, None, tkn.startPos, tkn.endPos), expr)
+            elif tkn.type == TT_MINUSEQ:
+                expr = BinOpNode(VarAccessNode(varName), Token(TT_MINUS, None, tkn.startPos, tkn.endPos), expr)
+            elif tkn.type == TT_MULEQ:
+                expr = BinOpNode(VarAccessNode(varName), Token(TT_MUL, None, tkn.startPos, tkn.endPos), expr)
+            elif tkn.type == TT_DIVEQ:
+                expr = BinOpNode(VarAccessNode(varName), Token(TT_DIV, None, tkn.startPos, tkn.endPos), expr)
+            elif tkn.type == TT_MODEQ:
+                expr = BinOpNode(VarAccessNode(varName), Token(TT_MOD, None, tkn.startPos, tkn.endPos), expr)
+            elif tkn.type == TT_POWEQ:
+                expr = BinOpNode(VarAccessNode(varName), Token(TT_POW, None, tkn.startPos, tkn.endPos), expr)
             return res.success(VarAssignNode(varName, expr))
 
         node = res.register(self.binOp(
