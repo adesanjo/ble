@@ -19,7 +19,8 @@ call			: access (LPAREN (expr (COMMA expr)*)? RPAREN (LPAREN (expr (COMMA expr)*
 
 access     		: atom (DOT IDENTIFIER)*
 
-atom 			: INT|FLOAT|STRING|IDENTIFIER|BUILTIN
+atom 			: INT|FLOAT|STRING|BUILTIN
+				: IDENTIFIER (INC|DEC)?
 				: LPAREN expr RPAREN
 				: LBRACKET program? RBRACKET
 				: class-expr

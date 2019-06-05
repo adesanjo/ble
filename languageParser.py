@@ -950,7 +950,22 @@ class Parser:
         elif tkn.type == TT_IDENTIFIER:
             res.registerAdvancement()
             self.advance()
-            return res.success(VarAccessNode(tkn))
+            node = VarAccessNode(tkn)
+            if self.tkn.type == TT_INC:
+                node = VarAssignNode(tkn, BinOpNode(
+                    node, Token(TT_PLUS, None, self.tkn.startPos, self.tkn.endPos),
+                    NumberNode(Token(TT_INT, 1, self.tkn.startPos, self.tkn.endPos))
+                ))
+                res.registerAdvancement()
+                self.advance()
+            elif self.tkn.type == TT_INC:
+                node = VarAssignNode(tkn, BinOpNode(
+                    node, Token(TT_MINUS, None, self.tkn.startPos, self.tkn.endPos),
+                    NumberNode(Token(TT_INT, 1, self.tkn.startPos, self.tkn.endPos))
+                ))
+                res.registerAdvancement()
+                self.advance()
+            return res.success(node)
         elif tkn.type == TT_LPAREN:
             res.registerAdvancement()
             self.advance()

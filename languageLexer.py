@@ -248,6 +248,9 @@ class Lexer:
         if self.char == "=":
             self.advance()
             tknType = TT_PLUSEQ
+        elif self.char == "+":
+            self.advance()
+            tknType = TT_INC
         return Token(tknType, startPos=startPos, endPos=self.pos)
 
     def makeMinus(self):
@@ -257,6 +260,9 @@ class Lexer:
         if self.char == "=":
             self.advance()
             tknType = TT_MINUSEQ
+        elif self.char == "-":
+            self.advance()
+            tknType = TT_DEC
         return Token(tknType, startPos=startPos, endPos=self.pos)
 
     def makeMul(self):
