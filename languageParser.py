@@ -958,7 +958,7 @@ class Parser:
                 ))
                 res.registerAdvancement()
                 self.advance()
-            elif self.tkn.type == TT_INC:
+            elif self.tkn.type == TT_DEC:
                 node = VarAssignNode(tkn, BinOpNode(
                     node, Token(TT_MINUS, None, self.tkn.startPos, self.tkn.endPos),
                     NumberNode(Token(TT_INT, 1, self.tkn.startPos, self.tkn.endPos))
