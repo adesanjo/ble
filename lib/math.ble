@@ -41,12 +41,114 @@ fn builtin abs(x){
     else x
 }
 
+fn builtin fact(n){
+    res = 1
+    for i = 2 to n+1{
+        res *= i
+    }
+    res
+}
+
+fn builtin sqrt(x){
+    x^(0.5)
+}
+
 fn builtin deg2rad(d){
     d * PI / 180
 }
 
 fn builtin rad2deg(r){
     r * 180 / PI
+}
+
+fn builtin sin(x){
+    res = 0.0
+    n = 0
+    term = (-1)^n / fact(2*n + 1) * x^(2*n + 1)
+    while abs(term) > 10^(-15){
+        res += term
+        n += 1
+        term = (-1)^n / fact(2*n + 1) * x^(2*n + 1)
+    }
+    if abs(res) < 10^(-15){
+        res = 0.0
+    }
+    elif abs(res - 1) < 10^(-15){
+        res = 1.0
+    }
+    elif abs(res + 1) < 10^(-15){
+        res = -1.0
+    }
+    res
+}
+
+fn builtin cos(x){
+    res = 0.0
+    n = 0
+    term = (-1)^n / fact(2*n) * x^(2*n)
+    while abs(term) > 10^(-15){
+        res += term
+        n += 1
+        term = (-1)^n / fact(2*n) * x^(2*n)
+    }
+    if abs(res) < 10^(-15){
+        res = 0.0
+    }
+    elif abs(res - 1) < 10^(-15){
+        res = 1.0
+    }
+    elif abs(res + 1) < 10^(-15){
+        res = -1.0
+    }
+    res
+}
+
+fn builtin tan(x){
+    sin(x) / cos(x)
+}
+
+fn builtin asin(x){
+    res = 0.0
+    n = 0
+    term = fact(2*n) / (4^n * fact(n)^2 * (2*n + 1)) * x^(2*n + 1)
+    while abs(term) > 10^(-15){
+        res += term
+        n += 1
+        term = fact(2*n) / (4^n * fact(n)^2 * (2*n + 1)) * x^(2*n + 1)
+    }
+    if abs(res) < 10^(-15){
+        res = 0.0
+    }
+    res
+}
+fn builtin acos(x){
+    res = 0.0
+    n = 0
+    term = fact(2*n) / (4^n * fact(n)^2 * (2*n + 1)) * x^(2*n + 1)
+    while abs(term) > 10^(-15){
+        res += term
+        n += 1
+        term = fact(2*n) / (4^n * fact(n)^2 * (2*n + 1)) * x^(2*n + 1)
+    }
+    if abs(res) < 10^(-15){
+        res = 0.0
+    }
+    PI/2 - res
+}
+
+fn builtin atan(x){
+    res = 0.0
+    n = 0
+    term = (-1)^n / (2*n + 1) * x^(2*n + 1)
+    while abs(term) > 10^(-15){
+        res += term
+        n += 1
+        term = (-1)^n / (2*n + 1) * x^(2*n + 1)
+    }
+    if abs(res) < 10^(-15){
+        res = 0.0
+    }
+    res
 }
 
 PI = 3.14159265358979323846
