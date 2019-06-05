@@ -108,6 +108,7 @@ fn builtin tan(x){
 }
 
 fn builtin asin(x){
+    disp "WARNING: The function asin is not yet optimised. If it is taking too much time, you can stop it by hitting CTRL-C"
     res = 0.0
     n = 0
     term = fact(2*n) / (4^n * fact(n)^2 * (2*n + 1)) * x^(2*n + 1)
@@ -122,6 +123,7 @@ fn builtin asin(x){
     res
 }
 fn builtin acos(x){
+    disp "WARNING: The function acos is not yet optimised. If it is taking too much time, you can stop it by hitting CTRL-C"
     res = 0.0
     n = 0
     term = fact(2*n) / (4^n * fact(n)^2 * (2*n + 1)) * x^(2*n + 1)
@@ -137,6 +139,7 @@ fn builtin acos(x){
 }
 
 fn builtin atan(x){
+    disp "WARNING: The function atan is not yet optimised. If it is taking too much time, you can stop it by hitting CTRL-C"
     res = 0.0
     n = 0
     term = (-1)^n / (2*n + 1) * x^(2*n + 1)
