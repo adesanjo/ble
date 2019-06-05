@@ -41,6 +41,14 @@ fn builtin abs(x){
     else x
 }
 
+fn builtin deg2rad(d){
+    d * PI / 180
+}
+
+fn builtin rad2deg(r){
+    r * 180 / PI
+}
+
 PI = 3.14159265358979323846
 
 moduleName = "math"
