@@ -667,6 +667,8 @@ class Function(Value):
         if res.err:
             return res
 
+        if isinstance(value, ReturnValue):
+            value = value.value
         return res.success(value)
 
     def copy(self):
@@ -682,6 +684,21 @@ class Function(Value):
         if self.canMod:
             prefix += "mut-"
         return f"<{prefix}function {self.name}>"
+
+
+class ReturnValue(Value):
+    def __init__(self, value):
+        super().__init__()
+        self.value = value
+
+    def copy(self):
+        copy = ReturnValue(self.value)
+        copy.setContext(self.context)
+        copy.setPos(self.startPos, self.endPos)
+        return copy
+    
+    def __repr__(self):
+        return f"<Return: {self.value}>"
 
 
 class Module(Value):

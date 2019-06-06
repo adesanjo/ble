@@ -14,7 +14,7 @@ else:
 
 from error import RTError
 import tokens as tok
-from values import NoneValue, Number, String, Function, List, Module, Class
+from values import NoneValue, Number, String, Function, ReturnValue, List, Module, Class
 import languageParser as lp
 from languageLexer import Token, DIGITS
 import language
@@ -687,6 +687,17 @@ class Interpreter:
 
         return res.success(returnValue)
     
+    def visitReturnNode(self, node, context):
+        res = RTResult()
+        value = res.register(self.visit(node.exprNode, context))
+        if res.err:
+            return res
+        return res.success(
+            ReturnValue(value).setContext(context).setPos(
+                node.startPos, node.endPos
+            )
+        )
+    
     def visitBlockNode(self, node, context):
         res = RTResult()
 
@@ -695,6 +706,8 @@ class Interpreter:
             exprValue = res.register(self.visit(exprNode, context))
             if res.err:
                 return res
+            if isinstance(exprValue, ReturnValue):
+                break
             
         return res.success(exprValue)
     

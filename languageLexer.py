@@ -36,6 +36,7 @@ KEYWORDS = [
     "fn",
     "mut",
     "builtin",
+    "return",
     "disp",
     "input",
     "getch",

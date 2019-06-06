@@ -168,6 +168,14 @@ class CallNode:
             self.endPos = nodeToCall.endPos
 
 
+class ReturnNode:
+    def __init__(self, exprNode):
+        self.exprNode = exprNode
+
+        self.startPos = exprNode.startPos
+        self.endPos = exprNode.endPos
+
+
 class BlockNode:
     def __init__(self, exprNodes, bracketPos=None):
         self.exprNodes = exprNodes
@@ -935,6 +943,105 @@ class Parser:
         
         return res.success(OSNode(tkn))
     
+    def funcDef(self):
+        res = ParseResult()
+
+        if not self.tkn.matches(TT_KEYWORD, "fn"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'fn'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+        
+        if self.tkn.matches(TT_KEYWORD, "mut"):
+            res.registerAdvancement()
+            self.advance()
+            canMod = True
+        else:
+            canMod = False
+        
+        if self.tkn.matches(TT_KEYWORD, "builtin"):
+            res.registerAdvancement()
+            self.advance()
+            isBuiltin = True
+        else:
+            isBuiltin = False
+
+        if self.tkn.type == TT_IDENTIFIER:
+            varNameTkn = self.tkn
+            res.registerAdvancement()
+            self.advance()
+            if self.tkn.type != TT_LPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.tkn.startPos, self.tkn.endPos,
+                    "Expected '('"
+                ))
+        else:
+            varNameTkn = None
+            if self.tkn.type != TT_LPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.tkn.startPos, self.tkn.endPos,
+                    "Expected identifier or '('"
+                ))
+        res.registerAdvancement()
+        self.advance()
+
+        argNameTkns = []
+
+        if self.tkn.type == TT_IDENTIFIER:
+            argNameTkns.append(self.tkn)
+            res.registerAdvancement()
+            self.advance()
+
+            while self.tkn.type == TT_COMMA:
+                res.registerAdvancement()
+                self.advance()
+                if self.tkn.type != TT_IDENTIFIER:
+                    return res.failure(InvalidSyntaxError(
+                        self.tkn.startPos, self.tkn.endPos,
+                        "Expected identifier"
+                    ))
+                argNameTkns.append(self.tkn)
+                res.registerAdvancement()
+                self.advance()
+            if self.tkn.type != TT_RPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.tkn.startPos, self.tkn.endPos,
+                    "Expected ',' or ')'"
+                ))
+        else:
+            if self.tkn.type != TT_RPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.tkn.startPos, self.tkn.endPos,
+                    "Expected identifier or ')'"
+                ))
+        res.registerAdvancement()
+        self.advance()
+
+        nodeToReturn = res.register(self.expr())
+        if res.err:
+            return res
+
+        return res.success(FuncDefNode(varNameTkn, argNameTkns, nodeToReturn, canMod, isBuiltin))
+    
+    def returnExpr(self):
+        res = ParseResult()
+
+        if not self.tkn.matches(TT_KEYWORD, "return"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'return'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+
+        exprNode = res.register(self.expr())
+        if res.err:
+            return res
+        
+        return res.success(ReturnNode(exprNode))
+    
     def atom(self):
         res = ParseResult()
         tkn = self.tkn
@@ -1048,6 +1155,11 @@ class Parser:
             if res.err:
                 return res
             return res.success(funcDef)
+        elif tkn.matches(TT_KEYWORD, "return"):
+            returnExpr = res.register(self.returnExpr())
+            if res.err:
+                return res
+            return res.success(returnExpr)
         elif tkn.matches(TT_KEYWORD, "disp"):
             dispExpr = res.register(self.dispExpr())
             if res.err:
@@ -1314,88 +1426,6 @@ class Parser:
 
         return res.success(left)
 
-    def funcDef(self):
-        res = ParseResult()
-
-        if not self.tkn.matches(TT_KEYWORD, "fn"):
-            return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.endPos,
-                "Expected 'fn'"
-            ))
-        res.registerAdvancement()
-        self.advance()
-        
-        if self.tkn.matches(TT_KEYWORD, "mut"):
-            res.registerAdvancement()
-            self.advance()
-            canMod = True
-        else:
-            canMod = False
-        
-        if self.tkn.matches(TT_KEYWORD, "builtin"):
-            res.registerAdvancement()
-            self.advance()
-            isBuiltin = True
-        else:
-            isBuiltin = False
-
-        if self.tkn.type == TT_IDENTIFIER:
-            varNameTkn = self.tkn
-            res.registerAdvancement()
-            self.advance()
-            if self.tkn.type != TT_LPAREN:
-                return res.failure(InvalidSyntaxError(
-                    self.tkn.startPos, self.tkn.endPos,
-                    "Expected '('"
-                ))
-        else:
-            varNameTkn = None
-            if self.tkn.type != TT_LPAREN:
-                return res.failure(InvalidSyntaxError(
-                    self.tkn.startPos, self.tkn.endPos,
-                    "Expected identifier or '('"
-                ))
-        res.registerAdvancement()
-        self.advance()
-
-        argNameTkns = []
-
-        if self.tkn.type == TT_IDENTIFIER:
-            argNameTkns.append(self.tkn)
-            res.registerAdvancement()
-            self.advance()
-
-            while self.tkn.type == TT_COMMA:
-                res.registerAdvancement()
-                self.advance()
-                if self.tkn.type != TT_IDENTIFIER:
-                    return res.failure(InvalidSyntaxError(
-                        self.tkn.startPos, self.tkn.endPos,
-                        "Expected identifier"
-                    ))
-                argNameTkns.append(self.tkn)
-                res.registerAdvancement()
-                self.advance()
-            if self.tkn.type != TT_RPAREN:
-                return res.failure(InvalidSyntaxError(
-                    self.tkn.startPos, self.tkn.endPos,
-                    "Expected ',' or ')'"
-                ))
-        else:
-            if self.tkn.type != TT_RPAREN:
-                return res.failure(InvalidSyntaxError(
-                    self.tkn.startPos, self.tkn.endPos,
-                    "Expected identifier or ')'"
-                ))
-        res.registerAdvancement()
-        self.advance()
-
-        nodeToReturn = res.register(self.expr())
-        if res.err:
-            return res
-
-        return res.success(FuncDefNode(varNameTkn, argNameTkns, nodeToReturn, canMod, isBuiltin))
-    
     def program(self):
         res = ParseResult()
         

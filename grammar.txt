@@ -33,6 +33,7 @@ atom 			: INT|FLOAT|STRING|BUILTIN
 				: for-each-expr
 				: while-expr
 				: func-def
+				: return-expr
                 : disp-expr
 				: input-expr
 				: getch-expr
@@ -70,6 +71,8 @@ while-expr	    : KEYWORD:WHILE expr KEYWORD:DO? expr
 
 func-def		: KEYWORD:FN KEYWORD:MUT? KEYWORD:BUILTIN? IDENTIFIER?
 				  LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN expr
+
+return-expr		: KEYWORD:RETURN expr
 
 disp-expr       : KEYWORD:DISP expr
 

@@ -105,35 +105,34 @@ fn builtin tan(x){
 
 fn builtin asin(x){
     res = 0.0
-    if abs(x) <= 1{
-        if x > 0.71{
-            x = sqrt(1 - x^2)
-            comp = 1
-        }elif x < -0.71{
-            x = sqrt(1 - x^2)
-            comp = -1
-        }else{
-            comp = 0
-        }
-        n = 0
-        term = fact(2*n) / (4^n * fact(n)^2 * (2*n + 1)) * x^(2*n + 1)
-        while abs(term) > 10^(-15){
-            res += term
-            n += 1
-            term = fact(2*n) / (4^n * fact(n)^2 * (2*n + 1)) * x^(2*n + 1)
-        }
-        if comp == 1{
-            res = PI/2 - res
-        }elif comp == -1{
-            res = res - PI/2
-        }
-        if abs(res) < 10^(-15){
-            res = 0.0
-        }
-        res
-    }else{
-        none
+    if abs(x) > 1{
+        return none
     }
+    if x > 0.71{
+        x = sqrt(1 - x^2)
+        comp = 1
+    }elif x < -0.71{
+        x = sqrt(1 - x^2)
+        comp = -1
+    }else{
+        comp = 0
+    }
+    n = 0
+    term = fact(2*n) / (4^n * fact(n)^2 * (2*n + 1)) * x^(2*n + 1)
+    while abs(term) > 10^(-15){
+        res += term
+        n += 1
+        term = fact(2*n) / (4^n * fact(n)^2 * (2*n + 1)) * x^(2*n + 1)
+    }
+    if comp == 1{
+        res = PI/2 - res
+    }elif comp == -1{
+        res = res - PI/2
+    }
+    if abs(res) < 10^(-15){
+        res = 0.0
+    }
+    res
 }
 fn builtin acos(x){
     PI/2 - asin(x)

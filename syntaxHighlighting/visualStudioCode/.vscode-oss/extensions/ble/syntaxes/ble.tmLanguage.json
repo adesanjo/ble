@@ -16,7 +16,7 @@
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.ble",
-				"match": "\\b(true|false|none|module|argv|class|include|as|and|or|not|if|then|elif|else|for|to|step|each|in|while|do|fn|mut|builtin|disp|input|getch|kbhit|rand|int|float|str|type|read|readb|write|writeb|cls|time|cli|os)\\b"
+				"match": "\\b(true|false|none|module|argv|class|include|as|and|or|not|if|then|elif|else|for|to|step|each|in|while|do|fn|mut|builtin|return|disp|input|getch|kbhit|rand|int|float|str|type|read|readb|write|writeb|cls|time|cli|os)\\b"
 			}]
 		},
 		"strings": {
