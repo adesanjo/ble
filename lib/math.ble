@@ -9,31 +9,29 @@ fn builtin max(a, b){
 }
 
 fn builtin minl(l){
-    if +l > 0{
-        res = l(0)
-        for i = 1 to +l{
-            if l(i) < res{
-                res = l(i)
-            }
-        }
-        res
-    }else{
-        none
+    if l == 0{
+        return none
     }
+    res = l(0)
+    for i = 1 to +l{
+        if l(i) < res{
+            res = l(i)
+        }
+    }
+    res
 }
 
 fn builtin maxl(l){
-    if +l > 0{
-        res = l(0)
-        for i = 1 to +l{
-            if l(i) > res{
-                res = l(i)
-            }
-        }
-        res
-    }else{
-        none
+    if l == 0{
+        return none
     }
+    res = l(0)
+    for i = 1 to +l{
+        if l(i) > res{
+            res = l(i)
+        }
+    }
+    res
 }
 
 fn builtin abs(x){

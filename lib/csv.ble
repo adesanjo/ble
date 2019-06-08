@@ -12,13 +12,11 @@ fn builtin toCSV(l){
     for i = 0 to +l{
         l(i) = string.join(l(i), ",")
     }
-    s = string.join(l, "\n")
-    s
+    string.join(l, "\n")
 }
 
 fn builtin fromCSVfile(f){
-    s = read f
-    l = string.split(s, "\n")
+    l = string.split(read f, "\n")
     for i = 0 to +l{
         l(i) = string.split(l(i), ",")
     }
@@ -29,8 +27,7 @@ fn builtin toCSVfile(f, l){
     for i = 0 to +l{
         l(i) = string.join(l(i), ",")
     }
-    s = string.join(l, "\n")
-    write f, s
+    write f, string.join(l, "\n")
 }
 
 moduleName = "csv"
