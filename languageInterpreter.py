@@ -599,6 +599,8 @@ class Interpreter:
             result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
+            if isinstance(result, ReturnValue):
+                break
 
         return res.success(result)
     
@@ -625,6 +627,8 @@ class Interpreter:
             result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
+            if isinstance(result, ReturnValue):
+                break
 
         return res.success(result)
 
@@ -644,6 +648,8 @@ class Interpreter:
             result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
+            if isinstance(result, ReturnValue):
+                break
 
         return res.success(result)
 
