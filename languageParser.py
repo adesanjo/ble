@@ -137,6 +137,12 @@ class WhileNode:
         self.endPos = bodyNode.endPos
 
 
+class BreakNode:
+    def __init__(self, tkn):
+        self.startPos = tkn.startPos
+        self.endPos = tkn.endPos
+
+
 class FuncDefNode:
     def __init__(self, varNameTkn, argNameTkns, bodyNode, canMod, isBuiltin):
         self.varNameTkn = varNameTkn
@@ -655,6 +661,20 @@ class Parser:
             return res
 
         return res.success(WhileNode(cond, body))
+    
+    def breakExpr(self):
+        res = ParseResult()
+        
+        if not self.tkn.matches(TT_KEYWORD, "break"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'break'"
+            ))
+        tkn = self.tkn
+        res.registerAdvancement()
+        self.advance()
+        
+        return res.success(BreakNode(tkn))
 
     def ifExpr(self):
         res = ParseResult()
@@ -1150,6 +1170,11 @@ class Parser:
             if res.err:
                 return res
             return res.success(whileExpr)
+        elif tkn.matches(TT_KEYWORD, "break"):
+            breakExpr = res.register(self.breakExpr())
+            if res.err:
+                return res
+            return res.success(breakExpr)
         elif tkn.matches(TT_KEYWORD, "fn"):
             funcDef = res.register(self.funcDef())
             if res.err:

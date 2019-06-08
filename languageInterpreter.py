@@ -599,7 +599,7 @@ class Interpreter:
             result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
-            if isinstance(result, ReturnValue):
+            if isinstance(result, ReturnValue) or isinstance(result, BreakValue):
                 break
 
         return res.success(result)
@@ -627,7 +627,7 @@ class Interpreter:
             result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
-            if isinstance(result, ReturnValue):
+            if isinstance(result, ReturnValue) or isinstance(result, BreakValue):
                 break
 
         return res.success(result)
@@ -648,10 +648,17 @@ class Interpreter:
             result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
-            if isinstance(result, ReturnValue):
+            if isinstance(result, ReturnValue) or isinstance(result, BreakValue):
                 break
 
         return res.success(result)
+    
+    def visitBreakNode(self, node, context):
+        return RTResult().success(
+            BreakValue().setContext(context).setPos(
+                node.startPos, node.endPos
+            )
+        )
 
     def visitFuncDefNode(self, node, context):
         res = RTResult()
@@ -712,7 +719,7 @@ class Interpreter:
             exprValue = res.register(self.visit(exprNode, context))
             if res.err:
                 return res
-            if isinstance(exprValue, ReturnValue):
+            if isinstance(exprValue, ReturnValue) or isinstance(exprValue, BreakValue):
                 break
             
         return res.success(exprValue)

@@ -32,6 +32,7 @@ atom 			: INT|FLOAT|STRING|BUILTIN
 				: for-expr
 				: for-each-expr
 				: while-expr
+				: break-expr
 				: func-def
 				: return-expr
                 : disp-expr
@@ -68,6 +69,8 @@ for-expr		: KEYWORD:FOR IDENTIFIER EQ expr KEYWORD:TO expr
 for-each-expr	: KEYWORD:FOR KEYWORD:EACH IDENTIFIER KEYWORD:IN expr KEYWORD:DO? expr
 
 while-expr	    : KEYWORD:WHILE expr KEYWORD:DO? expr
+
+break-expr      : KEYWORD:BREAK
 
 func-def		: KEYWORD:FN KEYWORD:MUT? KEYWORD:BUILTIN? IDENTIFIER?
 				  LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN expr

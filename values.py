@@ -701,6 +701,20 @@ class ReturnValue(Value):
         return f"<Return: {self.value}>"
 
 
+class BreakValue(Value):
+    def __init__(self):
+        super().__init__()
+
+    def copy(self):
+        copy = BreakValue()
+        copy.setContext(self.context)
+        copy.setPos(self.startPos, self.endPos)
+        return copy
+    
+    def __repr__(self):
+        return f"<Break>"
+
+
 class Module(Value):
     def __init__(self, moduleContext):
         super().__init__()

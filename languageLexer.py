@@ -33,6 +33,7 @@ KEYWORDS = [
     "in",
     "while",
     "do",
+    "break",
     "fn",
     "mut",
     "builtin",
