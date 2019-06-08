@@ -14,7 +14,7 @@ else:
 
 from error import RTError
 import tokens as tok
-from values import NoneValue, Number, String, Function, ReturnValue, List, Module, Class
+from values import NoneValue, Number, String, Function, ReturnValue, List, Module, Class, BreakValue
 import languageParser as lp
 from languageLexer import Token, DIGITS
 import language
