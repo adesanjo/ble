@@ -599,7 +599,12 @@ class Interpreter:
             result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
-            if isinstance(result, ReturnValue) or isinstance(result, BreakValue):
+            if isinstance(result, ReturnValue):
+                break
+            if isinstance(result, BreakValue):
+                result = NoneValue().setContext(result.context).setPos(
+                    result.startPos, result.endPos
+                )
                 break
 
         return res.success(result)
@@ -627,7 +632,12 @@ class Interpreter:
             result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
-            if isinstance(result, ReturnValue) or isinstance(result, BreakValue):
+            if isinstance(result, ReturnValue):
+                break
+            if isinstance(result, BreakValue):
+                result = NoneValue().setContext(result.context).setPos(
+                    result.startPos, result.endPos
+                )
                 break
 
         return res.success(result)
@@ -648,7 +658,12 @@ class Interpreter:
             result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
-            if isinstance(result, ReturnValue) or isinstance(result, BreakValue):
+            if isinstance(result, ReturnValue):
+                break
+            if isinstance(result, BreakValue):
+                result = NoneValue().setContext(result.context).setPos(
+                    result.startPos, result.endPos
+                )
                 break
 
         return res.success(result)
