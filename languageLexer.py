@@ -185,7 +185,7 @@ class Lexer:
         hasDot = False
         startPos = self.pos.copy()
 
-        while self.char is not None and self.char in DIGITS + ".":
+        while self.char is not None and self.char in DIGITS + "_.":
             if self.char == ".":
                 if hasDot:
                     break
