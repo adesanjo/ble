@@ -959,6 +959,7 @@ class Interpreter:
         
         result = res.register(self.visit(node.tryNode, context))
         if res.err:
+            res.err = None
             result = res.register(self.visit(node.catchNode, context))
             if res.err:
                 return res
