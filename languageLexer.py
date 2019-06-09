@@ -109,7 +109,7 @@ class Lexer:
         while self.char is not None:
             if self.char in " \t\r\n":
                 self.advance()
-            elif self.char in DIGITS:
+            elif self.char in DIGITS + ".":
                 tokens.append(self.makeNumber())
             elif self.char in LETTERS:
                 tokens.append(self.makeIdentifier())
@@ -190,7 +190,8 @@ class Lexer:
                 if hasDot:
                     break
                 hasDot = True
-            numStr += self.char
+            if self.char != "_":
+                numStr += self.char
             self.advance()
 
         if hasDot:
