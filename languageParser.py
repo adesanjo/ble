@@ -335,6 +335,15 @@ class OSNode:
         self.endPos = tkn.endPos
 
 
+class TryCatchNode:
+    def __init__(self, tryNode, catchNode):
+        self.tryNode = tryNode
+        self.catchNode = catchNode
+
+        self.startPos = tryNode.startPos
+        self.endPos = catchNode.endPos
+
+
 ################
 # PARSE RESULT
 ################
@@ -1092,6 +1101,35 @@ class Parser:
         
         return res.success(ReturnNode(exprNode))
     
+    def tryCatchExpr(self):
+        res = ParseResult()
+        
+        if not self.tkn.matches(TT_KEYWORD, "try"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'try'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+
+        tryNode = res.register(self.expr())
+        if res.err:
+            return res
+        
+        if not self.tkn.matches(TT_KEYWORD, "catch"):
+            return res.failure(InvalidSyntaxError(
+                self.tkn.startPos, self.tkn.endPos,
+                "Expected 'catch'"
+            ))
+        res.registerAdvancement()
+        self.advance()
+
+        catchNode = res.register(self.expr())
+        if res.err:
+            return res
+        
+        return res.success(TryCatchNode(tryNode, catchNode))
+    
     def atom(self):
         res = ParseResult()
         tkn = self.tkn
@@ -1295,6 +1333,11 @@ class Parser:
             if res.err:
                 return res
             return res.success(osExpr)
+        elif tkn.matches(TT_KEYWORD, "try"):
+            tryCatchExpr = res.register(self.tryCatchExpr())
+            if res.err:
+                return res
+            return res.success(tryCatchExpr)
 
         return res.failure(InvalidSyntaxError(
             tkn.startPos, tkn.endPos,

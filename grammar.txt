@@ -35,7 +35,7 @@ atom 			: INT|FLOAT|STRING|BUILTIN
 				: break-expr
 				: func-def
 				: return-expr
-                : disp-expr
+				: disp-expr
 				: input-expr
 				: getch-expr
 				: kbhit-expr
@@ -50,6 +50,7 @@ atom 			: INT|FLOAT|STRING|BUILTIN
 				: time-expr
 				: cli-expr
 				: os-expr
+				: try-catch-expr
 
 class-expr		: KEYWORD:CLASS IDENTIFIER (LPAREN IDENTIFIER RPAREN)? expr
 
@@ -111,3 +112,5 @@ time-expr		: KEYWORD:TIME
 cli-expr		: KEYWORD:CLI expr
 
 os-expr			: KEYWORD:OS
+
+try-catch-expr	: KEYWORD:TRY expr KEYWORD:CATCH expr

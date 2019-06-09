@@ -54,7 +54,9 @@ KEYWORDS = [
     "cls",
     "time",
     "cli",
-    "os"
+    "os",
+    "try",
+    "catch"
 ]
 
 

@@ -929,9 +929,8 @@ class Interpreter:
         return RTResult().success(NoneValue().setContext(context).setPos(node.startPos, node.endPos))
     
     def visitTimeNode(self, node, context):
-        t = round(time.time() * 1000000)
         return RTResult().success(
-            Number(t).setContext(context).setPos(node.startPos, node.endPos)
+            Number(time.time_ns()).setContext(context).setPos(node.startPos, node.endPos)
         )
     
     def visitCLINode(self, node, context):
@@ -954,3 +953,14 @@ class Interpreter:
         return RTResult().success(
             String(sys.platform).setContext(context).setPos(node.startPos, node.endPos)
         )
+    
+    def visitTryCatchNode(self, node, context):
+        res = RTResult()
+        
+        result = res.register(self.visit(node.tryNode, context))
+        if res.err:
+            result = res.register(self.visit(node.catchNode, context))
+            if res.err:
+                return res
+        
+        return res.success(result)
