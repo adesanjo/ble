@@ -844,8 +844,11 @@ class Interpreter:
                 context
             ))
         
-        dir = os.path.normpath(os.path.dirname(node.startPos.fn))
-        fn = os.path.normpath(dir + "/" + fileName.value)
+        if fileName.value.startswith("/"):
+            fn = fileName.value
+        else:
+            dir = os.path.normpath(os.path.dirname(node.startPos.fn))
+            fn = os.path.normpath(dir + "/" + fileName.value)
         if not os.path.isfile(fn):
             return res.failure(RTError(
                 node.fileNameNode.startPos, node.fileNameNode.endPos,
@@ -882,8 +885,11 @@ class Interpreter:
                 context
             ))
         
-        dir = os.path.normpath(os.path.dirname(node.startPos.fn))
-        fn = os.path.normpath(dir + "/" + fileName.value)
+        if fileName.value.startswith("/"):
+            fn = fileName.value
+        else:
+            dir = os.path.normpath(os.path.dirname(node.startPos.fn))
+            fn = os.path.normpath(dir + "/" + fileName.value)
         
         fileContent = res.register(self.visit(node.fileContentNode, context))
         if res.err:
