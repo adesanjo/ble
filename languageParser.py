@@ -108,33 +108,36 @@ class IfNode:
 
 class ForNode:
     def __init__(self, varNameTkn, startValueNode, endValueNode,
-                 stepValueNode, bodyNode):
+                 stepValueNode, bodyNode, elseNode):
         self.varNameTkn = varNameTkn
         self.startValueNode = startValueNode
         self.endValueNode = endValueNode
         self.stepValueNode = stepValueNode
         self.bodyNode = bodyNode
+        self.elseNode = elseNode
 
         self.startPos = varNameTkn.startPos
-        self.endPos = bodyNode.endPos
+        self.endPos = elseNode.endPos if elseNode else bodyNode.endPos
 
 class ForEachNode:
-    def __init__(self, varNameTkn, listNode, bodyNode):
+    def __init__(self, varNameTkn, listNode, bodyNode, elseNode):
         self.varNameTkn = varNameTkn
         self.listNode = listNode
         self.bodyNode = bodyNode
+        self.elseNode = elseNode
         
         self.startPos = varNameTkn.startPos
-        self.endPos = bodyNode.endPos
+        self.endPos = elseNode.endPos if elseNode else bodyNode.endPos
 
 
 class WhileNode:
-    def __init__(self, condNode, bodyNode):
+    def __init__(self, condNode, bodyNode, elseNode):
         self.condNode = condNode
         self.bodyNode = bodyNode
+        self.elseNode = elseNode
 
         self.startPos = condNode.startPos
-        self.endPos = bodyNode.endPos
+        self.endPos = elseNode.endPos if elseNode else bodyNode.endPos
 
 
 class BreakNode:
@@ -580,9 +583,18 @@ class Parser:
         body = res.register(self.expr())
         if res.err:
             return res
+        
+        if self.tkn.matches(TT_KEYWORD, "else"):
+            res.registerAdvancement()
+            self.advance()
+            elseNode = res.register(self.expr())
+            if res.err:
+                return res
+        else:
+            elseNode = None
 
         return res.success(ForNode(
-            varName, startValue, endValue, stepValue, body
+            varName, startValue, endValue, stepValue, body, elseNode
         ))
     
     def forEachExpr(self):
@@ -632,9 +644,18 @@ class Parser:
         body = res.register(self.expr())
         if res.err:
             return res
+        
+        if self.tkn.matches(TT_KEYWORD, "else"):
+            res.registerAdvancement()
+            self.advance()
+            elseNode = res.register(self.expr())
+            if res.err:
+                return res
+        else:
+            elseNode = None
 
         return res.success(ForEachNode(
-            varName, listExpr, body
+            varName, listExpr, body, elseNode
         ))
 
     def whileExpr(self):
@@ -659,8 +680,17 @@ class Parser:
         body = res.register(self.expr())
         if res.err:
             return res
+        
+        if self.tkn.matches(TT_KEYWORD, "else"):
+            res.registerAdvancement()
+            self.advance()
+            elseNode = res.register(self.expr())
+            if res.err:
+                return res
+        else:
+            elseNode = None
 
-        return res.success(WhileNode(cond, body))
+        return res.success(WhileNode(cond, body, elseNode))
     
     def breakExpr(self):
         res = ParseResult()

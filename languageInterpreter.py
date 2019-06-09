@@ -599,13 +599,17 @@ class Interpreter:
             result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
-            if isinstance(result, ReturnValue):
+            if isinstance(result, (ReturnValue, BreakValue)):
                 break
-            if isinstance(result, BreakValue):
-                result = NoneValue().setContext(result.context).setPos(
-                    result.startPos, result.endPos
-                )
-                break
+        
+        if isinstance(result, BreakValue):
+            result = NoneValue().setContext(result.context).setPos(
+                result.startPos, result.endPos
+            )
+        elif node.elseNode:
+            result = res.register(self.visit(node.elseNode, context))
+            if res.err:
+                return res
 
         return res.success(result)
     
@@ -632,13 +636,17 @@ class Interpreter:
             result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
-            if isinstance(result, ReturnValue):
+            if isinstance(result, (ReturnValue, BreakValue)):
                 break
-            if isinstance(result, BreakValue):
-                result = NoneValue().setContext(result.context).setPos(
-                    result.startPos, result.endPos
-                )
-                break
+        
+        if isinstance(result, BreakValue):
+            result = NoneValue().setContext(result.context).setPos(
+                result.startPos, result.endPos
+            )
+        elif node.elseNode:
+            result = res.register(self.visit(node.elseNode, context))
+            if res.err:
+                return res
 
         return res.success(result)
 
@@ -658,13 +666,17 @@ class Interpreter:
             result = res.register(self.visit(node.bodyNode, context))
             if res.err:
                 return res
-            if isinstance(result, ReturnValue):
+            if isinstance(result, (ReturnValue, BreakValue)):
                 break
-            if isinstance(result, BreakValue):
-                result = NoneValue().setContext(result.context).setPos(
-                    result.startPos, result.endPos
-                )
-                break
+        
+        if isinstance(result, BreakValue):
+            result = NoneValue().setContext(result.context).setPos(
+                result.startPos, result.endPos
+            )
+        elif node.elseNode:
+            result = res.register(self.visit(node.elseNode, context))
+            if res.err:
+                return res
 
         return res.success(result)
     

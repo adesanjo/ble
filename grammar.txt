@@ -65,10 +65,13 @@ if-expr			: KEYWORD:IF expr KEYWORD:THEN? expr
 
 for-expr		: KEYWORD:FOR IDENTIFIER EQ expr KEYWORD:TO expr 
 				  (KEYWORD:STEP expr)? KEYWORD:DO? expr
+				  (KEYWORD:ELSE expr)?
 
 for-each-expr	: KEYWORD:FOR KEYWORD:EACH IDENTIFIER KEYWORD:IN expr KEYWORD:DO? expr
+				  (KEYWORD:ELSE expr)?
 
 while-expr	    : KEYWORD:WHILE expr KEYWORD:DO? expr
+				  (KEYWORD:ELSE expr)?
 
 break-expr      : KEYWORD:BREAK
 
