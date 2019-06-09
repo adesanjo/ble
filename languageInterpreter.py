@@ -746,7 +746,7 @@ class Interpreter:
             exprValue = res.register(self.visit(exprNode, context))
             if res.err:
                 return res
-            if isinstance(exprValue, ReturnValue) or isinstance(exprValue, BreakValue):
+            if isinstance(exprValue, (ReturnValue, BreakValue)):
                 break
             
         return res.success(exprValue)
