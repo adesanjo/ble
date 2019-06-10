@@ -33,6 +33,24 @@ fn builtin reduce(f, l){
     res
 }
 
+fn builtin any(l){
+    for each ll in l{
+        if ll{
+            return true
+        }
+    }
+    false
+}
+
+fn builtin all(l){
+    for each ll in l{
+        if not ll{
+            return false
+        }
+    }
+    true
+}
+
 fn builtin index(ll, l){
     for i = 0 to +l{
         if l(i) == ll{

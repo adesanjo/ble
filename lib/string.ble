@@ -152,4 +152,17 @@ fn builtin fromAscii(n){
     ss(n)
 }
 
+fn builtin index(ss, s){
+    for i = 0 to +s{
+        if l(i, i+ss) == ss{
+            return i
+        }
+    }
+    -1
+}
+
+fn builtin contains(ss, s){
+    s - ss != s
+}
+
 moduleName = "string"
