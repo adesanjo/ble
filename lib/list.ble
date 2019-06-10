@@ -7,10 +7,11 @@ fn builtin range(start, end){
 }
 
 fn builtin map(f, l){
+    nl = []
     for i = 0 to +l{
-        l(i) = f(l(i))
+        nl += [f(l(i))]
     }
-    l
+    nl
 }
 
 fn builtin filter(f, l){
