@@ -267,6 +267,8 @@ class Interpreter:
         if not os.path.isfile(fn):
             if sys.platform == "ios":
                 libDir = "lib/"
+            elif sys.platform == "darwin":
+                libDir = "/Applications/ble/lib/"
             elif self.dev:
                 libDir = str(pathlib.Path.home()) + "/Documents/projects/ble/lib/"
             else:
