@@ -12,11 +12,11 @@ if [ $SHELL = /bin/bash ]
 then
     if ! alias | grep "ble="
     then
-        echo "alias ble=\"python3 /Applications/ble/ble-master/exe.py\"" >> /Applications/.profile
+        echo "alias ble=\"python3 /Applications/ble/ble-master/exe.py\"" >> $HOME/.profile
     fi
     if ! alias | grep "blei="
     then
-        echo "alias blei=\"python3 /Applications/ble/ble-master/shell.py\"" >> /Applications/.profile
+        echo "alias blei=\"python3 /Applications/ble/ble-master/shell.py\"" >> $HOME/.profile
     fi
 else
     echo "Your shell was not detected as being bash. Please add /Applications/ble/ble-master to your PATH variable."
