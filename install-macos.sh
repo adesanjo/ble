@@ -22,7 +22,7 @@ else
     echo "Your shell was not detected as being bash. Please add /Applications/ble/ble-master to your PATH variable."
 fi
 
-. $HOME/.profile
+source $HOME/.profile
 
 echo
 echo "-------------"
