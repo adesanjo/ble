@@ -1,5 +1,5 @@
 import sys
-if sys.platform == in ("linux", "darwin"):
+if sys.platform in ("linux", "darwin"):
     import readline
 
 import language
