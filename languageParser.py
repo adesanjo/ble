@@ -1467,7 +1467,7 @@ class Parser:
     def expr(self):
         res = ParseResult()
 
-        if self.tkn.type == TT_IDENTIFIER and self.nextTkn.type in (TT_EQ, TT_PLUSEQ, TT_MINUSEQ, TT_MULEQ, TT_DIVEQ, TT_MODEQ, TT_POWEQ):
+        if self.tkn.type == TT_IDENTIFIER and self.nextTkn.type in (TT_EQ, TT_DEFEQ, TT_PLUSEQ, TT_MINUSEQ, TT_MULEQ, TT_DIVEQ, TT_MODEQ, TT_POWEQ):
             varName = self.tkn
             if varName.value in li.BUILTINS:
                 return res.failure(InvalidSyntaxError(
@@ -1482,7 +1482,13 @@ class Parser:
             expr = res.register(self.expr())
             if res.err:
                 return res
-            if tkn.type == TT_PLUSEQ:
+            if tkn.type == TT_DEFEQ:
+                expr = IfNode([(BinOpNode(
+                    VarAccessNode(varName),
+                    Token(TT_EE, None, tkn.startPos, tkn.endPos),
+                    NoneValueNode(tkn)
+                ), expr)], VarAccessNode(varName))
+            elif tkn.type == TT_PLUSEQ:
                 expr = BinOpNode(VarAccessNode(varName), Token(TT_PLUS, None, tkn.startPos, tkn.endPos), expr)
             elif tkn.type == TT_MINUSEQ:
                 expr = BinOpNode(VarAccessNode(varName), Token(TT_MINUS, None, tkn.startPos, tkn.endPos), expr)

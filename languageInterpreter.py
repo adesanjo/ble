@@ -165,7 +165,11 @@ class SymbolTable:
         return value
 
     def set(self, name, value):
-        self.symbols[name] = value
+        if isinstance(value, NoneValue):
+            if name in self.symbols:
+                del self.symbols[name]
+        else:
+            self.symbols[name] = value
 
     def remove(self, name):
         del self.symbols[name]
@@ -396,11 +400,7 @@ class Interpreter:
         else:
             value = context.symbolTable.get(varName)
         if value is None:
-            return res.failure(RTError(
-                node.startPos, node.endPos,
-                f"{varName} is not defined",
-                context
-            ))
+            return res.success(NoneValue().setContext(context).setPos(node.startPos, node.endPos))
         value.setPos(node.startPos, node.endPos)
 
         return res.success(value)

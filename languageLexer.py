@@ -140,8 +140,7 @@ class Lexer:
                 tokens.append(Token(TT_RPAREN, startPos=self.pos))
                 self.advance()
             elif self.char == ":":
-                tokens.append(Token(TT_COLON, startPos=self.pos))
-                self.advance()
+                tokens.append(self.makeColon())
             elif self.char == "!":
                 tkn, err = self.makeNotEquals()
                 if err:
@@ -304,6 +303,15 @@ class Lexer:
         if self.char == "=":
             self.advance()
             tknType = TT_POWEQ
+        return Token(tknType, startPos=startPos, endPos=self.pos)
+
+    def makeColon(self):
+        tknType = TT_COLON
+        startPos = self.pos.copy()
+        self.advance()
+        if self.char == "=":
+            self.advance()
+            tknType = TT_DEFEQ
         return Token(tknType, startPos=startPos, endPos=self.pos)
 
     def makeNotEquals(self):
