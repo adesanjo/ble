@@ -10,19 +10,17 @@ rm -f /Applications/ble/master.zip
 echo "Finalising..."
 if [ $SHELL = /bin/bash ]
 then
-    if ! alias ble > /dev/null
+    if ! grep $HOME/.profile "alias ble="
     then
         echo "alias ble=\"python3 /Applications/ble/ble-master/exe.py\"" >> $HOME/.profile
     fi
-    if ! alias blei > /dev/null
+    if ! grep $HOME/.profile "alias blei="
     then
         echo "alias blei=\"python3 /Applications/ble/ble-master/shell.py\"" >> $HOME/.profile
     fi
 else
     echo "Your shell was not detected as being bash. Please add /Applications/ble/ble-master to your PATH variable."
 fi
-
-source $HOME/.profile
 
 echo
 echo "-------------"
