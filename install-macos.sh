@@ -10,11 +10,11 @@ rm -f /Applications/ble/master.zip
 echo "Finalising..."
 if [ $SHELL = /bin/bash ]
 then
-    if ! [[ alias | grep "alias ble=" ]]
+    if ! alias ble > /dev/null
     then
         echo "alias ble=\"python3 /Applications/ble/ble-master/exe.py\"" >> $HOME/.profile
     fi
-    if ! [[ alias | grep "alias blei=" ]]
+    if ! alias blei > /dev/null
     then
         echo "alias blei=\"python3 /Applications/ble/ble-master/shell.py\"" >> $HOME/.profile
     fi
