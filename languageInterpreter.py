@@ -501,6 +501,12 @@ class Interpreter:
                 f"{varName} is not defined",
                 context
             ))
+        if not isinstance(listValue, List):
+            return res.failure(RTError(
+                node.varNameTkn.startPos, node.varNameTkn.endPos,
+                f"{varName} is not a list",
+                context
+            ))
         listValue.setContext(context).setPos(node.startPos, node.endPos)
         subListValue = listValue
         subList = None
