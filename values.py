@@ -774,7 +774,7 @@ class Class(Value):
         instance = self.copy()
         constructor = self.classContext.symbolTable.symbols.get(self.name, None)
         if constructor:
-            res.register(constructor.execute(args, instance.classContext))
+            res.register(constructor.execute(args, instance.classContext))  # type: ignore
             if res.err:
                 return res
         elif len(args) > 0:

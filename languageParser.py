@@ -857,7 +857,7 @@ class Parser:
         
         if not self.tkn.matches(TT_KEYWORD, "class"):
             return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.end,
+                self.tkn.startPos, self.tkn.endPos,
                 "Expected 'class'"
             ))
         res.registerAdvancement()
@@ -865,7 +865,7 @@ class Parser:
         
         if self.tkn.type != TT_IDENTIFIER:
             return res.failure(InvalidSyntaxError(
-                self.tkn.startPos, self.tkn.end,
+                self.tkn.startPos, self.tkn.endPos,
                 "Expected identifier"
             ))
         varNameTkn = self.tkn
@@ -877,7 +877,7 @@ class Parser:
             self.advance()
             if self.tkn.type != TT_IDENTIFIER:
                 return res.failure(InvalidSyntaxError(
-                    self.tkn.startPos, self.tkn.end,
+                    self.tkn.startPos, self.tkn.endPos,
                     "Expected identifier"
                 ))
             parentTkn = self.tkn
@@ -885,7 +885,7 @@ class Parser:
             self.advance()
             if self.tkn.type != TT_RPAREN:
                 return res.failure(InvalidSyntaxError(
-                    self.tkn.startPos, self.tkn.end,
+                    self.tkn.startPos, self.tkn.endPos,
                     "Expected ')'"
                 ))
             res.registerAdvancement()

@@ -76,7 +76,7 @@ class KBHit:
         if sys.platform == "ios":
             res = input()
         elif os.name == "nt":
-            res = msvcrt.getch().decode('utf-8')
+            res = msvcrt.getch().decode('utf-8')  # type: ignore
         else:
             res = sys.stdin.read(1)
             termios.tcflush(self.fd, termios.TCIFLUSH)
@@ -89,7 +89,7 @@ class KBHit:
         if sys.platform == "ios":
             return False
         elif os.name == "nt":
-            return msvcrt.kbhit()
+            return msvcrt.kbhit()  # type: ignore
         else:
             dr,_,_ = select([sys.stdin], [], [], 0)
             return dr != []
@@ -239,7 +239,7 @@ class Interpreter:
         classValue = Class(
             className, parent, bodyNode, newContext
         ).setContext(context).setPos(node.startPos, node.endPos)
-        classValue.initContext()
+        classValue.initContext()  # type: ignore
 
         if className not in BUILTINS:
             context.symbolTable.set(className, classValue)
@@ -463,6 +463,10 @@ class Interpreter:
             result, err = left.boolAnd(right)
         elif node.opTkn.matches(tok.TT_KEYWORD, "or"):
             result, err = left.boolOr(right)
+        else:
+            result, err = None, RTError(node.startPos, node.endPos,
+                                        "Unrecognized operation"
+                                        , context)
 
         if err:
             return res.failure(err)
@@ -516,8 +520,15 @@ class Interpreter:
             return res
         
         idxs = [res.register(self.visit(node.idxNode, context)) for node.idxNode in node.idxNodes]
+        if len(idxs) == 0:
+            res.failure(RTError(
+                node.startPos, node.endPos,
+                "no indices given",
+                context
+            ))
         if res.err:
             return res
+        idx = idxs[0]
         for idx in idxs:
             if not (isinstance(idx, Number) and isinstance(idx.value, int)):
                 return res.failure(RTError(
